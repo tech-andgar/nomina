@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="ie=edge"
+  >
+  <title>Nomina - By Andrés García</title>
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
+    rel="stylesheet"
+    type="text/css"
+  >
+  <link
+    href="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.min.css"
+    rel="stylesheet"
+    type="text/css"
+  >
+  <style src="assets/css/style.css" />
+  </style>
+</head>
+
+<body>
+  <div id="q-app">
+    <template>
+      <q-layout view="hHh lpR fFf">
+        <q-header
+          elevated
+          class="bg-primary text-white"
+        >
+          <q-toolbar>
+            <q-toolbar-title>
+              Nomina
+            </q-toolbar-title>
+          </q-toolbar>
+        </q-header>
+
+        <q-page-container>
+          <q-page class="q-px-md">
+            <div
+              class="q-px-md"
+              v-show="userInput"
+            >
+              <div class="row flex flex-center">
+                <h6 class="text-center text-primary">Agregar miembro de el colaborador</h6>
+              </div>
+              <q-form class="q-gutter-md">
+                <div class="fit row wrap justify-start items-start content-start">
+                  <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <q-input
+                      bottom-slots
+                      v-model.trim="colaborador.nombre"
+                      label="Nombre de el colaborador (requerido)"
+                      placeholder="Luis Nacho, Ana Rodriguez..."
+                    />
+                    </q-input>
+                  </div>
+                  <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <q-input
+                      bottom-slots
+                      v-model.number="colaborador.cedula"
+                      label="Numero de identificacion (requerido)"
+                      placeholder="123456789..."
+                      @keyup.enter="submit"
+                    />
+                    </q-input>
+                  </div>
+                  <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <q-input
+                      bottom-slots
+                      v-model.number="colaborador.sueldo"
+                      label="Sueldo de colaborador (requerido)"
+                      :placeholder="'$ '+constante.slmv2020"
+                      @keyup.enter="submit"
+                    />
+                    </q-input>
+                  </div>
+                  <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                    <q-input
+                      bottom-slots
+                      v-model.number="colaborador.diasTrabajados"
+                      label="Días trabajados de colaborador (requerido)"
+                      placeholder="30"
+                      @keyup.enter="submit"
+                    />
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="flex flex-center">
+                  <q-btn
+                    no-caps
+                    rounded
+                    class="q-mt-md full-width"
+                    color="primary"
+                    size="lg"
+                    label="Guardar"
+                    @click="onSubmit()"
+                    saveAndAddAnother
+                  >
+                  </q-btn>
+                  <q-btn
+                    no-caps
+                    rounded
+                    class="q-mt-md full-width"
+                    color="secondary"
+                    size="lg"
+                    label="Guardar y Añadir otro"
+                    @click="onReset()"
+                  />
+                  </q-btn>
+                </div>
+              </q-form>
+            </div>
+            <div
+              class="q-px-md"
+              v-show="resultData"
+            >
+              <div class="row flex flex-center">
+                <h6 class="text-center text-primary">
+                  Nomina de colaborador: &nbsp;&nbsp;&nbsp;
+                  <strong>{{colaborador.nombre}}</strong>
+                </h6>
+              </div>
+
+              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="sueldo"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SUELDO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.sueldo}}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="valorHoraOrdinaria"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      VALOR HORA ORDINARIA
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.valorHoraOrdinaria}}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="diasTrabajados"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      DIAS TRABAJADOS
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.diasTrabajados}}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="basicoSalario"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      BASICO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.valorHoraOrdinaria}}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalExtrasValor"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      TOTAL EXTRAS VALOR
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.devengado.totalValorExtras}}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="auxilioTransporte"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      AUXILIO TRANSPORTE
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.auxTransporte}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="totalDevengado">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      TOTAL DEVENGADO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.devengado.totalDevengado}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="saludColaborador">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SALUD COLABORADOR
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.deducido.salud}}
+                    </div>
+                  </div>
+                </div>
+
+                
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SUELDO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.sueldo}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SUELDO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.sueldo}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SUELDO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.sueldo}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5">
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      SUELDO
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      $ {{colaborador.sueldo}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="q-gutter-md text-center">
+
+
+                <div class="fit row wrap justify-start items-start content-start">
+                  <div
+                    class="col-12"
+                    style="overflow-x:auto;"
+                  >
+                    <div class="text-center q-my-md">
+                      <strong>
+                        Horas Extras
+                      </strong>
+                    </div>
+                    <table class="text-center">
+                      <thead>
+                        <th>Diurna</th>
+                        <th>Nocturna</th>
+                        <th>Domingos</th>
+                        <th>Nocturna Domingos</th>
+                        <th>Recargo Nocturno</th>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{colaborador.devengado.horasExtras.diurna}}</td>
+                          <td>{{colaborador.devengado.horasExtras.nocturna}}</td>
+                          <td>{{colaborador.devengado.horasExtras.domingos}}</td>
+                          <td>{{colaborador.devengado.horasExtras.nocturnaDomingos}}</td>
+                          <td>{{colaborador.devengado.horasExtras.recargoNocturno}}</td>
+                        </tr>
+                        <tr>
+                          <td>$ {{colaborador.devengado.valorExtras.diurna}}</td>
+                          <td>$ {{colaborador.devengado.valorExtras.nocturna}}</td>
+                          <td>$ {{colaborador.devengado.valorExtras.domingos}}</td>
+                          <td>$ {{colaborador.devengado.valorExtras.nocturnaDomingos}}</td>
+                          <td>$ {{colaborador.devengado.valorExtras.recargoNocturno}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="flex flex-center">
+                <q-btn
+                  no-caps
+                  rounded
+                  class="q-mt-md full-width"
+                  color="primary"
+                  size="lg"
+                  label="Guardar"
+                  @click="onSubmit()"
+                  saveAndAddAnother
+                >
+                </q-btn>
+                <q-btn
+                  no-caps
+                  rounded
+                  class="q-mt-md full-width"
+                  color="secondary"
+                  size="lg"
+                  label="Guardar y Añadir otro"
+                  @click="onReset()"
+                />
+                </q-btn>
+              </div>
+              </q-form>
+            </div>
+          </q-page>
+        </q-page-container>
+
+      </q-layout>
+    </template>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
