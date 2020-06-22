@@ -209,6 +209,8 @@ new Vue({
     },
     calcularValorUVT (val) {
       this.colaborador.deducido.uvt = ((this.colaborador.devengado.totalDevengado - this.colaborador.deducido.salud - this.colaborador.deducido.pension - this.colaborador.deducido.fondoSolidaridad) * 0.75) / this.constante.uvt2020
+
+      this.colaborador.deducido.uvt = Math.round(this.colaborador.deducido.uvt)
     },
     calcularValorRetefuente (val) {
       const uvt = this.colaborador.deducido.uvt
@@ -257,22 +259,22 @@ new Vue({
       this.colaborador.parafiscales.totalParafiscales = this.colaborador.parafiscales.salud + this.colaborador.parafiscales.pension + this.colaborador.parafiscales.arl + this.colaborador.parafiscales.sena + this.colaborador.parafiscales.icbf + this.colaborador.parafiscales.cajas
     },
     calcularValorPrima (val) {
-      this.colaborador.prestacion.prima = (this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.prima
+      this.colaborador.prestacion.prima = (this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.prima / 100
     },
     calcularValorVacacaiones (val) {
       this.colaborador.prestacion.vacacaiones = (this.colaborador.devengado.totalDevengado * this.constante.prestacion.vacacaiones) / 100
     },
     calcularValorCesantias (val) {
-      this.colaborador.prestacion.cesantias = ((this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.cesantias) / 100
+      this.colaborador.prestacion.cesantias = ((this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.cesantias )/ 100
     },
     calcularValorInteresCesantias (val) {
-      this.colaborador.prestacion.cesantias = (this.colaborador.prestacion.cesantias * this.constante.prestacion.cesantias) / 100
+      this.colaborador.prestacion.interesCesantias = (this.colaborador.prestacion.cesantias * this.constante.prestacion.interesCesantias) / 100
     },
     calcularValorTotalPrestacion (val) {
       this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.cesantias
     },
     calcularValorTotalNomina (val) {
-      this.colaborador.totalNeto = this.formatCurrency(this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion)
+      this.colaborador.totalNeto = this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion
     },
   },
   mounted () {
