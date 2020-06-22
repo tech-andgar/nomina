@@ -128,6 +128,102 @@
                     </div>
                   </div>
 
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                    id="diurna"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.devengado.horasExtras.diurna"
+                          label="Horas extras diurna de colaborador"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                    id="nocturna"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.devengado.horasExtras.nocturna"
+                          label="Horas extras nocturna de colaborador"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                    id="domingos"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.devengado.horasExtras.domingos"
+                          label="Horas extras domingos de colaborador"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                    id="nocturnaDomingos"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
+                          label="Horas extras nocturna Domingos de colaborador"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                    id="recargoNocturno"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
+                          label="Horas extras eecargo nocturno de colaborador"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
 
@@ -391,6 +487,23 @@
                 </div>
 
                 <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalNeto"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    TOTAL NETO
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{colaborador.totalNeto | formatCurrency}}
+                  </div>
+                </div>
+              </div>
+
+                <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
                   id="parafiscalesSalud"
                 >
@@ -600,13 +713,13 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL NETO
+                      TOTAL NOMINA
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.totalNeto | formatCurrency}}
+                      {{colaborador.totalNomina | formatCurrency}}
                     </div>
                   </div>
                 </div>
@@ -616,7 +729,7 @@
 
               <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
                 <div
-                  class="col-lg-4 col-md-5 col-sm-6 col-xs-8"
+                  class="col-lg-4 col-md-5 col-sm-9 col-xs-10"
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">

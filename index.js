@@ -94,7 +94,8 @@ new Vue({
           interesCesantias: 0,
           totalPrestacion: 0
         },
-        totalNeto: 0
+        totalNeto: 0,
+        totalNomina: 0
       },
       colaboradores: [],
       // colaboradorSueldo: 0
@@ -157,22 +158,22 @@ new Vue({
       }
     },
     calcularValorExtrasDiurna (val) {
-      this.colaborador.devengado.valorExtras.diurna = this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.diurna * this.constante.horasExtras.diurna / 100
+      this.colaborador.devengado.valorExtras.diurna = (this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.diurna) * this.constante.horasExtras.diurna
     },
     calcularValorExtrasNocturna (val) {
-      this.colaborador.devengado.valorExtras.nocturna = this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.nocturna * this.constante.horasExtras.nocturna / 100
+      this.colaborador.devengado.valorExtras.nocturna = (this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.nocturna) * this.constante.horasExtras.nocturna
     },
     calcularValorExtrasDomingos (val) {
-      this.colaborador.devengado.valorExtras.domingos = this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.domingos * this.constante.horasExtras.domingos / 100
+      this.colaborador.devengado.valorExtras.domingos = (this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.domingos) * this.constante.horasExtras.domingos
     },
     calcularValorExtrasNocturnaDomingos (val) {
-      this.colaborador.devengado.valorExtras.nocturnaDomingos = this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.nocturnaDomingos * this.constante.horasExtras.nocturnaDomingos / 100
+      this.colaborador.devengado.valorExtras.nocturnaDomingos = (this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.nocturnaDomingos) * this.constante.horasExtras.nocturnaDomingos
     },
     calcularValorRecargoNocturno (val) {
-      this.colaborador.devengado.valorExtras.recargoNocturno = this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.recargoNocturno * this.constante.horasExtras.recargoNocturno / 100
+      this.colaborador.devengado.valorExtras.recargoNocturno = (this.colaborador.valorHoraOrdinaria * this.colaborador.devengado.horasExtras.recargoNocturno) * this.constante.horasExtras.recargoNocturno
     },
     calcularValorTotalExtrasValor (val) {
-      this.colaborador.devengado.totalValorExtras = this.colaborador.devengado.valorExtras.nocturna + this.colaborador.devengado.valorExtras.domingos + this.colaborador.devengado.valorExtras.nocturnaDomingos + this.colaborador.devengado.valorExtras.recargoNocturno
+      this.colaborador.devengado.totalValorExtras = this.colaborador.devengado.valorExtras.diurna + this.colaborador.devengado.valorExtras.nocturna + this.colaborador.devengado.valorExtras.domingos + this.colaborador.devengado.valorExtras.nocturnaDomingos + this.colaborador.devengado.valorExtras.recargoNocturno
     },
     calcularValorSueldoBasico (val) {
       this.colaborador.devengado.sueldoBasico = (this.colaborador.sueldo / this.constante.diasMes) * this.colaborador.diasTrabajados
@@ -271,10 +272,10 @@ new Vue({
       this.colaborador.prestacion.interesCesantias = (this.colaborador.prestacion.cesantias * this.constante.prestacion.interesCesantias) / 100
     },
     calcularValorTotalPrestacion (val) {
-      this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.cesantias
+      this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.prima +this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.interesCesantias
     },
     calcularValorTotalNomina (val) {
-      this.colaborador.totalNeto = this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion
+      this.colaborador.totalNomina = this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion
     },
   },
   mounted () {
