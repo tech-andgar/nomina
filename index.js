@@ -1,4 +1,4 @@
-
+Vue.config.devtools = true
 Quasar.lang.set(Quasar.lang.es)
 new Vue({
   el: '#q-app',
@@ -96,14 +96,51 @@ new Vue({
         },
         totalNeto: 0
       },
-      colaboradores: []
+      colaboradores: [],
+      // colaboradorSueldo: 0
     }
   },
+  filters: {
+    formatCurrency (val) {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val)
+    },
+  },
   methods: {
+    formatCurrency (val) {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val)
+    },
     onSubmit (evt) {
-      console.log('@submit - do something here', evt)
-
-      evt.target.submit()
+      this.calcularValorHoraOrdinaria()
+      this.calcularValorAuxTransporte()
+      this.calcularValorExtrasDiurna()
+      this.calcularValorExtrasNocturna()
+      this.calcularValorExtrasDomingos()
+      this.calcularValorExtrasNocturnaDomingos()
+      this.calcularValorRecargoNocturno()
+      this.calcularValorTotalExtrasValor()
+      this.calcularValorSueldoBasico()
+      this.calcularValorTotalDevengado()
+      this.calcularValorSaludColaborador()
+      this.calcularValorPensionColaborador()
+      this.calcularValorFondoSolidaridad()
+      this.calcularValorUVT()
+      this.calcularValorRetefuente()
+      this.calcularValorTotalDeducido()
+      this.calcularValorTotalNeto()
+      this.calcularValorSaludEmpleador()
+      this.calcularValorPensionEmpleador()
+      this.calcularValorARLEmpleador()
+      this.calcularValorSENAEmpleador()
+      this.calcularValorICBFEmpleador()
+      this.calcularValorCajaEmpleador()
+      this.calcularValorTotalParafiscales()
+      this.calcularValorPrima()
+      this.calcularValorVacacaiones()
+      this.calcularValorCesantias()
+      this.calcularValorInteresCesantias()
+      this.calcularValorTotalPrestacion()
+      this.calcularValorTotalNomina()
+      this.calcularValorTotalPrestacion()
     },
     onReset (evt) {
       console.log('@submit - do something here', evt)
@@ -114,7 +151,8 @@ new Vue({
       this.colaborador.valorHoraOrdinaria = this.colaborador.sueldo / (this.constante.horasHabiles * this.constante.diasMes)
     },
     calcularValorAuxTransporte (val) {
-      if (this.constante.slmv2020 < this.colaborador.sueldo * 2) {
+      this.colaborador.auxTransporte = 0
+      if ((this.constante.slmv2020 * 2) > this.colaborador.sueldo) {
         this.colaborador.auxTransporte = this.constante.auxTransporte / this.constante.diasMes * this.colaborador.diasTrabajados
       }
     },
@@ -136,8 +174,11 @@ new Vue({
     calcularValorTotalExtrasValor (val) {
       this.colaborador.devengado.totalValorExtras = this.colaborador.devengado.valorExtras.nocturna + this.colaborador.devengado.valorExtras.domingos + this.colaborador.devengado.valorExtras.nocturnaDomingos + this.colaborador.devengado.valorExtras.recargoNocturno
     },
+    calcularValorSueldoBasico (val) {
+      this.colaborador.devengado.sueldoBasico = (this.colaborador.sueldo / this.constante.diasMes) * this.colaborador.diasTrabajados
+    },
     calcularValorTotalDevengado (val) {
-      this.colaborador.devengado.totalDevengado = this.colaborador.devengado.totalValorExtras + this.colaborador.devengado.auxTransporte + this.colaborador.devengado.sueldoBasico
+      this.colaborador.devengado.totalDevengado = this.colaborador.devengado.totalValorExtras + this.colaborador.auxTransporte + this.colaborador.devengado.sueldoBasico
     },
     calcularValorSaludColaborador (val) {
       this.colaborador.deducido.salud = (this.colaborador.devengado.sueldoBasico * this.constante.salud.colaborador) / 100
@@ -219,7 +260,7 @@ new Vue({
       this.colaborador.prestacion.prima = (this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.prima
     },
     calcularValorVacacaiones (val) {
-      this.colaborador.prestacion.vacacaiones = (this.colaborador.devengado.totalDevengado * this.constante.prestacion.vacacaiones)
+      this.colaborador.prestacion.vacacaiones = (this.colaborador.devengado.totalDevengado * this.constante.prestacion.vacacaiones) / 100
     },
     calcularValorCesantias (val) {
       this.colaborador.prestacion.cesantias = ((this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.cesantias) / 100
@@ -231,10 +272,10 @@ new Vue({
       this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.cesantias
     },
     calcularValorTotalNomina (val) {
-      this.colaborador.totalNeto = this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.calcularValorTotalPrestacion
+      this.colaborador.totalNeto = this.formatCurrency(this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion)
     },
   },
-  mounted() {
+  mounted () {
     const addMaximumScaleToMetaViewport = () => {
       const el = document.querySelector('meta[name=viewport]');
 
@@ -243,9 +284,9 @@ new Vue({
         let re = /maximum\-scale=[0-9\.]+/g;
 
         if (re.test(content)) {
-            content = content.replace(re, 'maximum-scale=1.0');
+          content = content.replace(re, 'maximum-scale=1.0');
         } else {
-            content = [content, 'maximum-scale=1.0'].join(', ')
+          content = [content, 'maximum-scale=1.0'].join(', ')
         }
 
         el.setAttribute('content', content);
