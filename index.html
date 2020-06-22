@@ -55,7 +55,7 @@
 
                 <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
                   <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
                     id="colaboradorNombre"
                   >
                     <div class="row wrap justify-start items-end content-start">
@@ -72,58 +72,58 @@
                   </div>
 
                   <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
                     id="colaboradorCedula"
                   >
                     <div class="row wrap justify-start items-end content-start">
                       <div class="col-12">
                         <q-input
-                        bottom-slots
-                        type="tel"
-                        v-model.number="colaborador.cedula"
-                        label="Numero de identificacion (requerido)"
-                        placeholder="123456789..."
-                        @keyup.enter="submit"
-                      />
-                      </q-input>
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.cedula"
+                          label="Numero de identificacion (requerido)"
+                          placeholder="123456789..."
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
                       </div>
                     </div>
                   </div>
 
                   <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
                     id="colaboradorSueldo"
                   >
                     <div class="row wrap justify-start items-end content-start">
                       <div class="col-12">
                         <q-input
-                        bottom-slots
-                        type="tel"
-                        v-model.number="colaborador.sueldo"
-                        label="Sueldo de colaborador (requerido)"
-                        :placeholder="'$ '+constante.slmv2020"
-                        @keyup.enter="submit"
-                      />
-                      </q-input>
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.sueldo"
+                          label="Sueldo de colaborador (requerido)"
+                          :placeholder="'$ '+constante.slmv2020"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
                       </div>
                     </div>
                   </div>
 
                   <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
                     id="colaboradorSueldo"
                   >
                     <div class="row wrap justify-start items-end content-start">
                       <div class="col-12">
                         <q-input
-                        bottom-slots
-                        type="tel"
-                        v-model.number="colaborador.diasTrabajados"
-                        label="Días trabajados de colaborador (requerido)"
-                        placeholder="30"
-                        @keyup.enter="submit"
-                      />
-                      </q-input>
+                          bottom-slots
+                          type="tel"
+                          v-model.number="colaborador.diasTrabajados"
+                          label="Días trabajados de colaborador (requerido)"
+                          placeholder="30"
+                          @keyup.enter="submit"
+                        />
+                        </q-input>
                       </div>
                     </div>
                   </div>
@@ -614,55 +614,55 @@
               </div>
 
 
-              <div class="q-gutter-md text-center">
-
-
-                <div class="fit row wrap justify-start items-start content-start">
-                  <div
-                    class="col-12"
-                    style="overflow-x:auto;"
-                  >
-                    <div class="text-center q-my-md">
-                      <strong>
-                        Horas Extras
-                      </strong>
+              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+                <div
+                  class="col-lg-4 col-md-5 col-sm-6 col-xs-8"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      <div
+                        class="col-12"
+                        style="overflow-x:auto;"
+                      >
+                        <div class="text-center q-my-md">
+                          <strong>
+                            Horas Extras
+                          </strong>
+                        </div>
+                        <table class="text-center">
+                          <thead>
+                            <th>Diurna</th>
+                            <th>Nocturna</th>
+                            <th>Domingos</th>
+                            <th>Nocturna Domingos</th>
+                            <th>Recargo Nocturno</th>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{{colaborador.devengado.horasExtras.diurna}}</td>
+                              <td>{{colaborador.devengado.horasExtras.nocturna}}</td>
+                              <td>{{colaborador.devengado.horasExtras.domingos}}</td>
+                              <td>{{colaborador.devengado.horasExtras.nocturnaDomingos}}</td>
+                              <td>{{colaborador.devengado.horasExtras.recargoNocturno}}</td>
+                            </tr>
+                            <tr>
+                              <td>{{colaborador.devengado.valorExtras.diurna | formatCurrency}}</td>
+                              <td>{{colaborador.devengado.valorExtras.nocturna | formatCurrency}}</td>
+                              <td>{{colaborador.devengado.valorExtras.domingos | formatCurrency}}</td>
+                              <td>{{colaborador.devengado.valorExtras.nocturnaDomingos | formatCurrency}}</td>
+                              <td>{{colaborador.devengado.valorExtras.recargoNocturno | formatCurrency}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    <table class="text-center">
-                      <thead>
-                        <th>Diurna</th>
-                        <th>Nocturna</th>
-                        <th>Domingos</th>
-                        <th>Nocturna Domingos</th>
-                        <th>Recargo Nocturno</th>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>{{colaborador.devengado.horasExtras.diurna}}</td>
-                          <td>{{colaborador.devengado.horasExtras.nocturna}}</td>
-                          <td>{{colaborador.devengado.horasExtras.domingos}}</td>
-                          <td>{{colaborador.devengado.horasExtras.nocturnaDomingos}}</td>
-                          <td>{{colaborador.devengado.horasExtras.recargoNocturno}}</td>
-                        </tr>
-                        <tr>
-                          <td>{{colaborador.devengado.valorExtras.diurna | formatCurrency}}</td>
-                          <td>{{colaborador.devengado.valorExtras.nocturna | formatCurrency}}</td>
-                          <td>{{colaborador.devengado.valorExtras.domingos | formatCurrency}}</td>
-                          <td>{{colaborador.devengado.valorExtras.nocturnaDomingos | formatCurrency}}</td>
-                          <td>{{colaborador.devengado.valorExtras.recargoNocturno | formatCurrency}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </div>
-
               </div>
-
-
               </q-form>
             </div>
           </q-page>
         </q-page-container>
-
       </q-layout>
     </template>
   </div>
