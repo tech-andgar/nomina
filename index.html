@@ -51,50 +51,86 @@
                 <h6 class="text-center text-primary">Agregar miembro de el colaborador</h6>
               </div>
               <q-form class="q-gutter-md">
-                <div class="fit row wrap justify-start items-start content-start q-gutter-md">
-                  <div class="col-xl-3 col-lg-3 col-md-5 col-sm-5 col-xs-12">
-                    <q-input
-                      bottom-slots
-                      v-model.trim="colaborador.nombre"
-                      label="Nombre de el colaborador (requerido)"
-                      placeholder="Luis Nacho, Ana Rodriguez..."
-                    />
-                    </q-input>
+
+
+                <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    id="colaboradorNombre"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                          bottom-slots
+                          v-model.trim="colaborador.nombre"
+                          label="Nombre de el colaborador (requerido)"
+                          placeholder="Luis Nacho, Ana Rodriguez..."
+                        />
+                        </q-input>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-xl-3 col-lg-3 col-md-5 col-sm-5 col-xs-12">
-                    <q-input
-                      bottom-slots
-                      type="tel"
-                      v-model.number="colaborador.cedula"
-                      label="Numero de identificacion (requerido)"
-                      placeholder="123456789..."
-                      @keyup.enter="submit"
-                    />
-                    </q-input>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    id="colaboradorCedula"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                        bottom-slots
+                        type="tel"
+                        v-model.number="colaborador.cedula"
+                        label="Numero de identificacion (requerido)"
+                        placeholder="123456789..."
+                        @keyup.enter="submit"
+                      />
+                      </q-input>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-xl-3 col-lg-3 col-md-5 col-sm-5 col-xs-12">
-                    <q-input
-                      bottom-slots
-                      type="tel"
-                      v-model.number="colaborador.sueldo"
-                      label="Sueldo de colaborador (requerido)"
-                      :placeholder="'$ '+constante.slmv2020"
-                      @keyup.enter="submit"
-                    />
-                    </q-input>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    id="colaboradorSueldo"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                        bottom-slots
+                        type="tel"
+                        v-model.number="colaborador.sueldo"
+                        label="Sueldo de colaborador (requerido)"
+                        :placeholder="'$ '+constante.slmv2020"
+                        @keyup.enter="submit"
+                      />
+                      </q-input>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-xl-3 col-lg-3 col-md-5 col-sm-5 col-xs-12">
-                    <q-input
-                      bottom-slots
-                      type="tel"
-                      v-model.number="colaborador.diasTrabajados"
-                      label="Días trabajados de colaborador (requerido)"
-                      placeholder="30"
-                      @keyup.enter="submit"
-                    />
-                    </q-input>
+
+                  <div
+                    class="col-lg-2 col-md-3 col-sm-4 col-xs-5"
+                    id="colaboradorSueldo"
+                  >
+                    <div class="row wrap justify-start items-end content-start">
+                      <div class="col-12">
+                        <q-input
+                        bottom-slots
+                        type="tel"
+                        v-model.number="colaborador.diasTrabajados"
+                        label="Días trabajados de colaborador (requerido)"
+                        placeholder="30"
+                        @keyup.enter="submit"
+                      />
+                      </q-input>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
+
+
 
                 <div class="flex flex-center q-gutter-md">
                   <div class="col-xs-12">
@@ -269,7 +305,10 @@
                 </div>
 
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="pensionColaborador">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="pensionColaborador"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       PENSION
@@ -283,7 +322,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="fondoSolidaridad">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="fondoSolidaridad"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       FONDO SOLIDARIDAD
@@ -297,7 +339,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="uvt">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="uvt"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       UVT
@@ -311,7 +356,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="retefuente">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="retefuente"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       RETEFUENTE
@@ -325,7 +373,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="totalDeducido">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalDeducido"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       TOTAL DEDUCIDO
@@ -339,7 +390,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesSalud">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesSalud"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR SALUD
@@ -353,7 +407,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesPension">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesPension"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR PENSION
@@ -367,7 +424,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesArl">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesArl"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR ARL
@@ -381,7 +441,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesSena">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesSena"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR SENA
@@ -395,7 +458,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesIcbf">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesIcbf"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR ICBF
@@ -409,7 +475,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="parafiscalesCajas">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="parafiscalesCajas"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       EMPLEADOR CAJAS
@@ -423,7 +492,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="totalParafiscales">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalParafiscales"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       TOTAL PARAFISCALES
@@ -437,7 +509,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="prima">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="prima"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       PRIMA
@@ -451,7 +526,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="vacaciones">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="vacaciones"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       VACACIONES
@@ -465,7 +543,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="cesantias">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="cesantias"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       CESANTIAS
@@ -479,7 +560,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="interesCesantias">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="interesCesantias"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       INTERES CESANTIAS
@@ -493,7 +577,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="totalPrestacion">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalPrestacion"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       TOTAL PRESTACION
@@ -507,7 +594,10 @@
                   </div>
                 </div>
 
-                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5" id="totalNeto">
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalNeto"
+                >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       TOTAL NETO
