@@ -32,7 +32,7 @@ new Vue({
           empleador: 12,
         },
         parafiscal: {
-          arl: 6.96,
+          arl: 5.22,
           sena: 2,
           icbf: 3,
           cajas: 4,
@@ -148,6 +148,12 @@ new Vue({
 
       evt.target.submit()
     },
+    guardarEmpleado(){
+      // TODO guardar objeto empleado en array
+    },
+    calcularTotalEmpleados(){
+      // TODO Calcular total de todos empleados
+    },
     calcularValorHoraOrdinaria (val) {
       this.colaborador.valorHoraOrdinaria = this.colaborador.sueldo / (this.constante.horasHabiles * this.constante.diasMes)
     },
@@ -182,7 +188,7 @@ new Vue({
       this.colaborador.devengado.totalDevengado = this.colaborador.devengado.totalValorExtras + this.colaborador.auxTransporte + this.colaborador.devengado.sueldoBasico
     },
     calcularValorSaludColaborador (val) {
-      this.colaborador.deducido.salud = (this.colaborador.devengado.sueldoBasico * this.constante.salud.colaborador) / 100
+      this.colaborador.deducido.salud = (this.colaborador.devengado.sueldoBasico  * this.constante.salud.colaborador) / 100
     },
     calcularValorPensionColaborador (val) {
       this.colaborador.deducido.pension = (this.colaborador.devengado.sueldoBasico * this.constante.pension.colaborador) / 100
