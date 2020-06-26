@@ -52,7 +52,6 @@
               </div>
               <q-form class="q-gutter-md">
 
-
                 <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
                   <div
                     class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
@@ -111,7 +110,7 @@
 
                   <div
                     class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="colaboradorSueldo"
+                    id="diasTrabajados"
                   >
                     <div class="row wrap justify-start items-end content-start">
                       <div class="col-12">
@@ -127,8 +126,9 @@
                       </div>
                     </div>
                   </div>
+                </div>
 
-
+                <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
                   <div
                     class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
                     id="diurna"
@@ -223,10 +223,7 @@
                       </div>
                     </div>
                   </div>
-
                 </div>
-
-
 
                 <div class="flex flex-center q-gutter-md">
                   <div class="col-xs-12">
@@ -268,7 +265,21 @@
                 </h6>
               </div>
 
-              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+              <div
+                class="q-px-md row flex flex-center"
+                id="titleDevengado"
+              >
+                <h6 class="text-center text-primary">
+                  <strong>
+                    DEVENGADO
+                  </strong>
+                </h6>
+              </div>
+
+              <div
+                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                id="devengado"
+              >
                 <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
                   id="sueldo"
@@ -339,13 +350,17 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL EXTRAS VALOR
+                      <strong>
+                        TOTAL EXTRAS VALOR
+                      </strong>
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.devengado.totalValorExtras | formatCurrency}}
+                      <strong>
+                        {{colaborador.devengado.totalValorExtras | formatCurrency}}
+                      </strong>
                     </div>
                   </div>
                 </div>
@@ -372,16 +387,35 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL DEVENGADO
+                      <strong>
+                        TOTAL DEVENGADO
+                      </strong>
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.devengado.totalDevengado | formatCurrency}}
+                      <strong>
+                        {{colaborador.devengado.totalDevengado | formatCurrency}}
+                      </strong>
                     </div>
                   </div>
                 </div>
+              </div>
+
+
+              <div
+                class="q-px-md row flex flex-center"
+                id="titleDeducido"
+              >
+                <h6 class="text-center text-primary">
+                  <strong>
+                    DEDUCIDO
+                  </strong>
+                </h6>
+              </div>
+
+              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
 
                 <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
@@ -475,33 +509,38 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL DEDUCIDO
+                      <strong>
+                        TOTAL DEDUCIDO
+                      </strong>
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.deducido.totalDeducido  | formatCurrency}}
+                      <strong>
+                        {{colaborador.deducido.totalDeducido  | formatCurrency}}
+                      </strong>
                     </div>
                   </div>
                 </div>
-
-                <div
-                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                id="totalNeto"
-              >
-                <div class="row wrap justify-start items-end content-start">
-                  <div class="col-12">
-                    TOTAL NETO
-                  </div>
-                </div>
-                <hr />
-                <div class="row wrap justify-start items-end content-start">
-                  <div class="col-12">
-                    {{colaborador.totalNeto | formatCurrency}}
-                  </div>
-                </div>
               </div>
+
+
+              <div
+                class="q-px-md row flex flex-center"
+                id="titleParafiscales"
+              >
+                <h6 class="text-center text-primary">
+                  <strong>
+                    PARAFISCALES
+                  </strong>
+                </h6>
+              </div>
+
+              <div
+                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                id="parafiscales"
+              >
 
                 <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
@@ -611,16 +650,38 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL PARAFISCALES
+                      <strong>
+                        TOTAL PARAFISCALES
+                      </strong>
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.parafiscales.totalParafiscales | formatCurrency}}
+                      <strong>
+                        {{colaborador.parafiscales.totalParafiscales | formatCurrency}}
+                      </strong>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div
+                class="q-px-md row flex flex-center"
+                id="titlePrestacion"
+              >
+                <h6 class="text-center text-primary">
+                  <strong>
+                    PRESTACION
+                  </strong>
+                </h6>
+              </div>
+
+
+              <div
+                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                id="prestacion"
+              >
 
                 <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
@@ -696,41 +757,80 @@
                 >
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      TOTAL PRESTACION
+                      <strong>
+                        TOTAL PRESTACION
+                      </strong>
                     </div>
                   </div>
                   <hr />
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
-                      {{colaborador.prestacion.totalPrestacion | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalNeto"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      TOTAL NOMINA
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.totalNomina | formatCurrency}}
+                      <strong>
+                        {{colaborador.prestacion.totalPrestacion | formatCurrency}}
+                      </strong>
                     </div>
                   </div>
                 </div>
 
               </div>
 
+              <div
+                class="q-px-md row flex flex-center"
+                id="titleTotal"
+              >
+                <h5 class="text-center text-primary">
+                  <strong>
+                    TOTAL
+                  </strong>
+                </h5>
+              </div>
 
               <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
                 <div
-                  class="col-lg-4 col-md-5 col-sm-9 col-xs-10"
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalNeto"
                 >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      <strong>
+                        TOTAL NETO
+                      </strong>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      <strong>
+                        {{colaborador.totalNeto | formatCurrency}}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="totalNomina"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      <strong>
+                        TOTAL NOMINA
+                      </strong>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      <strong>
+                        {{colaborador.totalNomina | formatCurrency}}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+                <div class="col-lg-4 col-md-5 col-sm-9 col-xs-10">
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       <div
