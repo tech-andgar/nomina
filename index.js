@@ -32,7 +32,7 @@ new Vue({
           empleador: 12,
         },
         parafiscal: {
-          arl: 5.22,
+          arl: 0.522,
           sena: 2,
           icbf: 3,
           cajas: 4,
@@ -68,6 +68,7 @@ new Vue({
             recargoNocturno: 0,
           },
           totalValorExtras: 0,
+          ibc: 0,
           totalDevengado: 0,
         },
         deducido: {
@@ -121,6 +122,7 @@ new Vue({
       this.calcularValorTotalExtrasValor()
       this.calcularValorSueldoBasico()
       this.calcularValorTotalDevengado()
+      this.calcularValorIBC()
       this.calcularValorSaludColaborador()
       this.calcularValorPensionColaborador()
       this.calcularValorFondoSolidaridad()
@@ -148,10 +150,10 @@ new Vue({
 
       evt.target.submit()
     },
-    guardarEmpleado(){
+    guardarEmpleado () {
       // TODO guardar objeto empleado en array
     },
-    calcularTotalEmpleados(){
+    calcularTotalEmpleados () {
       // TODO Calcular total de todos empleados
     },
     calcularValorHoraOrdinaria (val) {
@@ -187,11 +189,14 @@ new Vue({
     calcularValorTotalDevengado (val) {
       this.colaborador.devengado.totalDevengado = this.colaborador.devengado.totalValorExtras + this.colaborador.auxTransporte + this.colaborador.devengado.sueldoBasico
     },
+    calcularValorIBC (val) {
+      this.colaborador.devengado.ibc = this.colaborador.devengado.totalDevengado - this.colaborador.auxTransporte
+    },
     calcularValorSaludColaborador (val) {
-      this.colaborador.deducido.salud = (this.colaborador.devengado.sueldoBasico  * this.constante.salud.colaborador) / 100
+      this.colaborador.deducido.salud = (this.colaborador.devengado.ibc * this.constante.salud.colaborador) / 100
     },
     calcularValorPensionColaborador (val) {
-      this.colaborador.deducido.pension = (this.colaborador.devengado.sueldoBasico * this.constante.pension.colaborador) / 100
+      this.colaborador.deducido.pension = (this.colaborador.devengado.ibc * this.constante.pension.colaborador) / 100
     },
     calcularValorFondoSolidaridad (val) {
 
@@ -216,8 +221,7 @@ new Vue({
     },
     calcularValorUVT (val) {
       this.colaborador.deducido.uvt = ((this.colaborador.devengado.totalDevengado - this.colaborador.deducido.salud - this.colaborador.deducido.pension - this.colaborador.deducido.fondoSolidaridad) * 0.75) / this.constante.uvt2020
-
-      this.colaborador.deducido.uvt = Math.round(this.colaborador.deducido.uvt)
+      this.colaborador.deducido.uvt = this.colaborador.deducido.uvt.toFixed(3)
     },
     calcularValorRetefuente (val) {
       const uvt = this.colaborador.deducido.uvt
@@ -245,22 +249,22 @@ new Vue({
       this.colaborador.totalNeto = this.colaborador.devengado.totalDevengado - this.colaborador.deducido.totalDeducido
     },
     calcularValorSaludEmpleador (val) {
-      this.colaborador.parafiscales.salud = (this.colaborador.devengado.sueldoBasico * this.constante.salud.empleador) / 100
+      this.colaborador.parafiscales.salud = (this.colaborador.devengado.ibc * this.constante.salud.empleador) / 100
     },
     calcularValorPensionEmpleador (val) {
-      this.colaborador.parafiscales.pension = (this.colaborador.devengado.sueldoBasico * this.constante.pension.empleador) / 100
+      this.colaborador.parafiscales.pension = (this.colaborador.devengado.ibc * this.constante.pension.empleador) / 100
     },
     calcularValorARLEmpleador (val) {
-      this.colaborador.parafiscales.arl = (this.colaborador.devengado.sueldoBasico * this.constante.parafiscal.arl) / 100
+      this.colaborador.parafiscales.arl = (this.colaborador.devengado.ibc * this.constante.parafiscal.arl) / 100
     },
     calcularValorSENAEmpleador (val) {
-      this.colaborador.parafiscales.sena = (this.colaborador.devengado.sueldoBasico * this.constante.parafiscal.sena) / 100
+      this.colaborador.parafiscales.sena = (this.colaborador.devengado.ibc * this.constante.parafiscal.sena) / 100
     },
     calcularValorICBFEmpleador (val) {
-      this.colaborador.parafiscales.icbf = (this.colaborador.devengado.sueldoBasico * this.constante.parafiscal.icbf) / 100
+      this.colaborador.parafiscales.icbf = (this.colaborador.devengado.ibc * this.constante.parafiscal.icbf) / 100
     },
     calcularValorCajaEmpleador (val) {
-      this.colaborador.parafiscales.cajas = (this.colaborador.devengado.sueldoBasico * this.constante.parafiscal.cajas) / 100
+      this.colaborador.parafiscales.cajas = (this.colaborador.devengado.ibc * this.constante.parafiscal.cajas) / 100
     },
     calcularValorTotalParafiscales (val) {
       this.colaborador.parafiscales.totalParafiscales = this.colaborador.parafiscales.salud + this.colaborador.parafiscales.pension + this.colaborador.parafiscales.arl + this.colaborador.parafiscales.sena + this.colaborador.parafiscales.icbf + this.colaborador.parafiscales.cajas
@@ -270,15 +274,16 @@ new Vue({
     },
     calcularValorVacacaiones (val) {
       this.colaborador.prestacion.vacacaiones = (this.colaborador.devengado.totalDevengado * this.constante.prestacion.vacacaiones) / 100
+      // this.colaborador.prestacion.vacacaiones = (this.colaborador.devengado.sueldoBasico * this.colaborador.diasTrabajados) / 720
     },
     calcularValorCesantias (val) {
-      this.colaborador.prestacion.cesantias = ((this.colaborador.devengado.sueldoBasico + this.colaborador.auxTransporte) * this.constante.prestacion.cesantias )/ 100
+      this.colaborador.prestacion.cesantias = ((this.colaborador.devengado.totalDevengado + this.colaborador.auxTransporte) * this.constante.prestacion.cesantias) / 100
     },
     calcularValorInteresCesantias (val) {
       this.colaborador.prestacion.interesCesantias = (this.colaborador.prestacion.cesantias * this.constante.prestacion.interesCesantias) / 100
     },
     calcularValorTotalPrestacion (val) {
-      this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.prima +this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.interesCesantias
+      this.colaborador.prestacion.totalPrestacion = this.colaborador.prestacion.prima + this.colaborador.prestacion.vacacaiones + this.colaborador.prestacion.cesantias + this.colaborador.prestacion.interesCesantias
     },
     calcularValorTotalNomina (val) {
       this.colaborador.totalNomina = this.colaborador.devengado.totalDevengado + this.colaborador.parafiscales.totalParafiscales + this.colaborador.prestacion.totalPrestacion
