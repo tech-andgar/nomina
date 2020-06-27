@@ -38,14 +38,25 @@
             <q-toolbar-title>
               Nomina
             </q-toolbar-title>
+            <!-- <q-toggle
+              v-model="fourth"
+              checked-icon="check"
+              color="red"
+              label="Different icon for each state"
+              unchecked-icon="clear"
+            /> -->
+            <q-btn
+              flat
+              round
+              @click="$q.dark.toggle()"
+              :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
+            />
           </q-toolbar>
         </q-header>
 
         <q-page-container>
           <q-page>
-            <div
-              v-show="userInput"
-            >
+            <div v-show="userInput">
               <div class="row flex flex-center">
                 <h6 class="text-center text-primary">Agregar miembro de el colaborador</h6>
               </div>

@@ -214,8 +214,6 @@ new Vue({
         totalNeto: 0,
         totalNomina: 0
       }
-
-
       this.calcularTotalEmpleados()
     },
     calcularTotalEmpleados () {
