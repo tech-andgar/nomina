@@ -42,9 +42,8 @@
         </q-header>
 
         <q-page-container>
-          <q-page class="q-px-md">
+          <q-page>
             <div
-              class="q-px-md"
               v-show="userInput"
             >
               <div class="row flex flex-center">
@@ -240,14 +239,13 @@
                   </div>
                   <div class="col-xs-12">
                     <q-btn
-                      disabled
                       no-caps
                       rounded
                       class="q-mt-md full-width"
                       color="secondary"
                       size="lg"
                       label="Guardar y Añadir otro"
-                      @click="onReset()"
+                      @click="guardarEmpleado()"
                     />
                     </q-btn>
                   </div>

@@ -99,7 +99,14 @@ new Vue({
         totalNomina: 0
       },
       colaboradores: [],
-      // colaboradorSueldo: 0
+      colaboradoresTotal: {
+        totalDevengado: 0,
+        totalDeducido: 0,
+        totalParafiscales: 0,
+        totalPrestacion: 0,
+        totalNeto: 0,
+        totalNomina: 0
+      }
     }
   },
   filters: {
@@ -152,9 +159,89 @@ new Vue({
     },
     guardarEmpleado () {
       // TODO guardar objeto empleado en array
+      this.colaboradores.push(this.colaborador)
+      this.colaborador = {
+        cedula: '',
+        nombre: '',
+        sueldo: 0,
+        valorHoraOrdinaria: 0,
+        auxTransporte: 0,
+        diasTrabajados: 0,
+        devengado: {
+          horasExtras: {
+            diurna: 0,
+            nocturna: 0,
+            domingos: 0,
+            nocturnaDomingos: 0,
+            recargoNocturno: 0,
+          },
+          sueldoBasico: 0,
+          valorExtras: {
+            diurna: 0,
+            nocturna: 0,
+            domingos: 0,
+            nocturnaDomingos: 0,
+            recargoNocturno: 0,
+          },
+          totalValorExtras: 0,
+          ibc: 0,
+          totalDevengado: 0,
+        },
+        deducido: {
+          salud: 0,
+          pension: 0,
+          fondoSolidaridad: 0,
+          uvt: 0,
+          retefuente: 0,
+          totalDeducido: 0,
+        },
+        parafiscales: {
+          salud: 0,
+          pension: 0,
+          arl: 0,
+          sena: 0,
+          icbf: 0,
+          cajas: 0,
+          totalParafiscales: 0
+        },
+        prestacion: {
+          prima: 0,
+          vacacaiones: 0,
+          cesantias: 0,
+          interesCesantias: 0,
+          totalPrestacion: 0
+        },
+        totalNeto: 0,
+        totalNomina: 0
+      }
+
+
+      this.calcularTotalEmpleados()
     },
     calcularTotalEmpleados () {
-      // TODO Calcular total de todos empleados
+      this.colaboradoresTotal = {
+        totalDevengado: 0,
+        totalDeducido: 0,
+        totalParafiscales: 0,
+        totalPrestacion: 0,
+        totalNeto: 0,
+        totalNomina: 0,
+      }
+
+      // this.colaboradores.forEach(colaborador => {
+      //   this.colaboradoresTotal.totalDevengado += colaborador.devengado.totalDevengado
+      //   this.colaboradoresTotal.totalDeducido += colaborador.deducido.totalDeducido
+      //   this.colaboradoresTotal.totalParafiscales += colaborador.parafiscales.totalParafiscales
+      //   this.colaboradoresTotal.totalPrestacion += colaborador.prestacion.totalPrestacion
+      //   this.colaboradoresTotal.totalNeto += colaborador.totalNeto
+      //   this.colaboradoresTotal.totalNomina += colaborador.totalNomina
+      // });
+      this.colaboradoresTotal.totalDevengado = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.devengado.totalDevengado, 0)
+      this.colaboradoresTotal.totalDeducido = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.deducido.totalDeducido, 0)
+      this.colaboradoresTotal.totalParafiscales = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.parafiscales.totalParafiscales, 0)
+      this.colaboradoresTotal.totalPrestacion = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.prestacion.totalPrestacion, 0)
+      this.colaboradoresTotal.totalNeto = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.totalNeto, 0)
+      this.colaboradoresTotal.totalNomina = this.colaboradores.reduce((acc, colaborador) => acc + colaborador.totalNomina, 0)
     },
     calcularValorHoraOrdinaria (val) {
       this.colaborador.valorHoraOrdinaria = this.colaborador.sueldo / (this.constante.horasHabiles * this.constante.diasMes)
