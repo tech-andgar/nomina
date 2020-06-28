@@ -106,7 +106,7 @@ new Vue({
         totalPrestacion: 0,
         totalNeto: 0,
         totalNomina: 0
-      }
+      },
     }
   },
   filters: {

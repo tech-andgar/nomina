@@ -38,13 +38,6 @@
             <q-toolbar-title>
               Nomina
             </q-toolbar-title>
-            <!-- <q-toggle
-              v-model="fourth"
-              checked-icon="check"
-              color="red"
-              label="Different icon for each state"
-              unchecked-icon="clear"
-            /> -->
             <q-btn
               flat
               round
@@ -56,213 +49,213 @@
 
         <q-page-container>
           <q-page>
-            <div v-show="userInput">
-              <div class="row flex flex-center">
-                <h6 class="text-center text-primary">Agregar miembro de el colaborador</h6>
-              </div>
-              <q-form class="q-gutter-md">
+            <div class="q-pa-sm row justify-center items-start content-center q-gutter-md">
 
-                <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="colaboradorNombre"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          v-model.trim="colaborador.nombre"
-                          label="Nombre de el colaborador (requerido)"
-                          placeholder="Luis Nacho, Ana Rodriguez..."
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
+              <div class="col-md-5 col-sm-12 col-xs-12">
+                <q-card>
+                  <q-card-section>
+                    <div class="text-h6 text-center text-primary">Agregar miembro del colaborador</div>
+                  </q-card-section>
 
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="colaboradorCedula"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.cedula"
-                          label="Numero de identificacion (requerido)"
-                          placeholder="123456789..."
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
+                  <q-card-section>
 
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="colaboradorSueldo"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.sueldo"
-                          label="Sueldo de colaborador (requerido)"
-                          :placeholder="'$ '+constante.slmv2020"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="diasTrabajados"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.diasTrabajados"
-                          label="Días trabajados de colaborador (requerido)"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="diurna"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.devengado.horasExtras.diurna"
-                          label="Horas extras diurna de colaborador"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="nocturna"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.devengado.horasExtras.nocturna"
-                          label="Horas extras nocturna de colaborador"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="domingos"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.devengado.horasExtras.domingos"
-                          label="Horas extras domingos de colaborador"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="nocturnaDomingos"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
-                          label="Horas extras nocturna Domingos de colaborador"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
-                    id="recargoNocturno"
-                  >
-                    <div class="row wrap justify-start items-end content-start">
-                      <div class="col-12">
-                        <q-input
-                          bottom-slots
-                          type="tel"
-                          v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
-                          label="Horas extras eecargo nocturno de colaborador"
-                          placeholder="30"
-                          @keyup.enter="submit"
-                        />
-                        </q-input>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex flex-center q-gutter-md">
-                  <div class="col-xs-12">
-                    <q-btn
-                      no-caps
-                      rounded
-                      class="q-mt-md full-width"
-                      color="primary"
-                      size="lg"
-                      label="Calcular Nomina"
-                      @click="onSubmit()"
+                    <q-list
+                      bordered
+                      class="rounded-borders"
                     >
-                    </q-btn>
-                  </div>
-                  <div class="col-xs-12">
+                      <q-expansion-item
+                        expand-separator
+                        icon="perm_identity"
+                        label="Datos de colaborador:"
+                        :caption="colaborador.nombre"
+                        default-opened
+                      >
+                        <q-card>
+                          <q-card-section>
+
+                            <div class="row wrap justify-center items-start content-start q-gutter-lg">
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  v-model.trim="colaborador.nombre"
+                                  label="Nombre del colaborador (requerido)"
+                                  placeholder="Luis Nacho, Ana Rodriguez..."
+                                />
+                              </div>
+
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.cedula"
+                                  label="Numero de identificacion (requerido)"
+                                  placeholder="123456789..."
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.sueldo"
+                                  label="Sueldo de colaborador (requerido)"
+                                  :placeholder="constante.slmv2020"
+                                  prefix="$"
+                                  @keyup.enter="submit"
+                                />
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.diasTrabajados"
+                                  label="Días trabajados de colaborador (requerido)"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                ></q-input>
+                              </div>
+                            </div>
+                          </q-card-section>
+                        </q-card>
+                      </q-expansion-item>
+
+                      <q-expansion-item
+                        expand-separator
+                        icon="assessment"
+                        label="Horas extras"
+                      >
+                        <q-card>
+                          <q-card-section>
+                            <div class=" row wrap justify-center items-start content-center q-gutter-lg text-center">
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.devengado.horasExtras.diurna"
+                                  label="Horas extras diurna de colaborador"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.devengado.horasExtras.nocturna"
+                                  label="Horas extras nocturna de colaborador"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.devengado.horasExtras.domingos"
+                                  label="Horas extras domingos de colaborador"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
+                                  label="Horas extras nocturna Domingos de colaborador"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                                <q-input
+                                  bottom-slots
+                                  type="tel"
+                                  v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
+                                  label="Horas extras eecargo nocturno de colaborador"
+                                  placeholder="30"
+                                  @keyup.enter="submit"
+                                />
+                                </q-input>
+                              </div>
+
+                            </div>
+                          </q-card-section>
+                        </q-card>
+                      </q-expansion-item>
+                    </q-list>
+
+                  </q-card-section>
+
+                  <q-separator></q-separator>
+
+                  <q-card-actions class="justify-center">
                     <q-btn
-                      no-caps
-                      rounded
-                      class="q-mt-md full-width"
+                      color="primary"
+                      @click="onSubmit()"
+                    >Calcular nomina</q-btn>
+                    <q-btn
                       color="secondary"
-                      size="lg"
-                      label="Guardar y Añadir otro"
                       @click="guardarEmpleado()"
-                    />
-                    </q-btn>
-                  </div>
-                </div>
-              </q-form>
+                    >Guardar y añadir otro</q-btn>
+                  </q-card-actions>
+                </q-card>
+              </div>
+              <div class="col-md-5 col-sm-12 col-xs-12">
+                <q-card>
+                  <q-card-section>
+                    <div class="text-h6 text-center text-primary">Agregar miembro del colaborador</div>
+                  </q-card-section>
+
+                  <q-card-section>
+                    <div
+                      class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                      id="colaboradorNombre"
+                    >
+                      <q-input
+                        bottom-slots
+                        v-model.trim="colaborador.nombre"
+                        label="Nombre del colaborador (requerido)"
+                        placeholder="Luis Nacho, Ana Rodriguez..."
+                      />
+                      </q-input>
+                    </div>
+                    <div
+                      class="col-lg-2 col-md-3 col-sm-4 col-xs-10"
+                      id="colaboradorNombre"
+                    >
+                      <q-input
+                        bottom-slots
+                        v-model.trim="colaborador.nombre"
+                        label="Nombre del colaborador (requerido)"
+                        placeholder="Luis Nacho, Ana Rodriguez..."
+                      />
+                    </div>
+                    </q-input>
+                    <!--
+                      <div class="row wrap justify-start items-end content-start">
+                        <div class="col-12">
+                        </div>
+                      </div>
+                  -->
+                  </q-card-section>
+
+                  <q-separator></q-separator>
+
+                  <q-card-actions>
+                    <q-btn color="primary">Calcular nomina</q-btn>
+                    <q-btn color="secondary">Guardar y añadir otro</q-btn>
+                  </q-card-actions>
+                </q-card>
+              </div>
+
             </div>
+
             <div
               class="q-px-md"
               v-show="resultData"
@@ -887,12 +880,12 @@
         </q-page-container>
       </q-layout>
     </template>
-  </div>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
-  <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
+    <script src="index.js"></script>
 </body>
 
 </html>
