@@ -206,10 +206,12 @@
                   </q-card-actions>
                 </q-card>
               </div>
+
+              <!-- Card Right -->
               <div class="col-md-5 col-sm-12 col-xs-12">
                 <q-card>
                   <q-card-section>
-                    <div class="text-h6 text-center text-primary">Agregar miembro del colaborador</div>
+                    <div class="text-h6 text-center text-primary">Miembros de los colaboradores</div>
                   </q-card-section>
 
                   <q-card-section>
@@ -235,21 +237,15 @@
                         label="Nombre del colaborador (requerido)"
                         placeholder="Luis Nacho, Ana Rodriguez..."
                       />
+                      </q-input>
                     </div>
-                    </q-input>
-                    <!--
-                      <div class="row wrap justify-start items-end content-start">
-                        <div class="col-12">
-                        </div>
-                      </div>
-                  -->
                   </q-card-section>
 
                   <q-separator></q-separator>
 
                   <q-card-actions>
-                    <q-btn color="primary">Calcular nomina</q-btn>
-                    <q-btn color="secondary">Guardar y añadir otro</q-btn>
+                    <!-- <q-btn color="primary">Calcular nomina</q-btn>
+                    <q-btn color="secondary">Guardar y añadir otro</q-btn> -->
                   </q-card-actions>
                 </q-card>
               </div>
@@ -346,6 +342,95 @@
                     </div>
                   </div>
                 </div>
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="horasExtrasDiurna"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      HORAS EXTRAS DIURNA : {{colaborador.devengado.horasExtras.diurna}}
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.devengado.valorExtras.diurna | formatCurrency}}
+                    </div>
+                  </div>
+                </div>
+
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="horasExtrasNocturna"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      HORAS EXTRAS NOCTURNA: {{colaborador.devengado.horasExtras.nocturna}}
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.devengado.valorExtras.nocturna | formatCurrency}}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="horasExtrasDomingos"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      HORAS EXTRAS DOMINGOS: {{colaborador.devengado.horasExtras.domingos}}
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.devengado.valorExtras.domingos | formatCurrency}}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="horasExtrasNocturnaDomingos"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      HORAS EXTRAS NOCTURNA DOMINGOS: {{colaborador.devengado.horasExtras.nocturnaDomingos}}
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.devengado.valorExtras.nocturnaDomingos | formatCurrency}}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                  id="horasExtrasRecargoNocturno"
+                >
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      HORAS EXTRAS RECARGO NOCTURNO: {{colaborador.devengado.horasExtras.recargoNocturno}}
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row wrap justify-start items-end content-start">
+                    <div class="col-12">
+                      {{colaborador.devengado.valorExtras.recargoNocturno | formatCurrency}}
+                    </div>
+                  </div>
+                </div>
+
+
+
                 <div
                   class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
                   id="totalExtrasValor"
@@ -830,62 +915,17 @@
                   </div>
                 </div>
               </div>
-
-              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
-                <div class="col-lg-4 col-md-5 col-sm-9 col-xs-10">
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <div
-                        class="col-12"
-                        style="overflow-x:auto;"
-                      >
-                        <div class="text-center q-my-md">
-                          <strong>
-                            Horas Extras
-                          </strong>
-                        </div>
-                        <table class="text-center">
-                          <thead>
-                            <th>Diurna</th>
-                            <th>Nocturna</th>
-                            <th>Domingos</th>
-                            <th>Nocturna Domingos</th>
-                            <th>Recargo Nocturno</th>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>{{colaborador.devengado.horasExtras.diurna}}</td>
-                              <td>{{colaborador.devengado.horasExtras.nocturna}}</td>
-                              <td>{{colaborador.devengado.horasExtras.domingos}}</td>
-                              <td>{{colaborador.devengado.horasExtras.nocturnaDomingos}}</td>
-                              <td>{{colaborador.devengado.horasExtras.recargoNocturno}}</td>
-                            </tr>
-                            <tr>
-                              <td>{{colaborador.devengado.valorExtras.diurna | formatCurrency}}</td>
-                              <td>{{colaborador.devengado.valorExtras.nocturna | formatCurrency}}</td>
-                              <td>{{colaborador.devengado.valorExtras.domingos | formatCurrency}}</td>
-                              <td>{{colaborador.devengado.valorExtras.nocturnaDomingos | formatCurrency}}</td>
-                              <td>{{colaborador.devengado.valorExtras.recargoNocturno | formatCurrency}}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </q-form>
             </div>
           </q-page>
         </q-page-container>
       </q-layout>
     </template>
-    </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
-    <script src="index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
+  <script src="index.js"></script>
 </body>
 
 </html>
