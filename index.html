@@ -43,7 +43,7 @@
               round
               :label="$q.dark.isActive ? 'CAMBIAR MODO DIA' : 'CAMBIAR MODO NOCHE'"
               @click="$q.dark.toggle()"
-              :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
+              :icon="$q.dark.isActive ? 'wb_sunny': 'nights_stay'"
             />
           </q-toolbar>
         </q-header>
@@ -1638,7 +1638,11 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/iamdustan-smoothscroll/0.4.0/smoothscroll.min.js" integrity="sha256-IylDNWjip7FK2TJUYck237qBTBeSiwnSFDCjLG686D4=" crossorigin="anonymous"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/iamdustan-smoothscroll/0.4.0/smoothscroll.min.js"
+    integrity="sha256-IylDNWjip7FK2TJUYck237qBTBeSiwnSFDCjLG686D4="
+    crossorigin="anonymous"
+  ></script>
   <script src="index.js"></script>
 </body>
 
