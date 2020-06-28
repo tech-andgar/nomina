@@ -79,7 +79,7 @@
                                 <q-input
                                   bottom-slots
                                   v-model.trim="colaborador.nombre"
-                                  label="Nombre de colaborador (requerido)"
+                                  label="Nombre del colaborador (requerido)"
                                   placeholder="Luis Nacho, Ana Rodriguez..."
                                 />
                               </div>
@@ -100,7 +100,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.sueldo"
-                                  label="Sueldo de colaborador (requerido)"
+                                  label="Sueldo del colaborador (requerido)"
                                   :placeholder="constante.slmv2020"
                                   prefix="$"
                                   @keyup.enter="submit"
@@ -178,7 +178,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
-                                  label="Horas extras eecargo nocturno del colaborador"
+                                  label="Horas extras recargo nocturno del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -246,7 +246,7 @@
                               </div>
 
                               <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL PRESTACION: {{colaboradoresTotal.totalPrestacion | formatCurrency}}
+                                TOTAL PRESTACIONES: {{colaboradoresTotal.totalPrestacion | formatCurrency}}
                               </div>
 
                               <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
@@ -773,7 +773,7 @@
                                 >
                                   <h6 class="text-center text-primary">
                                     <strong>
-                                      PRESTACION
+                                      PRESTACIONES
                                     </strong>
                                   </h6>
                                 </div>
@@ -859,7 +859,7 @@
                                     <div class="row wrap justify-start items-end content-start">
                                       <div class="col-12">
                                         <strong>
-                                          TOTAL PRESTACION
+                                          TOTAL PRESTACIONES
                                         </strong>
                                       </div>
                                     </div>
@@ -1473,7 +1473,7 @@
               >
                 <h6 class="text-center text-primary">
                   <strong>
-                    PRESTACION
+                    PRESTACIONES
                   </strong>
                 </h6>
               </div>
@@ -1559,7 +1559,7 @@
                   <div class="row wrap justify-start items-end content-start">
                     <div class="col-12">
                       <strong>
-                        TOTAL PRESTACION
+                        TOTAL PRESTACIONES
                       </strong>
                     </div>
                   </div>
