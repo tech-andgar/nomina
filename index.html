@@ -41,6 +41,7 @@
             <q-btn
               flat
               round
+              :label="$q.dark.isActive ? 'CAMBIAR MODO DIA' : 'CAMBIAR MODO NOCHE'"
               @click="$q.dark.toggle()"
               :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
             />
@@ -54,7 +55,7 @@
               <div class="col-md-5 col-sm-12 col-xs-12">
                 <q-card>
                   <q-card-section>
-                    <div class="text-h6 text-center text-primary">Agregar miembro del colaborador</div>
+                    <div class="text-h6 text-center text-primary">Agregar miembro de colaborador</div>
                   </q-card-section>
 
                   <q-card-section>
@@ -66,7 +67,7 @@
                       <q-expansion-item
                         expand-separator
                         icon="perm_identity"
-                        label="Datos de colaborador:"
+                        label="Datos del colaborador:"
                         :caption="colaborador.nombre"
                         default-opened
                       >
@@ -78,7 +79,7 @@
                                 <q-input
                                   bottom-slots
                                   v-model.trim="colaborador.nombre"
-                                  label="Nombre del colaborador (requerido)"
+                                  label="Nombre de colaborador (requerido)"
                                   placeholder="Luis Nacho, Ana Rodriguez..."
                                 />
                               </div>
@@ -110,7 +111,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.diasTrabajados"
-                                  label="Días trabajados de colaborador (requerido)"
+                                  label="Días trabajados del colaborador (requerido)"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 ></q-input>
@@ -133,7 +134,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.diurna"
-                                  label="Horas extras diurna de colaborador"
+                                  label="Horas extras diurna del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -144,7 +145,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.nocturna"
-                                  label="Horas extras nocturna de colaborador"
+                                  label="Horas extras nocturna del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -155,7 +156,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.domingos"
-                                  label="Horas extras domingos de colaborador"
+                                  label="Horas extras domingos del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -166,7 +167,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
-                                  label="Horas extras nocturna Domingos de colaborador"
+                                  label="Horas extras nocturna Domingos del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -177,7 +178,7 @@
                                   bottom-slots
                                   type="tel"
                                   v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
-                                  label="Horas extras eecargo nocturno de colaborador"
+                                  label="Horas extras eecargo nocturno del colaborador"
                                   placeholder="30"
                                   @keyup.enter="submit"
                                 />
@@ -197,7 +198,7 @@
                   <q-card-actions class="justify-center">
                     <q-btn
                       color="primary"
-                      @click="onSubmit()"
+                      @click="calcularNomina()"
                     >Calcular nomina</q-btn>
                     <q-btn
                       color="secondary"
@@ -226,7 +227,7 @@
                         expand-separator
                         icon="people"
                         label="Total de los colaboradores"
-                        :caption="'Cantidad de colaboradores: '+ colaboradores.length"
+                        :caption="'Cantidad de los colaboradores: '+ colaboradores.length"
                       >
                         <q-card>
                           <q-card-section>
@@ -290,7 +291,7 @@
                                   id="devengado"
                                 >
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="sueldo"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -306,7 +307,7 @@
                                     </div>
                                   </div>
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="valorHoraOrdinaria"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -322,7 +323,7 @@
                                     </div>
                                   </div>
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="diasTrabajados"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -338,7 +339,7 @@
                                     </div>
                                   </div>
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="basicoSalario"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -355,7 +356,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="horasExtrasDiurna"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -373,7 +374,7 @@
 
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="horasExtrasNocturna"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -390,7 +391,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="horasExtrasDomingos"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -407,7 +408,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="horasExtrasNocturnaDomingos"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -425,7 +426,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="horasExtrasRecargoNocturno"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -445,7 +446,7 @@
 
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalExtrasValor"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -465,7 +466,7 @@
                                     </div>
                                   </div>
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="auxilioTransporte"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -482,7 +483,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalDevengado"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -518,7 +519,7 @@
                                 <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="saludColaborador"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -536,7 +537,7 @@
 
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="pensionColaborador"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -553,7 +554,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="fondoSolidaridad"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -570,7 +571,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="uvt"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -587,7 +588,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="retefuente"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -604,7 +605,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalDeducido"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -643,7 +644,7 @@
                                 >
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesSalud"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -660,7 +661,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesPension"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -677,7 +678,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesArl"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -694,7 +695,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesSena"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -711,7 +712,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesIcbf"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -728,7 +729,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="parafiscalesCajas"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -745,7 +746,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalParafiscales"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -784,7 +785,7 @@
                                 >
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="prima"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -801,7 +802,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="vacaciones"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -818,7 +819,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="cesantias"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -835,7 +836,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="interesCesantias"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -852,7 +853,7 @@
                                   </div>
 
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalPrestacion"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -889,7 +890,7 @@
                                   class="row wrap justify-center items-end content-center q-gutter-md text-center q-mb-xl"
                                 >
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalNeto"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -909,7 +910,7 @@
                                     </div>
                                   </div>
                                   <div
-                                    class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
                                     id="totalNomina"
                                   >
                                     <div class="row wrap justify-start items-end content-start">
@@ -956,10 +957,10 @@
 
                   <q-separator></q-separator>
 
-                  <q-card-actions>
+                  <q-card-actiocalcularNominans>
                     <!-- <q-btn color="primary">Calcular nomina</q-btn>
                     <q-btn color="secondary">Guardar y añadir otro</q-btn> -->
-                  </q-card-actions>
+                  </q-card-actiocalcularNominans>
                 </q-card>
               </div>
 
@@ -967,11 +968,11 @@
 
             <div
               class="q-px-md"
-              v-show="resultData"
+              ref="resultData"
             >
               <div class="row flex flex-center">
                 <h6 class="text-center text-primary">
-                  Nomina de colaborador: &nbsp;&nbsp;&nbsp;
+                  Nomina del colaborador: &nbsp;&nbsp;&nbsp;
                   <strong>{{colaborador.nombre}}</strong>
                 </h6>
               </div>
@@ -1637,6 +1638,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/quasar.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.12.5/dist/lang/es.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/iamdustan-smoothscroll/0.4.0/smoothscroll.min.js" integrity="sha256-IylDNWjip7FK2TJUYck237qBTBeSiwnSFDCjLG686D4=" crossorigin="anonymous"></script>
   <script src="index.js"></script>
 </body>
 

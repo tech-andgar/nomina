@@ -118,6 +118,18 @@ new Vue({
     formatCurrency (val) {
       return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(val)
     },
+    calcularNomina(){
+      if (this.checkNotEmptyDataColaborador()) {
+        this.onSubmit()
+        const element = this.$refs['resultData'];
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        this.$q.notify({
+          type: 'negative',
+          message: `Por favor llenar completar datos del colaborador`
+        })
+      }
+    },
     onSubmit (evt) {
       this.calcularValorHoraOrdinaria()
       this.calcularValorAuxTransporte()
@@ -228,7 +240,7 @@ new Vue({
       } else {
         this.$q.notify({
           type: 'negative',
-          message: `Por favor llenar completar datos de colaborador`
+          message: `Por favor llenar completar datos del colaborador`
         })
       }
     },
