@@ -157,64 +157,80 @@ new Vue({
 
       evt.target.submit()
     },
+    checkNotEmptyDataColaborador () {
+      return (
+        this.colaborador.cedula !== '' &&
+        this.colaborador.nombre !== '' &&
+        this.colaborador.sueldo !== 0 &&
+        this.colaborador.diasTrabajados !== 0
+      )
+    },
     guardarEmpleado () {
       // TODO guardar objeto empleado en array
-      this.colaboradores.push(this.colaborador)
-      this.colaborador = {
-        cedula: '',
-        nombre: '',
-        sueldo: 0,
-        valorHoraOrdinaria: 0,
-        auxTransporte: 0,
-        diasTrabajados: 0,
-        devengado: {
-          horasExtras: {
-            diurna: 0,
-            nocturna: 0,
-            domingos: 0,
-            nocturnaDomingos: 0,
-            recargoNocturno: 0,
+      if (this.checkNotEmptyDataColaborador()) {
+        this.onSubmit()
+        this.colaboradores.push(this.colaborador)
+        this.colaborador = {
+          cedula: '',
+          nombre: '',
+          sueldo: 0,
+          valorHoraOrdinaria: 0,
+          auxTransporte: 0,
+          diasTrabajados: 0,
+          devengado: {
+            horasExtras: {
+              diurna: 0,
+              nocturna: 0,
+              domingos: 0,
+              nocturnaDomingos: 0,
+              recargoNocturno: 0,
+            },
+            sueldoBasico: 0,
+            valorExtras: {
+              diurna: 0,
+              nocturna: 0,
+              domingos: 0,
+              nocturnaDomingos: 0,
+              recargoNocturno: 0,
+            },
+            totalValorExtras: 0,
+            ibc: 0,
+            totalDevengado: 0,
           },
-          sueldoBasico: 0,
-          valorExtras: {
-            diurna: 0,
-            nocturna: 0,
-            domingos: 0,
-            nocturnaDomingos: 0,
-            recargoNocturno: 0,
+          deducido: {
+            salud: 0,
+            pension: 0,
+            fondoSolidaridad: 0,
+            uvt: 0,
+            retefuente: 0,
+            totalDeducido: 0,
           },
-          totalValorExtras: 0,
-          ibc: 0,
-          totalDevengado: 0,
-        },
-        deducido: {
-          salud: 0,
-          pension: 0,
-          fondoSolidaridad: 0,
-          uvt: 0,
-          retefuente: 0,
-          totalDeducido: 0,
-        },
-        parafiscales: {
-          salud: 0,
-          pension: 0,
-          arl: 0,
-          sena: 0,
-          icbf: 0,
-          cajas: 0,
-          totalParafiscales: 0
-        },
-        prestacion: {
-          prima: 0,
-          vacacaiones: 0,
-          cesantias: 0,
-          interesCesantias: 0,
-          totalPrestacion: 0
-        },
-        totalNeto: 0,
-        totalNomina: 0
+          parafiscales: {
+            salud: 0,
+            pension: 0,
+            arl: 0,
+            sena: 0,
+            icbf: 0,
+            cajas: 0,
+            totalParafiscales: 0
+          },
+          prestacion: {
+            prima: 0,
+            vacacaiones: 0,
+            cesantias: 0,
+            interesCesantias: 0,
+            totalPrestacion: 0
+          },
+          totalNeto: 0,
+          totalNomina: 0
+        }
+        this.calcularTotalEmpleados()
+      } else {
+        this.$q.notify({
+          type: 'negative',
+          message: `Por favor llenar completar datos de colaborador`
+        })
       }
-      this.calcularTotalEmpleados()
     },
     calcularTotalEmpleados () {
       this.colaboradoresTotal = {
