@@ -1,3 +1,4 @@
+Vue.config.devtools = false
 Quasar.lang.set(Quasar.lang.es)
 new Vue({
   el: '#q-app',
