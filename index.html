@@ -2,1663 +2,1685 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  >
+  />
   <meta
     http-equiv="X-UA-Compatible"
     content="ie=edge"
-  >
+  />
   <meta
     name="description"
     content="Proyecto para calcular nomina básico teniendo en cuenta la normatividad vigente en el año 2023 para Colombia"
-  >
+  />
   <title>Nomina básico en Colombia - By Andrés García</title>
   <link
     href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
     rel="stylesheet"
     type="text/css"
-  >
+  />
   <link
-    href="https://cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.min.css"
     rel="stylesheet"
     type="text/css"
-  >
-  <style src="assets/css/style.css">
-  </style>
+    href="https://cdn.jsdelivr.net/npm/@quasar/extras/material-icons/material-icons.css"
+  />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.prod.css"
+  />
+  <style
+    src="assets/css/style.css"
+    crossorigin="anonymous"
+  ></style>
   <script
     defer
-    src="https://cdn.jsdelivr.net/npm/vue@^2.7.14/dist/vue.min.js"
+    src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"
+  ></script>
+  <!--
+  <script
+  defer
+  src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"
+  ></script>
+  <script defer type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+  -->
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/quasar@2/dist/quasar.umd.prod.js"
   ></script>
   <script
     defer
-    src="https://cdn.jsdelivr.net/npm/quasar@1.22.3/dist/quasar.umd.min.js"
-  ></script>
-  <script
-    defer
-    src="https://cdn.jsdelivr.net/npm/quasar@1.22.3/dist/lang/es.umd.min.js"
-  ></script>
-  <script
     src="https://cdnjs.cloudflare.com/ajax/libs/iamdustan-smoothscroll/0.4.0/smoothscroll.min.js"
     integrity="sha256-IylDNWjip7FK2TJUYck237qBTBeSiwnSFDCjLG686D4="
     crossorigin="anonymous"
+  ></script>
+  <script
     defer
+    src="https://unpkg.com/v-money3@3.22.3/dist/v-money3.umd.js"
   ></script>
   <script
     defer
     src="assets/js/index.js"
+    type="module"
+    crossorigin="anonymous"
   ></script>
 </head>
 
 <body>
   <div id="q-app">
-    <template>
-      <q-layout view="hHh lpR fFf">
-        <q-header
-          elevated
-          class="bg-primary text-white"
-        >
-          <q-toolbar>
-            <q-toolbar-title>
-              Nomina
-            </q-toolbar-title>
-            <q-btn
-              flat
-              round
-              :label="$q.dark.isActive ? 'CAMBIAR MODO DIA' : 'CAMBIAR MODO NOCHE'"
-              @click="$q.dark.toggle()"
-              :icon="$q.dark.isActive ? 'wb_sunny': 'nights_stay'"
-            />
-          </q-toolbar>
-        </q-header>
+    <q-layout view="hHh lpR fFf">
+      <q-header
+        elevated
+        class="bg-primary text-white"
+      >
+        <q-toolbar>
+          <q-toolbar-title>
+            Nomina básico en Colombia
+          </q-toolbar-title>
+          <q-btn
+            flat
+            round
+            :label="$q.dark.isActive ? 'CAMBIAR MODO DIA' : 'CAMBIAR MODO NOCHE'"
+            @click="$q.dark.toggle()"
+            :icon="$q.dark.isActive ? 'wb_sunny': 'nights_stay'"
+          />
+          </q-btn>
+        </q-toolbar>
+      </q-header>
 
-        <q-page-container>
-          <q-page>
-            <div class="q-pa-sm row justify-center items-start content-center q-gutter-md">
+      <q-page-container>
+        <q-page>
+          <div class="q-pa-sm row justify-center items-start content-center q-gutter-md">
+            <!-- Card Left -->
+            <div class="col-md-5 col-sm-12 col-xs-12">
 
-              <div class="col-md-5 col-sm-12 col-xs-12">
-                <q-card>
-                  <q-card-section>
-                    <div class="text-h6 text-center text-primary">Agregar miembro de colaborador</div>
-                  </q-card-section>
-
-                  <q-card-section>
-
-                    <q-list
-                      bordered
-                      class="rounded-borders"
+              <q-card>
+                <q-card-section>
+                  <p class="text-h6 text-center text-primary">Agregar miembro de colaborador</p>
+                </q-card-section>
+                <q-card-section>
+                  <q-list
+                    bordered
+                    class="rounded-borders"
+                  >
+                    <q-expansion-item
+                      expand-separator
+                      icon="perm_identity"
+                      label="Datos del colaborador:"
+                      :caption="colaborador.nombre"
+                      default-opened
                     >
+                      <q-card>
+                        <q-card-section>
+
+                          <div class="row wrap justify-center items-start content-start q-gutter-lg">
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                v-model.trim="colaborador.nombre"
+                                label="Nombre del colaborador (requerido)"
+                                placeholder="Luis Nacho, Ana Rodriguez..."
+                              />
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.cedula"
+                                label="Numero de identificacion (requerido)"
+                                placeholder="123456789..."
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-field
+                              bottom-slots
+                              type="tel"
+                              v-model.number="sueldoString"
+                              label="Sueldo del colaborador (requerido)"
+                              :hint="'Salario minimo 2023 ' + formatCurrency(constante.slmv2023)"
+                              @keyup.enter="submit"
+                              >
+                                <template v-slot:control="{ id, floatingLabel, modelValue, emitValue }">
+                                  <money3
+                                    :id="id"
+                                    class="q-field__input text-right"
+                                    :model-value="modelValue"
+                                    @update:model-value="emitValue"
+                                    v-bind="moneyFormatForComponent"
+                                    v-show="floatingLabel"
+                                  /></money3>
+                                </template>
+                              </q-field>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.diasTrabajados"
+                                label="Días trabajados del colaborador (requerido)"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              ></q-input>
+                            </div>
+                          </div>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item>
+
+                    <q-expansion-item
+                      expand-separator
+                      icon="assessment"
+                      label="Horas extras"
+                    >
+                      <q-card>
+                        <q-card-section>
+                          <div class=" row wrap justify-center items-start content-center q-gutter-lg text-center">
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.devengado.horasExtras.diurna"
+                                label="Horas extras diurna del colaborador"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.devengado.horasExtras.nocturna"
+                                label="Horas extras nocturna del colaborador"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.devengado.horasExtras.domingos"
+                                label="Horas extras domingos del colaborador"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
+                                label="Horas extras nocturna Domingos del colaborador"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              <q-input
+                                bottom-slots
+                                type="tel"
+                                v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
+                                label="Horas extras recargo nocturno del colaborador"
+                                placeholder="Ejemplo: 30"
+                                @keyup.enter="submit"
+                              />
+                              </q-input>
+                            </div>
+
+                          </div>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item>
+
+                  </q-list>
+                </q-card-section>
+                <q-separator></q-separator>
+
+                <q-card-actions class="justify-center">
+                  <q-btn
+                    color="primary"
+                    @click="calcularNomina()"
+                  >Calcular nomina</q-btn>
+                  <q-btn
+                    color="secondary"
+                    @click="guardarEmpleado()"
+                  >Guardar y añadir otro</q-btn>
+                </q-card-actions>
+              </q-card>
+
+            </div>
+            <!-- Card Right -->
+            <div class="col-md-5 col-sm-12 col-xs-12">
+              <q-card>
+                <q-card-section>
+                  <div class="text-h6 text-center text-primary">Miembros de los colaboradores</div>
+                </q-card-section>
+                <q-card-section>
+                  <q-list
+                    bordered
+                    class="rounded-borders"
+                  >
+                    <q-expansion-item
+                      expand-separator
+                      icon="people"
+                      label="Total de los colaboradores"
+                      :caption="'Cantidad de los colaboradores: '+ colaboradores.length"
+                    >
+                      <q-card>
+                        <q-card-section>
+
+                          <div class="row wrap justify-center items-start content-start q-gutter-lg">
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL DEVENGADO: {{formatCurrency(colaboradoresTotal.totalDevengado)}}
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL DEDUCIDO: {{formatCurrency(colaboradoresTotal.totalDeducido)}}
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL PARAFISCALES: {{formatCurrency(colaboradoresTotal.totalParafiscales)}}
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL PRESTACIONES: {{formatCurrency(colaboradoresTotal.totalPrestacion)}}
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL NETO: {{formatCurrency(colaboradoresTotal.totalNeto)}}
+                            </div>
+
+                            <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
+                              TOTAL NOMINA: {{formatCurrency(colaboradoresTotal.totalNomina)}}
+                            </div>
+                          </div>
+                        </q-card-section>
+                      </q-card>
+
+                    </q-expansion-item>
+
+                    <div v-if="colaboradores.length >= 0">
                       <q-expansion-item
                         expand-separator
                         icon="perm_identity"
-                        label="Datos del colaborador:"
-                        :caption="colaborador.nombre"
-                        default-opened
+                        v-for="(empleado, key) in colaboradores"
+                        :label="empleado.nombre"
+                        :key="key"
                       >
                         <q-card>
                           <q-card-section>
 
-                            <div class="row wrap justify-center items-start content-start q-gutter-lg">
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  v-model.trim="colaborador.nombre"
-                                  label="Nombre del colaborador (requerido)"
-                                  placeholder="Luis Nacho, Ana Rodriguez..."
-                                />
+                            <div>
+                              <div
+                                class="q-px-md row flex flex-center"
+                                id="titleDevengado"
+                              >
+                                <h6 class="text-center text-primary">
+                                  <strong>
+                                    DEVENGADO
+                                  </strong>
+                                </h6>
                               </div>
 
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.cedula"
-                                  label="Numero de identificacion (requerido)"
-                                  placeholder="123456789..."
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
+                              <div
+                                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                                id="devengado"
+                              >
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="sueldo"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      SUELDO
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.sueldo)}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="valorHoraOrdinaria"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      VALOR HORA ORDINARIA
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.valorHoraOrdinaria)}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="diasTrabajados"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      DIAS TRABAJADOS
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{empleado.diasTrabajados ?? 0}}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="basicoSalario"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      BASICO
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.sueldoBasico)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="horasExtrasDiurna"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      HORAS EXTRAS DIURNA : {{empleado.devengado.horasExtras.diurna}}
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.valorExtras.diurna)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="horasExtrasNocturna"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      HORAS EXTRAS NOCTURNA: {{empleado.devengado.horasExtras.nocturna}}
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.valorExtras.nocturna)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="horasExtrasDomingos"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      HORAS EXTRAS DOMINGOS: {{empleado.devengado.horasExtras.domingos}}
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.valorExtras.domingos)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="horasExtrasNocturnaDomingos"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      HORAS EXTRAS NOCTURNA DOMINGOS:
+                                      {{empleado.devengado.horasExtras.nocturnaDomingos}}
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.valorExtras.nocturnaDomingos)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="horasExtrasRecargoNocturno"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      HORAS EXTRAS RECARGO NOCTURNO:
+                                      {{empleado.devengado.horasExtras.recargoNocturno}}
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.devengado.valorExtras.recargoNocturno)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalExtrasValor"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL EXTRAS VALOR
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.devengado.totalValorExtras)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="auxilioTransporte"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      AUXILIO TRANSPORTE
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.auxTransporte)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalDevengado"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL DEVENGADO
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.devengado.totalDevengado)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.sueldo"
-                                  label="Sueldo del colaborador (requerido)"
-                                  :placeholder="constante.slmv2023"
-                                  prefix="$"
-                                  @keyup.enter="submit"
-                                />
+
+                              <div
+                                class="q-px-md row flex flex-center"
+                                id="titleDeducido"
+                              >
+                                <h6 class="text-center text-primary">
+                                  <strong>
+                                    DEDUCIDO
+                                  </strong>
+                                </h6>
                               </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.diasTrabajados"
-                                  label="Días trabajados del colaborador (requerido)"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                ></q-input>
+
+                              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="saludColaborador"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      SALUD COLABORADOR
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.deducido.salud)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="pensionColaborador"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      PENSION
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.deducido.pension)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="fondoSolidaridad"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      FONDO SOLIDARIDAD
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.deducido.fondoSolidaridad)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="uvt"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      UVT
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{empleado.deducido.uvt ?? 0}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="retefuente"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      RETEFUENTE
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.deducido.retefuente)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalDeducido"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL DEDUCIDO
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.deducido.totalDeducido)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                class="q-px-md row flex flex-center"
+                                id="titleParafiscales"
+                              >
+                                <h6 class="text-center text-primary">
+                                  <strong>
+                                    PARAFISCALES
+                                  </strong>
+                                </h6>
+                              </div>
+
+                              <div
+                                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                                id="parafiscales"
+                              >
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesSalud"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR SALUD
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.salud)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesPension"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR PENSION
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.pension)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesArl"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR ARL
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.arl)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesSena"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR SENA
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.sena)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesIcbf"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR ICBF
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.icbf)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="parafiscalesCajas"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      EMPLEADOR CAJAS
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.parafiscales.cajas)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalParafiscales"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL PARAFISCALES
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.parafiscales.totalParafiscales)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                class="q-px-md row flex flex-center"
+                                id="titlePrestacion"
+                              >
+                                <h6 class="text-center text-primary">
+                                  <strong>
+                                    PRESTACIONES
+                                  </strong>
+                                </h6>
+                              </div>
+
+                              <div
+                                class="row wrap justify-center items-end content-center q-gutter-md text-center"
+                                id="prestacion"
+                              >
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="prima"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      PRIMA
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.prestacion.prima)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="vacaciones"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      VACACIONES
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.prestacion.vacacaiones)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="cesantias"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      CESANTIAS
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.prestacion.cesantias)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="interesCesantias"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      INTERES CESANTIAS
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      {{formatCurrency(empleado.prestacion.interesCesantias)}}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalPrestacion"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL PRESTACIONES
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.prestacion.totalPrestacion)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              <div
+                                class="q-px-md row flex flex-center"
+                                id="titleTotal"
+                              >
+                                <h5 class="text-center text-primary">
+                                  <strong>
+                                    TOTAL
+                                  </strong>
+                                </h5>
+                              </div>
+
+                              <div
+                                class="row wrap justify-center items-end content-center q-gutter-md text-center q-mb-xl"
+                              >
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalNeto"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL NETO
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.totalNeto)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
+                                  id="totalNomina"
+                                >
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        TOTAL NOMINA
+                                      </strong>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                  <div class="row wrap justify-start items-end content-start">
+                                    <div class="col-12">
+                                      <strong>
+                                        {{formatCurrency(empleado.totalNomina)}}
+                                      </strong>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
+
+
                           </q-card-section>
                         </q-card>
                       </q-expansion-item>
-
+                    </div>
+                    <div v-else>
                       <q-expansion-item
                         expand-separator
-                        icon="assessment"
-                        label="Horas extras"
+                        icon="perm_identity"
+                        label="colaborador empty"
                       >
                         <q-card>
                           <q-card-section>
-                            <div class=" row wrap justify-center items-start content-center q-gutter-lg text-center">
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.devengado.horasExtras.diurna"
-                                  label="Horas extras diurna del colaborador"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
-                              </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.devengado.horasExtras.nocturna"
-                                  label="Horas extras nocturna del colaborador"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
-                              </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.devengado.horasExtras.domingos"
-                                  label="Horas extras domingos del colaborador"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
-                              </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.devengado.horasExtras.nocturnaDomingos"
-                                  label="Horas extras nocturna Domingos del colaborador"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
-                              </div>
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                <q-input
-                                  bottom-slots
-                                  type="tel"
-                                  v-model.number="colaborador.devengado.horasExtras.recargoNocturno"
-                                  label="Horas extras recargo nocturno del colaborador"
-                                  placeholder="30"
-                                  @keyup.enter="submit"
-                                />
-                                </q-input>
-                              </div>
-
-                            </div>
+                            not have colaboradores
                           </q-card-section>
                         </q-card>
                       </q-expansion-item>
-                    </q-list>
+                    </div>
+                  </q-list>
+                </q-card-section>
+                <q-separator></q-separator>
 
-                  </q-card-section>
+                <!--
+                <q-card-actions calcularNomina>
+                    <q-btn color="primary">Calcular nomina</q-btn>
+                  <q-btn color="secondary">Guardar y añadir otro</q-btn> 
+                </q-card-actions calcularNomina>
+                -->
+              </q-card>
+            </div>
+          </div>
+          <div ref="resultData">
+            <div class="row flex flex-center">
+              <h6 class="text-center text-primary">
+                Nomina del colaborador: &nbsp;&nbsp;&nbsp;
+                <strong>{{colaborador.nombre}}</strong>
+              </h6>
+            </div>
 
-                  <q-separator></q-separator>
+            <div
+              class="row flex flex-center"
+              id="titleDevengado"
+            >
+              <h6 class="text-center text-primary">
+                <strong>
+                  DEVENGADO
+                </strong>
+              </h6>
+            </div>
 
-                  <q-card-actions class="justify-center">
-                    <q-btn
-                      color="primary"
-                      @click="calcularNomina()"
-                    >Calcular nomina</q-btn>
-                    <q-btn
-                      color="secondary"
-                      @click="guardarEmpleado()"
-                    >Guardar y añadir otro</q-btn>
-                  </q-card-actions>
-                </q-card>
+            <div
+              class="row wrap justify-center items-end content-center q-gutter-md text-center"
+              id="devengado"
+            >
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="sueldo"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    SUELDO
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.sueldo)}}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="valorHoraOrdinaria"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    VALOR HORA ORDINARIA
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.valorHoraOrdinaria)}}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="diasTrabajados"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    DIAS TRABAJADOS
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{colaborador.diasTrabajados ?? 0}}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="basicoSalario"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    BASICO
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.sueldoBasico)}}
+                  </div>
+                </div>
               </div>
 
-              <!-- Card Right -->
-              <div class="col-md-5 col-sm-12 col-xs-12">
-                <q-card>
-                  <q-card-section>
-                    <div class="text-h6 text-center text-primary">Miembros de los colaboradores</div>
-                  </q-card-section>
-
-                  <q-card-section>
-
-
-
-                    <q-list
-                      bordered
-                      class="rounded-borders"
-                    >
-                      <q-expansion-item
-                        expand-separator
-                        icon="people"
-                        label="Total de los colaboradores"
-                        :caption="'Cantidad de los colaboradores: '+ colaboradores.length"
-                      >
-                        <q-card>
-                          <q-card-section>
-
-                            <div class="row wrap justify-center items-start content-start q-gutter-lg">
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL DEVENGADO: {{colaboradoresTotal.totalDevengado | formatCurrency}}
-                              </div>
-
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL DEDUCIDO: {{colaboradoresTotal.totalDeducido | formatCurrency}}
-                              </div>
-
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL PARAFISCALES: {{colaboradoresTotal.totalParafiscales | formatCurrency}}
-                              </div>
-
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL PRESTACIONES: {{colaboradoresTotal.totalPrestacion | formatCurrency}}
-                              </div>
-
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL NETO: {{colaboradoresTotal.totalNeto | formatCurrency}}
-                              </div>
-
-                              <div class="col-lg-5 col-md-11 col-sm-5 col-xs-11">
-                                TOTAL NOMINA: {{colaboradoresTotal.totalNomina | formatCurrency}}
-                              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="horasExtrasDiurna"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    HORAS EXTRAS DIURNA : {{colaborador.devengado.horasExtras.diurna}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.valorExtras.diurna)}}
+                  </div>
+                </div>
+              </div>
 
 
-                            </div>
-                          </q-card-section>
-                        </q-card>
-                      </q-expansion-item>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="horasExtrasNocturna"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    HORAS EXTRAS NOCTURNA: {{colaborador.devengado.horasExtras.nocturna}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.valorExtras.nocturna)}}
+                  </div>
+                </div>
+              </div>
 
-                      <div v-if="colaboradores.length >= 0">
-                        <q-expansion-item
-                          expand-separator
-                          icon="perm_identity"
-                          v-for="(empleado, key) in colaboradores"
-                          :label="empleado.nombre"
-                          :key="key"
-                        >
-                          <q-card>
-                            <q-card-section>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="horasExtrasDomingos"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    HORAS EXTRAS DOMINGOS: {{colaborador.devengado.horasExtras.domingos}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.valorExtras.domingos)}}
+                  </div>
+                </div>
+              </div>
 
-                              <div>
-                                <div
-                                  class="q-px-md row flex flex-center"
-                                  id="titleDevengado"
-                                >
-                                  <h6 class="text-center text-primary">
-                                    <strong>
-                                      DEVENGADO
-                                    </strong>
-                                  </h6>
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="horasExtrasNocturnaDomingos"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    HORAS EXTRAS NOCTURNA DOMINGOS: {{colaborador.devengado.horasExtras.nocturnaDomingos}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.valorExtras.nocturnaDomingos)}}
+                  </div>
+                </div>
+              </div>
 
-                                <div
-                                  class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                                  id="devengado"
-                                >
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="sueldo"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        SUELDO
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.sueldo | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="valorHoraOrdinaria"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        VALOR HORA ORDINARIA
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.valorHoraOrdinaria | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="diasTrabajados"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        DIAS TRABAJADOS
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.diasTrabajados}}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="basicoSalario"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        BASICO
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.sueldoBasico | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="horasExtrasDiurna"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        HORAS EXTRAS DIURNA : {{empleado.devengado.horasExtras.diurna}}
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.valorExtras.diurna | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="horasExtrasNocturna"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        HORAS EXTRAS NOCTURNA: {{empleado.devengado.horasExtras.nocturna}}
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.valorExtras.nocturna | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="horasExtrasDomingos"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        HORAS EXTRAS DOMINGOS: {{empleado.devengado.horasExtras.domingos}}
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.valorExtras.domingos | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="horasExtrasNocturnaDomingos"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        HORAS EXTRAS NOCTURNA DOMINGOS:
-                                        {{empleado.devengado.horasExtras.nocturnaDomingos}}
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.valorExtras.nocturnaDomingos | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="horasExtrasRecargoNocturno"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        HORAS EXTRAS RECARGO NOCTURNO:
-                                        {{empleado.devengado.horasExtras.recargoNocturno}}
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.devengado.valorExtras.recargoNocturno | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="horasExtrasRecargoNocturno"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    HORAS EXTRAS RECARGO NOCTURNO: {{colaborador.devengado.horasExtras.recargoNocturno}}
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.devengado.valorExtras.recargoNocturno)}}
+                  </div>
+                </div>
+              </div>
 
 
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalExtrasValor"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL EXTRAS VALOR
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.devengado.totalValorExtras | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="auxilioTransporte"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        AUXILIO TRANSPORTE
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.auxTransporte | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalExtrasValor"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL EXTRAS VALOR
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.devengado.totalValorExtras)}}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="auxilioTransporte"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    AUXILIO TRANSPORTE
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.auxTransporte)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalDevengado"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL DEVENGADO
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.devengado.totalDevengado | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-
-                                <div
-                                  class="q-px-md row flex flex-center"
-                                  id="titleDeducido"
-                                >
-                                  <h6 class="text-center text-primary">
-                                    <strong>
-                                      DEDUCIDO
-                                    </strong>
-                                  </h6>
-                                </div>
-
-                                <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="saludColaborador"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        SALUD COLABORADOR
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.deducido.salud | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalDevengado"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL DEVENGADO
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.devengado.totalDevengado)}}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
 
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="pensionColaborador"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        PENSION
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.deducido.pension | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+            <div
+              class="q-px-md row flex flex-center"
+              id="titleDeducido"
+            >
+              <h6 class="text-center text-primary">
+                <strong>
+                  DEDUCIDO
+                </strong>
+              </h6>
+            </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="fondoSolidaridad"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        FONDO SOLIDARIDAD
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.deducido.fondoSolidaridad | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+            <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="uvt"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        UVT
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.deducido.uvt}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="retefuente"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        RETEFUENTE
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.deducido.retefuente | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalDeducido"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL DEDUCIDO
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.deducido.totalDeducido | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="saludColaborador"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    SALUD COLABORADOR
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.deducido.salud)}}
+                  </div>
+                </div>
+              </div>
 
 
-                                <div
-                                  class="q-px-md row flex flex-center"
-                                  id="titleParafiscales"
-                                >
-                                  <h6 class="text-center text-primary">
-                                    <strong>
-                                      PARAFISCALES
-                                    </strong>
-                                  </h6>
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="pensionColaborador"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    PENSION
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.deducido.pension)}}
+                  </div>
+                </div>
+              </div>
 
-                                <div
-                                  class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                                  id="parafiscales"
-                                >
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="fondoSolidaridad"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    FONDO SOLIDARIDAD
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.deducido.fondoSolidaridad)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesSalud"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR SALUD
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.salud | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="uvt"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    UVT
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{colaborador.deducido.uvt ?? 0}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesPension"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR PENSION
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.pension | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="retefuente"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    RETEFUENTE
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.deducido.retefuente)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesArl"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR ARL
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.arl | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesSena"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR SENA
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.sena | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesIcbf"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR ICBF
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.icbf | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="parafiscalesCajas"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        EMPLEADOR CAJAS
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.parafiscales.cajas | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalParafiscales"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL PARAFISCALES
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.parafiscales.totalParafiscales | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div
-                                  class="q-px-md row flex flex-center"
-                                  id="titlePrestacion"
-                                >
-                                  <h6 class="text-center text-primary">
-                                    <strong>
-                                      PRESTACIONES
-                                    </strong>
-                                  </h6>
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalDeducido"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL DEDUCIDO
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.deducido.totalDeducido)}}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
 
 
-                                <div
-                                  class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                                  id="prestacion"
-                                >
+            <div
+              class="q-px-md row flex flex-center"
+              id="titleParafiscales"
+            >
+              <h6 class="text-center text-primary">
+                <strong>
+                  PARAFISCALES
+                </strong>
+              </h6>
+            </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="prima"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        PRIMA
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.prestacion.prima | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+            <div
+              class="row wrap justify-center items-end content-center q-gutter-md text-center"
+              id="parafiscales"
+            >
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="vacaciones"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        VACACIONES
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.prestacion.vacacaiones | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesSalud"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR SALUD
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.salud)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="cesantias"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        CESANTIAS
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.prestacion.cesantias | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesPension"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR PENSION
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.pension)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="interesCesantias"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        INTERES CESANTIAS
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        {{empleado.prestacion.interesCesantias | formatCurrency}}
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesArl"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR ARL
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.arl)}}
+                  </div>
+                </div>
+              </div>
 
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalPrestacion"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL PRESTACIONES
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.prestacion.totalPrestacion | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesSena"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR SENA
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.sena)}}
+                  </div>
+                </div>
+              </div>
 
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesIcbf"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR ICBF
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.icbf)}}
+                  </div>
+                </div>
+              </div>
 
-                                <div
-                                  class="q-px-md row flex flex-center"
-                                  id="titleTotal"
-                                >
-                                  <h5 class="text-center text-primary">
-                                    <strong>
-                                      TOTAL
-                                    </strong>
-                                  </h5>
-                                </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="parafiscalesCajas"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    EMPLEADOR CAJAS
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.parafiscales.cajas)}}
+                  </div>
+                </div>
+              </div>
 
-                                <div
-                                  class="row wrap justify-center items-end content-center q-gutter-md text-center q-mb-xl"
-                                >
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalNeto"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL NETO
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.totalNeto | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="col-lg-2 col-md-3 col-sm-3 col-xs-5"
-                                    id="totalNomina"
-                                  >
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          TOTAL NOMINA
-                                        </strong>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row wrap justify-start items-end content-start">
-                                      <div class="col-12">
-                                        <strong>
-                                          {{empleado.totalNomina | formatCurrency}}
-                                        </strong>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalParafiscales"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL PARAFISCALES
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.parafiscales.totalParafiscales)}}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="q-px-md row flex flex-center"
+              id="titlePrestacion"
+            >
+              <h6 class="text-center text-primary">
+                <strong>
+                  PRESTACIONES
+                </strong>
+              </h6>
+            </div>
 
 
-                            </q-card-section>
-                          </q-card>
-                        </q-expansion-item>
-                      </div>
-                      <div v-else>
-                        <q-expansion-item
-                          expand-separator
-                          icon="perm_identity"
-                          label="colaborador empty"
-                        >
-                          <q-card>
-                            <q-card-section>
-                              not have colaboradores
-                            </q-card-section>
-                          </q-card>
-                        </q-expansion-item>
-                      </div>
-                    </q-list>
+            <div
+              class="row wrap justify-center items-end content-center q-gutter-md text-center"
+              id="prestacion"
+            >
 
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="prima"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    PRIMA
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.prestacion.prima)}}
+                  </div>
+                </div>
+              </div>
 
-                  </q-card-section>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="vacaciones"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    VACACIONES
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.prestacion.vacacaiones)}}
+                  </div>
+                </div>
+              </div>
 
-                  <q-separator></q-separator>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="cesantias"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    CESANTIAS
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.prestacion.cesantias)}}
+                  </div>
+                </div>
+              </div>
 
-                  <q-card-actiocalcularNominans>
-                    <!-- <q-btn color="primary">Calcular nomina</q-btn>
-                    <q-btn color="secondary">Guardar y añadir otro</q-btn> -->
-                  </q-card-actiocalcularNominans>
-                </q-card>
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="interesCesantias"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    INTERES CESANTIAS
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    {{formatCurrency(colaborador.prestacion.interesCesantias)}}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalPrestacion"
+              >
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL PRESTACIONES
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.prestacion.totalPrestacion)}}
+                    </strong>
+                  </div>
+                </div>
               </div>
 
             </div>
 
             <div
-              class="q-px-md"
-              ref="resultData"
+              class="q-px-md row flex flex-center"
+              id="titleTotal"
             >
-              <div class="row flex flex-center">
-                <h6 class="text-center text-primary">
-                  Nomina del colaborador: &nbsp;&nbsp;&nbsp;
-                  <strong>{{colaborador.nombre}}</strong>
-                </h6>
-              </div>
+              <h5 class="text-center text-primary">
+                <strong>
+                  TOTAL
+                </strong>
+              </h5>
+            </div>
 
+            <div class="row wrap justify-center items-end content-center q-gutter-md text-center q-mb-xl">
               <div
-                class="q-px-md row flex flex-center"
-                id="titleDevengado"
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalNeto"
               >
-                <h6 class="text-center text-primary">
-                  <strong>
-                    DEVENGADO
-                  </strong>
-                </h6>
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL NETO
+                    </strong>
+                  </div>
+                </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{formatCurrency(colaborador.totalNeto)}}
+                    </strong>
+                  </div>
+                </div>
               </div>
-
               <div
-                class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                id="devengado"
+                class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
+                id="totalNomina"
               >
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="sueldo"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      SUELDO
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.sueldo | formatCurrency}}
-                    </div>
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      TOTAL NOMINA
+                    </strong>
                   </div>
                 </div>
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="valorHoraOrdinaria"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      VALOR HORA ORDINARIA
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.valorHoraOrdinaria | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="diasTrabajados"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      DIAS TRABAJADOS
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.diasTrabajados}}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="basicoSalario"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      BASICO
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.sueldoBasico | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="horasExtrasDiurna"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      HORAS EXTRAS DIURNA : {{colaborador.devengado.horasExtras.diurna}}
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.valorExtras.diurna | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="horasExtrasNocturna"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      HORAS EXTRAS NOCTURNA: {{colaborador.devengado.horasExtras.nocturna}}
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.valorExtras.nocturna | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="horasExtrasDomingos"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      HORAS EXTRAS DOMINGOS: {{colaborador.devengado.horasExtras.domingos}}
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.valorExtras.domingos | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="horasExtrasNocturnaDomingos"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      HORAS EXTRAS NOCTURNA DOMINGOS: {{colaborador.devengado.horasExtras.nocturnaDomingos}}
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.valorExtras.nocturnaDomingos | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="horasExtrasRecargoNocturno"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      HORAS EXTRAS RECARGO NOCTURNO: {{colaborador.devengado.horasExtras.recargoNocturno}}
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.devengado.valorExtras.recargoNocturno | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalExtrasValor"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL EXTRAS VALOR
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.devengado.totalValorExtras | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="auxilioTransporte"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      AUXILIO TRANSPORTE
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.auxTransporte | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalDevengado"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL DEVENGADO
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.devengado.totalDevengado | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <div
-                class="q-px-md row flex flex-center"
-                id="titleDeducido"
-              >
-                <h6 class="text-center text-primary">
-                  <strong>
-                    DEDUCIDO
-                  </strong>
-                </h6>
-              </div>
-
-              <div class="row wrap justify-center items-end content-center q-gutter-md text-center">
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="saludColaborador"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      SALUD COLABORADOR
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.deducido.salud | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="pensionColaborador"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      PENSION
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.deducido.pension | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="fondoSolidaridad"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      FONDO SOLIDARIDAD
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.deducido.fondoSolidaridad | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="uvt"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      UVT
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.deducido.uvt}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="retefuente"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      RETEFUENTE
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.deducido.retefuente | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalDeducido"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL DEDUCIDO
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.deducido.totalDeducido | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <div
-                class="q-px-md row flex flex-center"
-                id="titleParafiscales"
-              >
-                <h6 class="text-center text-primary">
-                  <strong>
-                    PARAFISCALES
-                  </strong>
-                </h6>
-              </div>
-
-              <div
-                class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                id="parafiscales"
-              >
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesSalud"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR SALUD
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.salud | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesPension"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR PENSION
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.pension | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesArl"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR ARL
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.arl | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesSena"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR SENA
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.sena | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesIcbf"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR ICBF
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.icbf | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="parafiscalesCajas"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      EMPLEADOR CAJAS
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.parafiscales.cajas | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalParafiscales"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL PARAFISCALES
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.parafiscales.totalParafiscales | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="q-px-md row flex flex-center"
-                id="titlePrestacion"
-              >
-                <h6 class="text-center text-primary">
-                  <strong>
-                    PRESTACIONES
-                  </strong>
-                </h6>
-              </div>
-
-
-              <div
-                class="row wrap justify-center items-end content-center q-gutter-md text-center"
-                id="prestacion"
-              >
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="prima"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      PRIMA
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.prestacion.prima | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="vacaciones"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      VACACIONES
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.prestacion.vacacaiones | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="cesantias"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      CESANTIAS
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.prestacion.cesantias | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="interesCesantias"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      INTERES CESANTIAS
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      {{colaborador.prestacion.interesCesantias | formatCurrency}}
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalPrestacion"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL PRESTACIONES
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.prestacion.totalPrestacion | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <div
-                class="q-px-md row flex flex-center"
-                id="titleTotal"
-              >
-                <h5 class="text-center text-primary">
-                  <strong>
-                    TOTAL
-                  </strong>
-                </h5>
-              </div>
-
-              <div class="row wrap justify-center items-end content-center q-gutter-md text-center q-mb-xl">
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalNeto"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL NETO
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.totalNeto | formatCurrency}}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="col-lg-1 col-md-2 col-sm-3 col-xs-5"
-                  id="totalNomina"
-                >
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        TOTAL NOMINA
-                      </strong>
-                    </div>
-                  </div>
-                  <hr />
-                  <div class="row wrap justify-start items-end content-start">
-                    <div class="col-12">
-                      <strong>
-                        {{colaborador.totalNomina | formatCurrency}}
-                      </strong>
-                    </div>
+                <hr />
+                <div class="row wrap justify-start items-end content-start">
+                  <div class="col-12">
+                    <strong>
+                      {{ formatCurrency(colaborador.totalNomina) }}
+                    </strong>
                   </div>
                 </div>
               </div>
             </div>
-          </q-page>
-        </q-page-container>
-      </q-layout>
-    </template>
+          </div>
+        </q-page>
+      </q-page-container>
+      <q-footer
+        elevated
+        class="bg-grey-8 text-white"
+      >
+        <q-toolbar>
+          <q-toolbar-title>
+            <div>By TECH-ANDGAR</div>
+          </q-toolbar-title>
+        </q-toolbar>
+      </q-footer>
+    </q-layout>
   </div>
 </body>
 
