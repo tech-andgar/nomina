@@ -4,6 +4,7 @@ import {
   colaboradores,
   colaboradoresTotal,
   constante,
+  moneyFormatForComponent,
   calcularNomina,
   guardarEmpleado,
   submit,
@@ -26,14 +27,6 @@ function formatCurrency(val) {
 
 const app = createApp({
   setup() {
-    const moneyFormatForComponent = {
-      decimal: ",",
-      thousands: ".",
-      prefix: "$ ",
-      // suffix: ' #',
-      precision: 0,
-      masked: true,
-    };
 
     return {
       colaborador,
