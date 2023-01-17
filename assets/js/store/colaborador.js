@@ -1,6 +1,13 @@
 const { ref } = Vue;
 const { unformat } = window["v-money3"];
-
+export const moneyFormatForComponent = {
+  decimal: ",",
+  thousands: ".",
+  prefix: "$ ",
+  // suffix: ' #',
+  precision: 0,
+  masked: true,
+};
 export const colaboradores = ref([]);
 export const sueldoString = ref(null);
 export const colaborador = ref({
@@ -274,7 +281,7 @@ function calcularValorHoraOrdinaria() {
 function unformatSueldo() {
   colaborador.value.sueldo = unformat(
     String(sueldoString.value),
-    moneyFormatForDirective
+    moneyFormatForComponent
   );
 }
 
