@@ -1,4 +1,4 @@
-# Nomina básico App en Colombia
+# Basic Payroll App (Nomina básico App) Colombia
 
  ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D.svg?style=for-the-badge&logo=Vue.js&logoColor=white)
  ![Quasar](https://img.shields.io/badge/Framework%20Quasar-1976D2.svg?style=for-the-badge&logo=Quasar&logoColor=white)
