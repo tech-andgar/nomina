@@ -75,9 +75,9 @@ export const constante = {
     nocturnaDomingos: 2.5, //%
     recargoNocturno: 1.35, //%
   },
-  slmv2023: 1160000,
+  slmv2023: 1300000,
   uvt2023: 42412,
-  auxTransporte: 140000,
+  auxTransporte: 162000,
   salud: {
     colaborador: 4,
     empleador: 8.5,
