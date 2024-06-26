@@ -7,7 +7,7 @@ A simple front app that interact with the nomina basico built with Framework Qua
 
 ## 😎 Demo
 
-- Framework Quasar and Vue.JS V3 frontend [https://andgar2010.github.io/nomina/](https://andgar2010.github.io/nomina/)
+- Framework Quasar and Vue.JS V3 frontend [https://tech-andgar.github.io/nomina/](https://andgar2010.github.io/nomina/)
 
 ## 🔥 Features
 
