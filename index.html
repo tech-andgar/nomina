@@ -72,6 +72,15 @@
     type="module"
     crossorigin="anonymous"
   ></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZP56GLR91Y"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZP56GLR91Y');
+  </script>
 </head>
 
 <body>
@@ -136,7 +145,7 @@
                                 bottom-slots
                                 type="tel"
                                 v-model.number="colaborador.cedula"
-                                label="Numero de identificacion (requerido)"
+                                label="Numero de identificación (requerido)"
                                 placeholder="123456789..."
                                 @keyup.enter="submit"
                               />
@@ -148,7 +157,7 @@
                               type="tel"
                               v-model.number="sueldoString"
                               label="Sueldo del colaborador (requerido)"
-                              :hint="'Salario minimo 2024 ' + formatCurrency(constante.slmv2023)"
+                              :hint="'Salario mínimo 2024 ' + formatCurrency(constante.slmv2023)"
                               @keyup.enter="submit"
                               >
                                 <template v-slot:control="{ id, floatingLabel, modelValue, emitValue }">
@@ -858,7 +867,7 @@
                                   <hr />
                                   <div class="row wrap justify-start items-end content-start">
                                     <div class="col-12">
-                                      {{formatCurrency(empleado.prestacion.vacacaiones)}}
+                                      {{formatCurrency(empleado.prestacion.vacaciones)}}
                                     </div>
                                   </div>
                                 </div>
@@ -1552,7 +1561,7 @@
                 <hr />
                 <div class="row wrap justify-start items-end content-start">
                   <div class="col-12">
-                    {{formatCurrency(colaborador.prestacion.vacacaiones)}}
+                    {{formatCurrency(colaborador.prestacion.vacaciones)}}
                   </div>
                 </div>
               </div>
