@@ -56,7 +56,7 @@ export const colaborador = ref({
   },
   prestacion: {
     prima: null,
-    vacacaiones: null,
+    vacaciones: null,
     cesantias: null,
     interesCesantias: null,
     totalPrestacion: null,
@@ -94,13 +94,13 @@ export const constante = {
   },
   prestacion: {
     prima: 8.333333,
-    vacacaiones: 4.17,
+    vacaciones: 4.17,
     cesantias: 8.333333,
     interesCesantias: 1,
   },
 };
 
-export let colaboradoresTotal = ref({
+export const colaboradoresTotal = ref({
   totalDevengado: 0,
   totalDeducido: 0,
   totalParafiscales: 0,
@@ -150,7 +150,7 @@ export function submit() {
   calcularValorCajaEmpleador();
   calcularValorTotalParafiscales();
   calcularValorPrima();
-  calcularValorVacacaiones();
+  calcularValorVacaciones();
   calcularValorCesantias();
   calcularValorInteresCesantias();
   calcularValorTotalPrestacion();
@@ -225,7 +225,7 @@ export function guardarEmpleado() {
     },
     prestacion: {
       prima: null,
-      vacacaiones: null,
+      vacaciones: null,
       cesantias: null,
       interesCesantias: null,
       totalPrestacion: null,
@@ -496,12 +496,12 @@ function calcularValorPrima() {
     100;
 }
 
-function calcularValorVacacaiones() {
-  colaborador.value.prestacion.vacacaiones =
+function calcularValorVacaciones() {
+  colaborador.value.prestacion.vacaciones =
     (colaborador.value.devengado.totalDevengado *
-      constante.prestacion.vacacaiones) /
+      constante.prestacion.vacaciones) /
     100;
-  // colaborador.value.prestacion.vacacaiones = (colaborador.value.devengado.sueldoBasico * colaborador.value.diasTrabajados) / 720
+  // colaborador.value.prestacion.vacaciones = (colaborador.value.devengado.sueldoBasico * colaborador.value.diasTrabajados) / 720
 }
 
 function calcularValorCesantias() {
@@ -522,7 +522,7 @@ function calcularValorInteresCesantias() {
 function calcularValorTotalPrestacion() {
   colaborador.value.prestacion.totalPrestacion =
     colaborador.value.prestacion.prima +
-    colaborador.value.prestacion.vacacaiones +
+    colaborador.value.prestacion.vacaciones +
     colaborador.value.prestacion.cesantias +
     colaborador.value.prestacion.interesCesantias;
 }

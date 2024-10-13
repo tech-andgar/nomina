@@ -9,7 +9,6 @@ import {
   guardarEmpleado,
   submit,
 } from "./store/colaborador.js";
-// import { count, increment } from "../../assets/js/store/count.js";
 const { createApp } = Vue;
 Quasar.lang.set(Quasar.lang.es);
 
@@ -27,7 +26,6 @@ function formatCurrency(val) {
 
 const app = createApp({
   setup() {
-
     return {
       colaborador,
       sueldoString,
