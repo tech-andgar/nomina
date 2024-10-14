@@ -1,92 +1,106 @@
 {
-  "salarioMinimoMensual": "1300000.00",
+  "salarioMinimoMensual": "1300000",
   "salarioMinimoMensualTexto": "Un Millón Trescientos Mil Pesos",
   "variacionAnual": {
     "porcentaje": "12.07",
-    "valor": "140000.00"
+    "valor": "140000"
   },
-  "salarioMasSubsidio": "1462000.00",
+  "salarioMasSubsidio": "1462000",
   "valoresSalarioMinimo2024": [
     {
       "concepto": "Salario Mínimo Integral Año 2024\n10 SMLV + 30% factor prestacional",
-      "valor": "16900000.00"
+      "duración": "10 SMLV + 30% factor prestacional",
+      "valor": "16900000"
     },
     {
       "concepto": "Salario Anual - Año\n(Sin primas ni cesantías)",
-      "valor": "15600000.00"
+      "duración": "(Sin primas ni cesantías)",
+      "valor": "15600000"
     },
     {
-      "concepto": "Salario Mensual - Mes (SMMLV)",
+      "concepto": "Salario Mensual - Mes (SMMLV)\n30 días",
       "duración": "30 días",
-      "valor": "1300000.00"
+      "valor": "1300000"
     },
     {
-      "concepto": "Salario Diario - Día (SMDLV)",
+      "concepto": "Salario Diario - Día (SMDLV)\n8 horas",
       "duración": "8 horas",
       "valor": "43333.33"
     },
     {
-      "concepto": "Hora Ordinaria - 47 horas/semana(6 A.M. a 9 P.M.)",
+      "concepto": "Hora Ordinaria - 47 horas/semana\n(6 A.M. a 9 P.M.)",
+      "duración": "(6 A.M. a 9 P.M.)",
       "valor": "5532"
     },
     {
-      "concepto": "Hora Ordinaria - 46 horas/semana(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
+      "concepto": "Hora Ordinaria - 46 horas/semana\n(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
+      "duración": "(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
       "valor": "5652"
     },
     {
-      "concepto": "Hora Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +35% noct.",
+      "concepto": "Hora Nocturna - 47 horas/semana\n(9 P.M. a 6 A.M.) +35% noct.",
+      "duración": "(9 P.M. a 6 A.M.) +35% noct.",
       "valor": "7468"
     },
     {
-      "concepto": "Hora Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
+      "concepto": "Hora Nocturna - 46 horas/semana\n(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
+      "duración": "(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
       "valor": "7630"
     },
     {
-      "concepto": "Hora Extra Diurna - 47 horas/semana(6 A.M. a 9 P.M.) +25% extra",
+      "concepto": "Hora Extra Diurna - 47 horas/semana\n(6 A.M. a 9 P.M.) +25% extra",
+      "duración": "(6 A.M. a 9 P.M.) +25% extra",
       "valor": "6915"
     },
     {
-      "concepto": "Hora Extra Diurna - 46 horas/semana(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
+      "concepto": "Hora Extra Diurna - 46 horas/semana\n(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
+      "duración": "(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
       "valor": "7065"
     },
     {
-      "concepto": "Hora Extra Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +75% extra",
+      "concepto": "Hora Extra Nocturna - 47 horas/semana\n(9 P.M. a 6 A.M.) +75% extra",
+      "duración": "(9 P.M. a 6 A.M.) +75% extra",
       "valor": "9681"
     },
     {
-      "concepto": "Hora Extra Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
+      "concepto": "Hora Extra Nocturna - 46 horas/semana\n(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
+      "duración": "(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
       "valor": "9891"
     },
     {
-      "concepto": "Hora Extra Dominical/Festivo Diurna - 47 horas/semana(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
+      "concepto": "Hora Extra Dominical/Festivo Diurna - 47 horas/semana\n(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
+      "duración": "(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
       "valor": "11064"
     },
     {
-      "concepto": "Hora Extra Dominical/Festivo Diurna - 46 horas/semana(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
+      "concepto": "Hora Extra Dominical/Festivo Diurna - 46 horas/semana\n(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
+      "duración": "(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
       "valor": "11304"
     },
     {
-      "concepto": "Hora Extra Dominical/Festivo Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
+      "concepto": "Hora Extra Dominical/Festivo Nocturna - 47 horas/semana\n(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
+      "duración": "(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
       "valor": "13830"
     },
     {
-      "concepto": "Hora Extra Dominical/Festivo Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
+      "concepto": "Hora Extra Dominical/Festivo Nocturna - 46 horas/semana\n(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
+      "duración": "(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
       "valor": "14130"
     },
     {
-      "concepto": "Subsidio de transporte Anual",
+      "concepto": "Subsidio de transporte Anual\n12 meses",
       "duración": "12 meses",
       "valor": "1944000"
     },
     {
-      "concepto": "Subsidio de transporte Mensual",
+      "concepto": "Subsidio de transporte Mensual\n30 días",
       "duración": "30 días",
       "valor": "162000"
     },
     {
-      "concepto": "Subsidio de transporte Diario",
+      "concepto": "Subsidio de transporte Diario\n1 día",
       "duración": "1 día",
-      "valor": "5400.00"
+      "valor": "5400"
     }
   ],
   "salarioMinimoEnDolares": {
@@ -97,20 +111,20 @@
     {
       "concepto": "Salud",
       "empleado": "4%",
-      "empleado-concepto-slmv": "52000.00",
+      "empleado-concepto-slmv": "52000",
       "empleador": "8.5%",
-      "empleador-concepto-slmv": "110500.00",
+      "empleador-concepto-slmv": "110500",
       "independiente": "12.5%",
-      "independiente-concepto-slmv": "162500.00"
+      "independiente-concepto-slmv": "162500"
     },
     {
-      "concepto": "Pension",
+      "concepto": "Pensión",
       "empleado": "4%",
-      "empleado-concepto-slmv": "52000.00",
+      "empleado-concepto-slmv": "52000",
       "empleador": "12%",
-      "empleador-concepto-slmv": "156000.00",
+      "empleador-concepto-slmv": "156000",
       "independiente": "16%",
-      "independiente-concepto-slmv": "208000.00"
+      "independiente-concepto-slmv": "208000"
     }
   ],
   "salarioRecibidoEmpleadoEjemplo": {

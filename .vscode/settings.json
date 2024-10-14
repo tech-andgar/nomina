@@ -4,16 +4,27 @@
     "Basico",
     "cedula",
     "cesantias",
+    "deno",
     "dias",
+    "domcontentloaded",
+    "duracion",
     "Habiles",
     "icbf",
     "interes",
+    "Minimo",
+    "noct",
     "normatividad",
     "parafiscal",
     "parafiscales",
+    "preciodolar",
     "prestacion",
+    "prestacional",
     "retefuente",
     "slmv",
-    "unformat"
+    "SMDLV",
+    "SMLV",
+    "SMMLV",
+    "unformat",
+    "variacion"
   ]
 }
