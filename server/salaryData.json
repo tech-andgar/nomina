@@ -1,0 +1,101 @@
+{
+  "salarioMinimoMensual": "$ 1,300,000.00",
+  "salarioMinimoMensualTexto": "Un Millón Trescientos Mil Pesos",
+  "variacionAnual": "Variación anual:  12.07 % ($ 140,000.00)",
+  "salarioMasSubsidio": "$ 1,462,000.00",
+  "valoresSalarioMinimo2024": [
+    {
+      "concepto": "Salario Mínimo Integral Año 202410 SMLV + 30% factor prestacional",
+      "valor": "$ 16,900,000.00"
+    },
+    {
+      "concepto": "Salario Anual - Año(Sin primas ni cesantías)",
+      "valor": "$ 15,600,000.00"
+    },
+    {
+      "concepto": "Salario Mensual - Mes (SMMLV)30 días",
+      "valor": "$ 1,300,000.00"
+    },
+    {
+      "concepto": "Salario Diario - Día (SMDLV)8 horas",
+      "valor": "$ 43,333.33"
+    },
+    {
+      "concepto": "Hora Ordinaria - 47 horas/semana(6 A.M. a 9 P.M.)",
+      "valor": "$ 5,532"
+    },
+    {
+      "concepto": "Hora Ordinaria - 46 horas/semana(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
+      "valor": "$ 5,652"
+    },
+    {
+      "concepto": "Hora Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +35% noct.",
+      "valor": "$ 7,468"
+    },
+    {
+      "concepto": "Hora Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
+      "valor": "$ 7,630"
+    },
+    {
+      "concepto": "Hora Extra Diurna - 47 horas/semana(6 A.M. a 9 P.M.) +25% extra",
+      "valor": "$ 6,915"
+    },
+    {
+      "concepto": "Hora Extra Diurna - 46 horas/semana(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
+      "valor": "$ 7,065"
+    },
+    {
+      "concepto": "Hora Extra Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +75% extra",
+      "valor": "$ 9,681"
+    },
+    {
+      "concepto": "Hora Extra Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
+      "valor": "$ 9,891"
+    },
+    {
+      "concepto": "Hora Extra Dominical/Festivo Diurna - 47 horas/semana(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
+      "valor": "$ 11,064"
+    },
+    {
+      "concepto": "Hora Extra Dominical/Festivo Diurna - 46 horas/semana(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
+      "valor": "$ 11,304"
+    },
+    {
+      "concepto": "Hora Extra Dominical/Festivo Nocturna - 47 horas/semana(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
+      "valor": "$ 13,830"
+    },
+    {
+      "concepto": "Hora Extra Dominical/Festivo Nocturna - 46 horas/semana(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
+      "valor": "$ 14,130"
+    },
+    {
+      "concepto": "Subsidio de transporte Anual12 meses",
+      "valor": "$ 1,944,000"
+    },
+    {
+      "concepto": "Subsidio de transporte Mensual30 días",
+      "valor": "$ 162,000"
+    },
+    {
+      "concepto": "Subsidio de transporte Diario1 día",
+      "valor": "$ 5,400.00"
+    }
+  ],
+  "salarioMinimoEnDolares": "Salario Mínimo 2024 Colombia en Dólares: $ 310.07 USD\n                    \t\t\t1 dólar = $ 4,192.56 Pesos - Dólar Hoy",
+  "aportesSeguridadSocial": [
+    {
+      "concepto": "Empleado$ 52,000.00Aporte Empleado equivalente al 4% del salario mínimo",
+      "valor": "Empleado$ 52,000.00Aporte Empleado equivalente al 4% del salario mínimo"
+    },
+    {
+      "concepto": "Empleador$ 110,500.00Aporte Empleado equivalente al 8,5% del salario mínimo",
+      "valor": "Empleador$ 156,000.00Aporte Empleado equivalente al 12% del salario mínimo"
+    },
+    {
+      "concepto": "Independiente$ 162,500.00Aporte Empleado equivalente al 12,5% del salario mínimo",
+      "valor": "Independiente$ 208,000.00Aporte Empleado equivalente al 16% del salario mínimo"
+    }
+  ],
+  "salarioEmpleadoEjemplo": [],
+  "salarioPagadoEmpleadorEjemplo": []
+}
