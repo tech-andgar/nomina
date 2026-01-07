@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import * as ColaboradorService from "./ColaboradorService.ts";
-import { Colaborador } from "../../domain/Colaborador.ts";
-import { YearlyConstants } from "../../infrastructure/config/constants.ts";
+import type { Colaborador } from "../../domain/Colaborador.ts";
+import type { YearlyConstants } from "../../infrastructure/config/constants.ts";
 
 describe("ColaboradorService", () => {
     const mockConstants: YearlyConstants = {
