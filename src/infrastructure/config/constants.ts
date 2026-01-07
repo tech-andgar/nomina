@@ -74,7 +74,7 @@ export const TAX_LIMITS = {
   // Porcentajes
   dependientesRate: 0.1, // 10% del ingreso bruto
   rentaExentaRate: 0.25, // 25% de renta exenta
-  globalLimitRate: 0.40, // 40% limitacion global
+  globalLimitRate: 0.4, // 40% limitacion global
 
   // Topes Renta Exenta 25% (Anual en UVT)
   rentaExentaCapAnnual: {
@@ -134,55 +134,37 @@ interface RawYearlyDataEntry {
 export const YEARLY_DATA: Record<string, RawYearlyDataEntry> = yearlyData as unknown as Record<string, RawYearlyDataEntry>;
 
 /**
+ * Determina las horas mensuales base según la transición de la Ley 2101 de 2021.
+ */
+const getHorasMensualesTransition = (year: number, month: number): number => {
+  if (year === 2026) return month >= 7 ? 210 : 220;
+  if (year === 2025) return 220;
+  if (year === 2024) return 230;
+  if (year === 2023) return 235;
+  if (year < 2023) return 240;
+  return 210; // 2027+
+};
+
+/**
+ * Determina el recargo dominical base según la Ley 2466 de 2024.
+ */
+const getBaseSundaySurcharge = (year: number, month: number): number => {
+  if (year >= 2027) return 1;
+  if (year === 2026) return month >= 7 ? 0.9 : 0.8;
+  if (year === 2025) return 0.8;
+  return 0.75;
+};
+
+/**
  * Función que extrae las constantes de un año específico, 
  * manteniendo la compatibilidad con el sistema de scraper.
  */
 export const getYearlyConstants = (year: number, month: number = 1): YearlyConstants => {
   const data = YEARLY_DATA[String(year)] || YEARLY_DATA["2026"];
+  const defaultHoras = getHorasMensualesTransition(year, month);
+  const sundaySurcharge = getBaseSundaySurcharge(year, month);
 
-  // Ley 2101 de 2021: Reducción Jornada Laboral
-  // 2023: 47h -> ~235h
-  // 2024: 46h -> ~230h
-  // 2025: 44h -> ~220h
-  // 2026: 42h -> 210h (Definitiva desde 15 Julio)
-
-  // Default to full implementation for 2027+
-  let defaultHorasMensuales = 210;
-
-  if (year === 2026) {
-    // Transition year 2026:
-    // Jan - Jun (H1): 44 hours (approx 220 monthly)
-    // Jul - Dec (H2): 42 hours (210 monthly)
-    defaultHorasMensuales = month >= 7 ? 210 : 220;
-  }
-  else if (year === 2025) defaultHorasMensuales = 220;
-  else if (year === 2024) defaultHorasMensuales = 230;
-  else if (year === 2023) defaultHorasMensuales = 235;
-  else if (year < 2023) defaultHorasMensuales = 240;
-
-
-  // Base Surcharge Defaults (Pre-Reform / Standard)
-  let baseSundaySurcharge = 0.75; // 75%
-
-  // Logic for 2025/2026 Reform (Recargo Dominical)
-  // Ley 2466 de 2024
-  if (year >= 2027) {
-    baseSundaySurcharge = 1.0; // 100% fully implemented
-  } else if (year === 2026) {
-    // 2026 H1: 80%
-    // 2026 H2: 90%
-    baseSundaySurcharge = month >= 7 ? 0.9 : 0.8;
-  } else if (year === 2025) {
-    baseSundaySurcharge = 0.8; // 80%
-  }
-
-  // Derived Multipliers per existing logic logic in constants
-  // festiva = 1 + surcharge
-  const defaultFestiva = 1 + baseSundaySurcharge;
-  // festivaDiurna (Extra Diurna Dominical) = 1 + Surcharge + 0.25 (Extra Diurna)
-  const defaultFestivaDiurna = 1 + baseSundaySurcharge + 0.25;
-  // festivaNocturna (Extra Nocturna Dominical) = 1 + Surcharge + 0.75 (Extra Nocturna)
-  const defaultFestivaNocturna = 1 + baseSundaySurcharge + 0.75;
+  const isTransitionYear = year === 2026 || year === 2025;
 
   return {
     slmv: Number(data.slmv || data.salarioMinimoMensual || 0),
@@ -192,24 +174,14 @@ export const getYearlyConstants = (year: number, month: number = 1): YearlyConst
       data.salarioPagadoEmpleadorEjemplo?.["Subsidio de transporte"] ||
       0
     ),
-    // For 2025 and 2026, we mandate the transition logic over static JSON data which might be outdated (e.g. flat 210 or 230)
-    horasMensuales: (year === 2026 || year === 2025)
-      ? defaultHorasMensuales
-      : Number(data.horasMensuales || defaultHorasMensuales),
+    horasMensuales: isTransitionYear ? defaultHoras : Number(data.horasMensuales || defaultHoras),
     multipliers: {
       diurna: Number(data.multipliers?.diurna || GLOBAL_CONSTANTS.horasExtras.diurna),
       nocturna: Number(data.multipliers?.nocturna || GLOBAL_CONSTANTS.horasExtras.nocturna),
       recargoNocturno: Number(data.multipliers?.recargoNocturno || GLOBAL_CONSTANTS.horasExtras.recargoNocturno),
-      // Force logic for reform transition years
-      festiva: (year === 2026 || year === 2025)
-        ? defaultFestiva
-        : Number(data.multipliers?.festiva || defaultFestiva),
-      festivaDiurna: (year === 2026 || year === 2025)
-        ? defaultFestivaDiurna
-        : Number(data.multipliers?.festivaDiurna || defaultFestivaDiurna),
-      festivaNocturna: (year === 2026 || year === 2025)
-        ? defaultFestivaNocturna
-        : Number(data.multipliers?.festivaNocturna || defaultFestivaNocturna),
+      festiva: isTransitionYear ? (1 + sundaySurcharge) : Number(data.multipliers?.festiva || (1 + sundaySurcharge)),
+      festivaDiurna: isTransitionYear ? (1 + sundaySurcharge + 0.25) : Number(data.multipliers?.festivaDiurna || (1 + sundaySurcharge + 0.25)),
+      festivaNocturna: isTransitionYear ? (1 + sundaySurcharge + 0.75) : Number(data.multipliers?.festivaNocturna || (1 + sundaySurcharge + 0.75)),
     },
     year: String(year),
   };
