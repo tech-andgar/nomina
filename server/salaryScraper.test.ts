@@ -1,76 +1,71 @@
 import { scrapeSalaryData } from "./salaryScraper.ts";
-import { assertEquals } from "jsr:@std/assert";
+import { expect, test } from "bun:test";
 
-Deno.test(
-  "Salary Data Scraper",
-  async () => {
-    const data = await scrapeSalaryData();
+test("Salary Data Scraper", async () => {
+  const data = await scrapeSalaryData();
 
-    assertEquals(data.salarioMinimoMensual, "1300000");
-    assertEquals(data.salarioMinimoMensualTexto, "Un Millón Trescientos Mil Pesos");
-    assertEquals(data.variacionAnual, {
-      porcentaje: "12.07",
-      valor: "140000",
-    });
-    assertEquals(data.salarioMasSubsidio, "1462000");
+  expect(data.salarioMinimoMensual).toBe("1750905");
+  expect(data.salarioMinimoMensualTexto).toBe("Un Millón Setecientos Cincuenta Mil Novecientos Cinco Pesos");
+  expect(data.variacionAnual).toEqual({
+    porcentaje: "23",
+    valor: "327405",
+  });
+  expect(data.salarioMasSubsidio).toBe("2000000");
 
-    // Test 'valoresSalarioMinimo2024' length
-    assertEquals(data.valoresSalarioMinimo2024.length > 0, true);
+  // Test 'valoresSalarioMinimo' length
+  expect(data.valoresSalarioMinimo2024.length > 0).toBe(true);
 
-    // Test 'salarioMinimoEnDolares'
-    assertEquals(data.salarioMinimoEnDolares, {
-      "2024-10-13 TRM 1 dólar - pesos colombianos": "4192.56",
-      "Salario Mínimo 2024 Colombia en Dólares": "310.07 USD",
-    });
+  // Test 'salarioMinimoEnDolares'
+  expect(data.salarioMinimoEnDolares).toEqual({
+    "TRM 1 dólar - pesos colombianos": "3770.03",
+    "Salario Mínimo en Dólares": "464.43 USD",
+  });
 
-    // Test 'aportesSeguridadSocial'
-    assertEquals(data.aportesSeguridadSocial, [
-      {
-        concepto: "Salud",
-        empleado: "4%",
-        "empleado-concepto-slmv": "52000",
-        empleador: "8.5%",
-        "empleador-concepto-slmv": "110500",
-        independiente: "12.5%",
-        "independiente-concepto-slmv": "162500",
-      },
-      {
-        concepto: "Pensión",
-        empleado: "4%",
-        "empleado-concepto-slmv": "52000",
-        empleador: "12%",
-        "empleador-concepto-slmv": "156000",
-        independiente: "16%",
-        "independiente-concepto-slmv": "208000",
-      },
-    ]);
+  // Test 'aportesSeguridadSocial'
+  expect(data.aportesSeguridadSocial).toEqual([
+    {
+      concepto: "Salud",
+      empleado: "4%",
+      "empleado-concepto-slmv": "70036.20",
+      empleador: "8.5%",
+      "empleador-concepto-slmv": "148826.93",
+      independiente: "12.5%",
+      "independiente-concepto-slmv": "218863.13",
+    },
+    {
+      concepto: "Pensión",
+      empleado: "4%",
+      "empleado-concepto-slmv": "70036.20",
+      empleador: "12%",
+      "empleador-concepto-slmv": "210108.60",
+      independiente: "16%",
+      "independiente-concepto-slmv": "280144.80",
+    },
+  ]);
 
-    // Test 'salarioRecibidoEmpleadoEjemplo'
-    assertEquals(data.salarioRecibidoEmpleadoEjemplo, {
-      "Salario Mensual": "1300000",
-      "Subsidio de transporte": "162000",
-      "Aporte Seguridad Social - Salud": "-52000",
-      "Aporte Seguridad Social - Pensión": "-52000",
-      "Total Salario Recibido": "1358000",
-      "Cesantías": "121833",
-      "Intereses sobre cesantías": "14620",
-      "Total Aportes Cesantías": "136453",
-    });
+  expect(data.salarioRecibidoEmpleadoEjemplo).toEqual({
+    "Salario Mensual": "1750905",
+    "Subsidio de transporte": "249095",
+    "Aporte Seguridad Social - Salud": "-70036",
+    "Aporte Seguridad Social - Pensión": "-70036",
+    "Total Salario Recibido": "1859928",
+    "Cesantías": "166667",
+    "Intereses sobre cesantías": "20000",
+    "Total Aportes Cesantías": "186667"
+  });
 
-    // Test 'salarioPagadoEmpleadorEjemplo'
-    assertEquals(data.salarioPagadoEmpleadorEjemplo, {
-      "Salario Mensual": "1300000",
-      "Subsidio de transporte": "162000",
-      "Prima (1 salario anual + transporte)": "121833",
-      "Cesantías (1 salario anual)": "121833",
-      "Intereses sobre cesantías (12% cesantías año anterior)": "14620",
-      "Aporte Seguridad Social - Salud (8.5%)": "110500",
-      "Aporte Seguridad Social - Pensión (12%)": "156000",
-      "Aporte Seguridad Social - ARL (Riesgo V - 6.96%)": "90480",
-      "Parafiscales - Caja de compensación (4%)": "52000",
-      "Parafiscales - ICBF (3%)": "39000",
-      "Parafiscales - Sena (2%)": "26000",
-      "Total Pagado": "2194267",
-    });
-  },
-);
+  expect(data.salarioPagadoEmpleadorEjemplo).toEqual({
+    "Salario Mensual": "1750905",
+    "Subsidio de transporte": "249095",
+    "Prima (1 salario anual + transporte)": "166667",
+    "Cesantías (1 salario anual)": "166667",
+    "Intereses sobre cesantías (12% cesantías año anterior)": "20000",
+    "Aporte Seguridad Social - Salud (8.5%)": "148827",
+    "Aporte Seguridad Social - Pensión (12%)": "210109",
+    "Aporte Seguridad Social - ARL (Riesgo V - 6.96%)": "121863",
+    "Parafiscales - Caja de compensación (4%)": "70036",
+    "Parafiscales - ICBF (3%)": "52527",
+    "Parafiscales - Sena (2%)": "35018",
+    "Total Pagado": "2991713"
+  });
+});

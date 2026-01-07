@@ -1,4 +1,4 @@
-import { launch } from "jsr:@astral/astral";
+import puppeteer from "puppeteer";
 
 interface SalaryData {
   concepto: string;
@@ -21,7 +21,7 @@ interface SalarioEjemplo {
 }
 
 export const scrapeSalaryData = async () => {
-  const browser = await launch({ headless: true, args: ["--no-sandbox"] });
+  const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
   const page = await browser.newPage();
 
   try {
@@ -74,7 +74,7 @@ export const scrapeSalaryData = async () => {
       const heading = card.querySelector("h3");
       return heading &&
         heading.textContent!.includes(
-          "Aportes a seguridad social mínimos Año 2024",
+          "Aportes a seguridad social mínimos",
         );
     });
 
@@ -109,12 +109,19 @@ export const scrapeSalaryData = async () => {
       rows.forEach((row) => {
         const tds = row.querySelectorAll("td");
         tds.forEach((td, index) => {
+          if (index >= conceptos.length) return;
           const conceptoName = conceptos[index];
           const conceptoData = aportesObj[conceptoName];
+          if (!conceptoData) return;
+
           const h5 = td.querySelector("h5");
           const conceptoTipo = h5 ? h5.textContent!.trim() : "";
-          const valorText = td.childNodes[1] ? td.childNodes[1].textContent!.trim() : "";
-          const valor = valorText.replace(/[^\d.,-]/g, "").replace(",", "");
+
+          // Get the full text and extract the dollar amount
+          const tdText = td.textContent || "";
+          const valorMatch = tdText.match(/\$ ([0-9.,]+)/);
+          const valor = valorMatch ? valorMatch[1].replace(",", "") : "";
+
           const small = td.querySelector("small");
           const duracionText = small ? small.textContent!.trim() : "";
           const porcentajeMatch = duracionText.match(
@@ -142,8 +149,8 @@ export const scrapeSalaryData = async () => {
       document.querySelectorAll("div.card.shadow-sm"),
     ).find((card) => {
       return card.textContent!.includes(
-        "Salario Mínimo 2024 Colombia en Dólares",
-      );
+        "Salario Mínimo",
+      ) && card.textContent!.includes("en Dólares");
     });
     const salarioEnDolaresText = salarioEnDolaresCard ? salarioEnDolaresCard.textContent!.trim() : "";
 
@@ -210,7 +217,7 @@ export const scrapeSalaryData = async () => {
       salarioMasSubsidio: getTextContent(
         "div.card-body p:nth-of-type(3) .valor",
       ),
-      valoresSalarioMinimo2024: getTableData(
+      valoresSalarioMinimo: getTableData(
         document.querySelector(
           "div.card-body table.table.table-striped.table-sm",
         ),
@@ -242,7 +249,7 @@ export const scrapeSalaryData = async () => {
       valor: extractNumeric(salaryData.variacionAnual!.split("$")[1]),
     },
     salarioMasSubsidio: extractNumeric(salaryData.salarioMasSubsidio!),
-    valoresSalarioMinimo2024: salaryData.valoresSalarioMinimo2024.map(
+    valoresSalarioMinimo2024: salaryData.valoresSalarioMinimo.map(
       (item) => {
         return {
           concepto: item.concepto,
@@ -258,19 +265,19 @@ export const scrapeSalaryData = async () => {
 
       lines.forEach((line) => {
         if (!trmMatch) {
-          trmMatch = line.match(/1 dólar = \$ ([0-9.,]+)/);
+          trmMatch = line.match(/1 dólar = \$ ([0-9.,]+)/) || line.match(/TRM: \$ ([0-9.,]+)/);
         }
         if (!salarioMinimoDolaresMatch) {
           salarioMinimoDolaresMatch = line.match(
-            /Salario Mínimo 2024 Colombia en Dólares: \$ ([0-9.,]+) USD/,
-          );
+            /Salario Mínimo ([0-9]+) Colombia en Dólares: \$ ([0-9.,]+) USD/,
+          ) || line.match(/Salario Mínimo ([0-9]+) en Dólares: \$ ([0-9.,]+) USD/);
         }
       });
 
       return {
-        "2024-10-13 TRM 1 dólar - pesos colombianos": trmMatch ? extractNumeric(trmMatch[1]) : "0",
-        "Salario Mínimo 2024 Colombia en Dólares": salarioMinimoDolaresMatch
-          ? `${extractNumeric(salarioMinimoDolaresMatch[1])} USD`
+        "TRM 1 dólar - pesos colombianos": trmMatch ? extractNumeric(trmMatch[1]) : "0",
+        "Salario Mínimo en Dólares": salarioMinimoDolaresMatch
+          ? `${extractNumeric(salarioMinimoDolaresMatch[2])} USD`
           : "0 USD",
       };
     })(),
