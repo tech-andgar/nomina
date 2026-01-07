@@ -197,7 +197,7 @@ export function calcularValorIBC(colaborador: Colaborador, constants: YearlyCons
     const factorIngreso = 1 - (porcentajeDeduccion / 100);
     const ingresoNeto = totalDevengado * factorIngreso;
 
-    const base40 = ingresoNeto * 0.40;
+    const base40 = ingresoNeto * 0.4;
 
     // Si la base 40% es inferior al mínimo, se debe cotizar sobre el mínimo.
     // OJO: Si el ingreso total es inferior al mínimo, técnicamente no están obligados a cotizar al sistema (pueden ser beneficiarios),

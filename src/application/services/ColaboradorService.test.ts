@@ -257,10 +257,10 @@ describe("ColaboradorService", () => {
 
         const totales = ColaboradorService.calcularTotales([c1, c2]);
 
-        expect(totales.totalDevengado).toBeCloseTo(c1.devengado.totalDevengado! + c2.devengado.totalDevengado!, 2);
-        expect(totales.totalDevengado).toBeCloseTo(c1.devengado.totalDevengado! + c2.devengado.totalDevengado!, 2);
-        expect(totales.totalDeducido).toBeCloseTo(c1.deducido.totalDeducido! + c2.deducido.totalDeducido!, 2);
-        expect(totales.totalNeto).toBeCloseTo(c1.totalNeto! + c2.totalNeto!, 2);
+        expect(totales.totalDevengado).toBeCloseTo((c1.devengado.totalDevengado ?? 0) + (c2.devengado.totalDevengado ?? 0), 2);
+        expect(totales.totalDevengado).toBeCloseTo((c1.devengado.totalDevengado ?? 0) + (c2.devengado.totalDevengado ?? 0), 2);
+        expect(totales.totalDeducido).toBeCloseTo((c1.deducido.totalDeducido ?? 0) + (c2.deducido.totalDeducido ?? 0), 2);
+        expect(totales.totalNeto).toBeCloseTo((c1.totalNeto ?? 0) + (c2.totalNeto ?? 0), 2);
     });
 
     test("Historical Regression: 2024 calculations (230 divisor, 1.75 Sunday factor)", () => {
@@ -296,7 +296,7 @@ describe("ColaboradorService", () => {
         // Previous expectation of 2.25 was likely incorrect (assuming 100% surcharge).
         // Expected: 8695.65 * 1 * 2.0 = 17391.30
 
-        expect(result.devengado.valorExtras.domingos).toBeCloseTo(17391.30, 2);
+        expect(result.devengado.valorExtras.domingos).toBeCloseTo(17391.3, 2);
     });
 
     test("Solidarity Fund: Progressive Brackets Checks", () => {
@@ -540,7 +540,7 @@ describe("ColaboradorService", () => {
 
             // 1. Get Real Base from 12M Salary
             const fullEarner = { ...mockColaborador, sueldo: 12000000, diasTrabajados: 30 };
-            const result = ColaboradorService.calcularColaborador(fullEarner, 2025);
+            ColaboradorService.calcularColaborador(fullEarner, 2025);
 
             // We need the UVT Base, which is not directly exposed in result, so we re-derive it:
             // Income 12M - 480k(Health) - 480k(Pension) - 120k(Fondo) = 10,920,000
@@ -611,7 +611,7 @@ describe("ColaboradorService", () => {
                 diasTrabajados: 30,
                 deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, viviendaMensual: 0, tipoTabla: "legacy_2019_2022" as const }
             };
-            const result2019 = ColaboradorService.calcularColaborador(earner, 2025);
+            ColaboradorService.calcularColaborador(earner, 2025);
             // Base UVT approx: (7M - sol - pens - sal) - 25%
             // 7M - 560k (8%) - 70k (1%) = 6.37M
             // 6.37M - 25% = 4.7775M.
@@ -933,10 +933,10 @@ describe("ColaboradorService", () => {
             }, 2026, 7); // July
 
             // Hourly rate increases (divisor decreases 220 -> 210)
-            expect(h2.valorHoraOrdinaria).toBeGreaterThan(h1.valorHoraOrdinaria!);
+            expect(h2.valorHoraOrdinaria).toBeGreaterThan(h1.valorHoraOrdinaria ?? 0);
 
             // Extra value increases due to BOTH higher hourly rate AND higher multiplier (2.05 -> 2.15)
-            expect(h2.devengado.totalValorExtras).toBeGreaterThan(h1.devengado.totalValorExtras!);
+            expect(h2.devengado.totalValorExtras).toBeGreaterThan(h1.devengado.totalValorExtras ?? 0);
 
         });
     });
@@ -985,7 +985,7 @@ describe("ColaboradorService", () => {
             // 40% of 2M = 800k. 
             // SMMLV 2026 (Mock/Approx) ~1.75M.
             // IBC should be SMMLV, not 800k.
-            const smmlv = 1750905; // From mockConstants in test
+            // smmlv var removed
             // Note: In real run it fetches from structure. 
             // Our test suite uses mockConstants? No, it imports service which imports real constants.
             // Wait, the "mockConstants" var in this file is NOT used by the service directly unless injected. 
@@ -1014,7 +1014,7 @@ describe("ColaboradorService", () => {
                 sueldo: 10000000,
                 diasTrabajados: 30
             };
-            const result = ColaboradorService.calcularColaborador(docente, 2026);
+            ColaboradorService.calcularColaborador(docente, 2026);
 
             // Gross: 10,000,000
             // Costs: 6,830,000 (68.3%)
@@ -1082,7 +1082,7 @@ describe("ColaboradorService", () => {
                 sueldo: 10000000,
                 diasTrabajados: 30
             };
-            const result = ColaboradorService.calcularColaborador(agri, 2026);
+            ColaboradorService.calcularColaborador(agri, 2026);
 
             // Gross: 10M
             // Costs: 7.39M
