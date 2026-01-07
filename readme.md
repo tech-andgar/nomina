@@ -14,6 +14,28 @@ A simple front app that interact with the nomina basico built with Framework Qua
 - Framework Quasar and Vue.JS V3 frontend <!-- ([⚡️ /web](web)) -->
 - Frontend deployed in github pages
 
+## 🚀 Server (Scraper)
+
+The server is a web scraper built with **Bun** and **Puppeteer** to extract Colombian salary data.
+
+### Features
+- **Multi-Year Support**: Scrapes data and organizes it by year in `server/data/{year}.json`.
+- **Automated Verification**: Includes a comprehensive test suite using `bun test`.
+- **Latest Data**: Always maintains a `latest.json` for easy access.
+
+### Usage
+```bash
+# Install dependencies
+pnpm install
+bun x puppeteer browsers install chrome
+
+# Run the scraper
+bun dev
+
+# Run tests
+bun test
+```
+
 ## Installation
 
 No need to install
@@ -36,17 +58,8 @@ $ cd web-with-graphql
 $ npm install
 $ npm start
 ```
-
-##### API
-
-```sh
-$ cd api
-$ npm install
-$ npm run dev
-```
 -->
 
 ## 👻 LICENCE
 
 [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
