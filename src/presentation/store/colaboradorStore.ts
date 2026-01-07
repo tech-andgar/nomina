@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
-import type { Colaborador } from "../../domain/Colaborador.ts";
-import * as ColaboradorService from "../../application/services/ColaboradorService.ts";
+import type { Colaborador } from "@src/domain/Colaborador.ts";
+import * as ColaboradorService from "@src/application/services/ColaboradorService.ts";
 
 export const useColaboradorStore = defineStore("colaborador", () => {
   const colaboradores = ref<Colaborador[]>([]);

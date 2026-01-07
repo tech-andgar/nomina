@@ -1,5 +1,6 @@
-import type { Colaborador } from "../../domain/Colaborador.ts";
-import { GLOBAL_CONSTANTS, YearlyConstants, getYearlyConstants } from "../../infrastructure/config/constants.ts";
+import type { Colaborador } from "@src/domain/Colaborador.ts";
+import { GLOBAL_CONSTANTS, getYearlyConstants } from "@src/infrastructure/config/constants.ts";
+import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
 
 export function checkNotEmptyDataColaborador(colaborador: Colaborador): boolean {
   return (
