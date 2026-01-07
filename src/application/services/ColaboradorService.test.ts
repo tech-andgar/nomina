@@ -1,5 +1,5 @@
-import { expect, test, describe } from "bun:test";
-import { ColaboradorService } from "./ColaboradorService.ts";
+import { describe, expect, test } from "bun:test";
+import * as ColaboradorService from "./ColaboradorService.ts";
 import { Colaborador } from "../../domain/Colaborador.ts";
 import { YearlyConstants } from "../../infrastructure/config/constants.ts";
 
