@@ -1,66 +1,14 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 import type { Colaborador } from "@src/domain/Colaborador.ts";
+import { createEmptyColaborador } from "@src/domain/Colaborador.ts";
 import * as ColaboradorService from "@src/application/services/ColaboradorService.ts";
 
 export const useColaboradorStore = defineStore("colaborador", () => {
   const colaboradores = ref<Colaborador[]>([]);
   const selectedYear = ref<number>(2026);
 
-  const colaborador = ref<Colaborador>({
-    cedula: null,
-    nombre: null,
-    sueldo: null,
-    valorHoraOrdinaria: null,
-    auxTransporte: null,
-    diasTrabajados: null,
-    devengado: {
-      horasExtras: {
-        diurna: null,
-        nocturna: null,
-        domingos: null,
-        nocturnaDomingos: null,
-        recargoNocturno: null,
-      },
-      sueldoBasico: null,
-      valorExtras: {
-        diurna: null,
-        nocturna: null,
-        domingos: null,
-        nocturnaDomingos: null,
-        recargoNocturno: null,
-      },
-      totalValorExtras: null,
-      ibc: null,
-      totalDevengado: null,
-    },
-    deducido: {
-      salud: null,
-      pension: null,
-      fondoSolidaridad: null,
-      uvt: null,
-      retefuente: null,
-      totalDeducido: null,
-    },
-    parafiscales: {
-      salud: null,
-      pension: null,
-      arl: null,
-      sena: null,
-      icbf: null,
-      cajas: null,
-      totalParafiscales: null,
-    },
-    prestaciones: {
-      prima: null,
-      vacaciones: null,
-      cesantias: null,
-      interesCesantias: null,
-      totalPrestacion: null,
-    },
-    totalNeto: null,
-    totalNomina: null,
-  });
+  const colaborador = ref<Colaborador>(createEmptyColaborador());
 
   const totalNomina = computed(() =>
     colaboradores.value.reduce((acc, c) => acc + (c.totalNomina || 0), 0)
@@ -79,60 +27,7 @@ export const useColaboradorStore = defineStore("colaborador", () => {
   };
 
   const resetColaborador = () => {
-    colaborador.value = {
-      cedula: null,
-      nombre: null,
-      sueldo: null,
-      valorHoraOrdinaria: null,
-      auxTransporte: null,
-      diasTrabajados: null,
-      devengado: {
-        horasExtras: {
-          diurna: null,
-          nocturna: null,
-          domingos: null,
-          nocturnaDomingos: null,
-          recargoNocturno: null,
-        },
-        sueldoBasico: null,
-        valorExtras: {
-          diurna: null,
-          nocturna: null,
-          domingos: null,
-          nocturnaDomingos: null,
-          recargoNocturno: null,
-        },
-        totalValorExtras: null,
-        ibc: null,
-        totalDevengado: null,
-      },
-      deducido: {
-        salud: null,
-        pension: null,
-        fondoSolidaridad: null,
-        uvt: null,
-        retefuente: null,
-        totalDeducido: null,
-      },
-      parafiscales: {
-        salud: null,
-        pension: null,
-        arl: null,
-        sena: null,
-        icbf: null,
-        cajas: null,
-        totalParafiscales: null,
-      },
-      prestaciones: {
-        prima: null,
-        vacaciones: null,
-        cesantias: null,
-        interesCesantias: null,
-        totalPrestacion: null,
-      },
-      totalNeto: null,
-      totalNomina: null,
-    };
+    colaborador.value = createEmptyColaborador();
   };
 
   // Recalculate all colaboradores when the year changes
