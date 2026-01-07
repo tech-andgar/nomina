@@ -8,8 +8,8 @@ import {
     setSelectedYear,
     setEmpleador,
     resetColaborador
-} from "./colaboradorState.ts";
-import { createEmptyColaborador } from "@src/domain/Colaborador.ts";
+} from "./colaboradorState";
+import { createEmptyColaborador } from "@src/domain/Colaborador";
 
 describe("colaboradorState", () => {
     beforeEach(() => {

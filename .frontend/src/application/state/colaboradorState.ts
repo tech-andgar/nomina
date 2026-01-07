@@ -1,8 +1,8 @@
 import { atom, computed } from "nanostores";
-import type { Colaborador } from "@src/domain/Colaborador.ts";
-import { createEmptyColaborador } from "@src/domain/Colaborador.ts";
-import type { InfoEmpleador } from "@src/domain/Empleador.ts";
-import * as ColaboradorService from "@src/application/services/ColaboradorService.ts";
+import type { Colaborador } from "@src/domain/Colaborador";
+import { createEmptyColaborador } from "@src/domain/Colaborador";
+import type { InfoEmpleador } from "@src/domain/Empleador";
+import * as ColaboradorService from "@src/application/services/ColaboradorService";
 
 // State Atoms
 export const $colaboradores = atom<Colaborador[]>([]);

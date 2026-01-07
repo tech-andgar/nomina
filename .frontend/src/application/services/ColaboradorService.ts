@@ -1,8 +1,8 @@
-import type { Colaborador } from "@src/domain/Colaborador.ts";
-import type { InfoEmpleador } from "@src/domain/Empleador.ts";
-import { GLOBAL_CONSTANTS, getYearlyConstants, COSTOS_PRESUNTOS, TAX_LIMITS } from "@src/infrastructure/config/constants.ts";
-import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
-import { TAX_TABLES, type TaxTable } from "@src/infrastructure/config/tax_tables.ts";
+import type { Colaborador } from "@src/domain/Colaborador";
+import type { InfoEmpleador } from "@src/domain/Empleador";
+import { GLOBAL_CONSTANTS, getYearlyConstants, COSTOS_PRESUNTOS, TAX_LIMITS } from "@src/infrastructure/config/constants";
+import type { YearlyConstants } from "@src/infrastructure/config/constants";
+import { TAX_TABLES, type TaxTable } from "@src/infrastructure/config/tax_tables";
 
 export function checkNotEmptyDataColaborador(colaborador: Colaborador): boolean {
   return (

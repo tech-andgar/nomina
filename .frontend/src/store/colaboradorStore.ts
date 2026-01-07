@@ -10,9 +10,9 @@ import {
   resetColaborador,
   setSelectedYear,
   setEmpleador
-} from "@src/application/state/colaboradorState.ts";
+} from "@src/application/state/colaboradorState";
 
-export { MONEY_FORMAT as moneyFormatForComponent } from "@src/infrastructure/config/constants.ts";
+export { MONEY_FORMAT as moneyFormatForComponent } from "@src/infrastructure/config/constants";
 
 export const useColaboradorStore = defineStore("colaborador", () => {
   // Bridge Nanostores to Vue reactivity
