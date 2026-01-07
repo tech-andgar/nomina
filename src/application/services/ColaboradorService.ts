@@ -553,8 +553,8 @@ export function calcularValorTotalNomina(colaborador: Colaborador, constants: Ye
  * Recalculates all fields of a Colaborador and returns a new, updated object.
  * @param empleador Opcional: InfoEmpleador para cálculo preciso de exoneraciones.
  */
-export function calcularColaborador(colaborador: Colaborador, optionalYear?: number, empleador?: InfoEmpleador): Colaborador {
-  const constants = getYearlyConstants(optionalYear || 2026);
+export function calcularColaborador(colaborador: Colaborador, optionalYear?: number, optionalMonth?: number, empleador?: InfoEmpleador): Colaborador {
+  const constants = getYearlyConstants(optionalYear || 2026, optionalMonth || 1);
 
   const valorHoraOrdinaria = calcularValorHoraOrdinaria(colaborador, constants);
   const auxTransporte = calcularValorAuxTransporte(colaborador, constants);

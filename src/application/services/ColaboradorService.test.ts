@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import * as ColaboradorService from "@src/application/services/ColaboradorService.ts";
-import type { Colaborador } from "@src/domain/Colaborador.ts";
+import { type Colaborador, createEmptyColaborador } from "@src/domain/Colaborador.ts";
 import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
 
 describe("ColaboradorService", () => {
@@ -261,7 +261,8 @@ describe("ColaboradorService", () => {
     });
 
     test("calcularColaborador should perform full calculation for 2026 (210 divisor)", () => {
-        const result = ColaboradorService.calcularColaborador(mockColaborador, 2026);
+        // Use July (Month 7) to ensure H2 rules (210 hours)
+        const result = ColaboradorService.calcularColaborador(mockColaborador, 2026, 7);
 
         // 2,000,000 / 210 = 9523.8095...
         expect(result.valorHoraOrdinaria).toBeCloseTo(9523.81, 2);
@@ -344,10 +345,11 @@ describe("ColaboradorService", () => {
         // Note: ColaboradorService.ts `calcularValorTotalExtrasValor` sums them up.
         // And `calcularColaborador` sets `valorExtras` in `devengado`.
 
-        // 2024 uses factor 2.25 (based on persistency/scraper)
-        // Expected: 8695.65 * 1 * 2.25 = 19565.22
+        // 2024 uses factor 2.0 (Standard Pre-Reform: 1.0 + 0.75 Recargo + 0.25 Extra Diurna)
+        // Previous expectation of 2.25 was likely incorrect (assuming 100% surcharge).
+        // Expected: 8695.65 * 1 * 2.0 = 17391.30
 
-        expect(result.devengado.valorExtras.domingos).toBeCloseTo(19565.22, 2);
+        expect(result.devengado.valorExtras.domingos).toBeCloseTo(17391.30, 2);
     });
 
     test("Solidarity Fund: Progressive Brackets Checks", () => {
@@ -881,7 +883,7 @@ describe("ColaboradorService", () => {
                 }
             };
 
-            const result = ColaboradorService.calcularColaborador(borderlineEarner, 2026);
+            const result = ColaboradorService.calcularColaborador(borderlineEarner, 2026, 7);
 
             // 1. Verify Monthly Divisor 210 (2026 Reform)
             // 17,000,000 / 210 = 80,952.38
@@ -905,8 +907,89 @@ describe("ColaboradorService", () => {
 
             // 5. Counter-verify: Without Extras, should be exempt
             const lazyEarner = { ...borderlineEarner, devengado: { ...borderlineEarner.devengado, horasExtras: { ...borderlineEarner.devengado.horasExtras, domingos: 0 } } };
-            const resultLazy = ColaboradorService.calcularColaborador(lazyEarner, 2026);
+            const resultLazy = ColaboradorService.calcularColaborador(lazyEarner, 2026, 7);
             expect(resultLazy.parafiscales.salud).toBe(0);
+        });
+    });
+
+    describe("2026 Labor Reform Transition (H1 vs H2)", () => {
+        test("H1 2026 (Jan-Jun): Should use 220h/month (44h week) and 80% Sunday Surcharge", () => {
+            const h1Date = { year: 2026, month: 1 }; // January
+            const basicSalary = 2200000; // Easy division: 2200000 / 220 = 10,000/hr
+
+            const result = ColaboradorService.calcularColaborador({
+                ...createEmptyColaborador(),
+                sueldo: basicSalary,
+                diasTrabajados: 30,
+                devengado: {
+                    ...createEmptyColaborador().devengado,
+                    // 1 Sunday Extra Daytime Hour
+                    horasExtras: { ...createEmptyColaborador().devengado.horasExtras, domingos: 1 }
+                }
+            }, h1Date.year, h1Date.month);
+
+            // 1. Check Hourly Rate: 2,200,000 / 220 = 10,000
+            expect(result.valorHoraOrdinaria).toBe(10000);
+
+            // 2. Check Sunday Extra:
+            // Formula: Rate * (1.0 Base + 0.8 Surcharge + 0.25 Extra) = Rate * 2.05
+            // 10,000 * 2.05 = 20,500
+            const expectedExtra = 10000 * 2.05;
+            expect(result.devengado.valorExtras.domingos).toBe(expectedExtra);
+        });
+
+        test("H2 2026 (Jul-Dec): Should use 210h/month (42h week) and 90% Sunday Surcharge", () => {
+            const h2Date = { year: 2026, month: 7 }; // July
+            const basicSalary = 2100000; // Easy division: 2100000 / 210 = 10,000/hr
+
+            const result = ColaboradorService.calcularColaborador({
+                ...createEmptyColaborador(),
+                sueldo: basicSalary,
+                diasTrabajados: 30,
+                devengado: {
+                    ...createEmptyColaborador().devengado,
+                    // 1 Sunday Extra Daytime Hour
+                    horasExtras: { ...createEmptyColaborador().devengado.horasExtras, domingos: 1 }
+                }
+            }, h2Date.year, h2Date.month);
+
+            // 1. Check Hourly Rate: 2,100,000 / 210 = 10,000
+            expect(result.valorHoraOrdinaria).toBe(10000);
+
+            // 2. Check Sunday Extra:
+            // Formula: Rate * (1.0 Base + 0.9 Surcharge + 0.25 Extra) = Rate * 2.15
+            // 10,000 * 2.15 = 21,500
+            const expectedExtra = 10000 * 2.15;
+            expect(result.devengado.valorExtras.domingos).toBe(expectedExtra);
+        });
+
+        test("Transition Impact: Same Salary should yield higher hourly rate and higher extras in H2", () => {
+            const salary = 5000000;
+            const h1 = ColaboradorService.calcularColaborador({
+                ...createEmptyColaborador(),
+                sueldo: salary,
+                diasTrabajados: 30,
+                devengado: {
+                    ...createEmptyColaborador().devengado,
+                    horasExtras: { ...createEmptyColaborador().devengado.horasExtras, domingos: 10 }
+                }
+            }, 2026, 1); // Jan
+
+            const h2 = ColaboradorService.calcularColaborador({
+                ...createEmptyColaborador(),
+                sueldo: salary,
+                diasTrabajados: 30,
+                devengado: {
+                    ...createEmptyColaborador().devengado,
+                    horasExtras: { ...createEmptyColaborador().devengado.horasExtras, domingos: 10 }
+                }
+            }, 2026, 7); // July
+
+            // Hourly rate increases (divisor decreases 220 -> 210)
+            expect(h2.valorHoraOrdinaria).toBeGreaterThan(h1.valorHoraOrdinaria!);
+
+            // Extra value increases due to BOTH higher hourly rate AND higher multiplier (2.05 -> 2.15)
+            expect(h2.devengado.totalValorExtras).toBeGreaterThan(h1.devengado.totalValorExtras!);
         });
     });
 });
