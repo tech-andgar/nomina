@@ -136,6 +136,17 @@ describe("ColaboradorService", () => {
         expect(result).toBeCloseTo(80000, 2);
     });
 
+    test("calcularValorIBC should cap at 25 SMMLV", () => {
+        const slmv = mockConstants.slmv;
+        // Case 1: Under Cap
+        const underCap = { ...mockColaborador, sueldo: 10 * slmv };
+        expect(ColaboradorService.calcularValorIBC(underCap, mockConstants)).toBeCloseTo(10 * slmv, 2);
+
+        // Case 2: Over Cap
+        const overCap = { ...mockColaborador, sueldo: 30 * slmv };
+        expect(ColaboradorService.calcularValorIBC(overCap, mockConstants)).toBeCloseTo(25 * slmv, 2);
+    });
+
     test("calcularValorFondoSolidaridad should test all progressive brackets", () => {
         const slmv = mockConstants.slmv;
 
@@ -145,6 +156,13 @@ describe("ColaboradorService", () => {
         // Bracket 2: 4-16 SLMV -> 1%
         const level16 = { ...mockColaborador, sueldo: 5 * slmv };
         expect(ColaboradorService.calcularValorFondoSolidaridad(level16, mockConstants)).toBeCloseTo(5 * slmv * 0.01, 2);
+
+        // Bracket 2b: Test explicit IBC Cap effect on FSP
+        // Salary 50M -> IBC Capped at 25 SMMLV.
+        // FSP should be 2% of 25 SMMLV, NOT 2% of 50M.
+        const levelUber = { ...mockColaborador, sueldo: 50000000 };
+        const cappedIBC = 25 * slmv;
+        expect(ColaboradorService.calcularValorFondoSolidaridad(levelUber, mockConstants)).toBeCloseTo(cappedIBC * 0.02, 2);
 
         // Bracket 3: 16-17 SLMV -> 1.2%
         const level16_5 = { ...mockColaborador, sueldo: 16.5 * slmv };
@@ -199,11 +217,12 @@ describe("ColaboradorService", () => {
         const c3 = { ...mockColaborador, sueldo: 50000000 };
         const reteAlto = ColaboradorService.calcularValorRetefuente(c3, mockConstants);
 
-        // Updated for Ley 2277 (2026 Rules):
+        // Updated for Ley 2277 (2026 Rules) + IBC Cap (25 SMMLV):
         // Strict limits on 25% exemption (790 UVT/year) and global 40% cap (1340 UVT/year).
-        // This significantly increases the tax base for high earners compared to old rules.
-        // Expected ~11.3M (Client reported 11,296,034)
-        expect(reteAlto).toBeCloseTo(11296035, -3);
+        // Plus, Social Security deductions are now capped at 25 SMMLV base, decreasing deductions and increasing tax base.
+        // Previous expectation: ~11.3M.
+        // New expectation with capped social security: ~11.51M
+        expect(reteAlto).toBeCloseTo(11513989, -3);
     });
 
     describe("Employer Obligations", () => {
@@ -347,7 +366,20 @@ describe("ColaboradorService", () => {
         };
 
         // Bracket 2: 4-16 SLMV -> 1% (Already tested above, re-verifying for completeness)
+        // Bracket 2: 4-16 SLMV -> 1% (Already tested above, re-verifying for completeness)
         checkFondo(5, 0.01);
+
+        // Boundary Check: Exactly 4 SLMV -> 1%
+        checkFondo(4, 0.01);
+
+        // Boundary Check: Just below 4 SLMV -> 0%
+        checkFondo(3.9999, 0);
+
+        // Boundary Check: Just below 16 SLMV -> 1%
+        checkFondo(15.9999, 0.01);
+
+        // Boundary Check: Exactly 16 SLMV -> 1.2%
+        checkFondo(16, 0.012);
 
         // Bracket 3: 16-17 SLMV -> 1.2%
         // Using 16.5 SLMV

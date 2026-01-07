@@ -150,7 +150,13 @@ export function calcularValorIBC(colaborador: Colaborador, constants: YearlyCons
 
   if (totalDevengado === null || auxTransporte === null) return null;
 
-  return totalDevengado - auxTransporte;
+  // Calculo IBC preliminar
+  const ibcPreliminar = totalDevengado - auxTransporte;
+
+  // Tope máximo 25 SMMLV (Límite legal de seguridad social)
+  const topeIBC = 25 * constants.slmv;
+
+  return Math.min(ibcPreliminar, topeIBC);
 }
 
 export function calcularValorSaludColaborador(
@@ -181,34 +187,44 @@ export function calcularValorFondoSolidaridad(
   const slmv = constants.slmv;
   let fondoSolidaridad = 0;
 
-  if (totalDevengado > 20 * slmv) {
-    fondoSolidaridad = (totalDevengado * 2) / 100;
-  } else if (
-    totalDevengado >= 19 * slmv &&
-    totalDevengado < 20 * slmv
-  ) {
-    fondoSolidaridad = (totalDevengado * 1.8) / 100;
-  } else if (
-    totalDevengado >= 18 * slmv &&
-    totalDevengado < 19 * slmv
-  ) {
-    fondoSolidaridad = (totalDevengado * 1.6) / 100;
-  } else if (
-    totalDevengado >= 17 * slmv &&
-    totalDevengado < 18 * slmv
-  ) {
-    fondoSolidaridad = (totalDevengado * 1.4) / 100;
-  } else if (
-    totalDevengado >= 16 * slmv &&
-    totalDevengado < 17 * slmv
-  ) {
-    fondoSolidaridad = (totalDevengado * 1.2) / 100;
-  } else if (
-    totalDevengado >= 4 * slmv &&
-    totalDevengado <= 16 * slmv
-  ) {
-    fondoSolidaridad = (totalDevengado * 1) / 100;
+  // El FSP se liquida sobre el IBC (que ya tiene el tope de 25 SMMLV)
+  // aunque el disparador es devengar más de 4 SMMLV.
+  const ibc = calcularValorIBC(colaborador, constants);
+  if (ibc === null) return null;
+
+  // La base para el cálculo del porcentaje es el IBC.
+  // Sin embargo, para determinar SI aplica, se suele mirar el salario/ingreso total.
+  // Pero la norma técnica de PILA y UGPP establece que el aporte se calcula sobre el IBC.
+  // Dado que si IBC > 4 SMMLV implica Ingreso > 4 SMMLV, usaremos IBC como base solida.
+
+  // Rangos oficiales FSP sobre el IBC (Art 20 Ley 100 / Modificado Ley 797 Art 7):
+  // 4 - 16 SMMLV: 1%
+  // 16 - 17 SMMLV: 1% + 0.2% = 1.2%
+  // 17 - 18 SMMLV: 1% + 0.4% = 1.4%
+  // 18 - 19 SMMLV: 1% + 0.6% = 1.6%
+  // 19 - 20 SMMLV: 1% + 0.8% = 1.8%
+  // > 20 SMMLV:    1% + 1.0% = 2.0%
+  // (Nota: Como el IBC está topado a 25 SMMLV, el caso > 20 cae en 2%)
+
+  if (ibc < 4 * slmv) {
+    return 0;
   }
+
+  let porcentaje = 1;
+
+  if (ibc >= 20 * slmv) {
+    porcentaje = 2;
+  } else if (ibc >= 19 * slmv) {
+    porcentaje = 1.8;
+  } else if (ibc >= 18 * slmv) {
+    porcentaje = 1.6;
+  } else if (ibc >= 17 * slmv) {
+    porcentaje = 1.4;
+  } else if (ibc >= 16 * slmv) {
+    porcentaje = 1.2;
+  }
+
+  fondoSolidaridad = (ibc * porcentaje) / 100;
 
   return fondoSolidaridad;
 }

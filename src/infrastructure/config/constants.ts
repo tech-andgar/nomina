@@ -111,6 +111,17 @@ export const YEARLY_DATA: Record<string, RawYearlyDataEntry> = yearlyData as unk
 export const getYearlyConstants = (year: number): YearlyConstants => {
   const data = YEARLY_DATA[String(year)] || YEARLY_DATA["2026"];
 
+  // Ley 2101 de 2021: Reducción Jornada Laboral
+  // 2023: 47h -> ~235h
+  // 2024: 46h -> ~230h
+  // 2025: 44h -> ~220h
+  // 2026: 42h -> 210h (Definitiva)
+  let defaultHorasMensuales = 240;
+  if (year >= 2026) defaultHorasMensuales = 210;
+  else if (year === 2025) defaultHorasMensuales = 220;
+  else if (year === 2024) defaultHorasMensuales = 230;
+  else if (year === 2023) defaultHorasMensuales = 235;
+
   return {
     slmv: Number(data.slmv || data.salarioMinimoMensual || 0),
     uvt: Number(data.uvt || 0),
@@ -119,7 +130,7 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
       data.salarioPagadoEmpleadorEjemplo?.["Subsidio de transporte"] ||
       0
     ),
-    horasMensuales: Number(data.horasMensuales || 240),
+    horasMensuales: Number(data.horasMensuales || defaultHorasMensuales),
     multipliers: {
       diurna: Number(data.multipliers?.diurna || GLOBAL_CONSTANTS.horasExtras.diurna),
       nocturna: Number(data.multipliers?.nocturna || GLOBAL_CONSTANTS.horasExtras.nocturna),
