@@ -857,4 +857,56 @@ describe("ColaboradorService", () => {
             expect(result.deducido.uvt).not.toBeLessThan(600);
         });
     });
+
+    describe("Reforma Laboral 2026 (Recargos)", () => {
+        test("Recargos 2026: Exoneration Loss due to Sunday Surcharge Increase (90%)", () => {
+            // Scenario: 
+            // 2026 Constants: 210 Hours/Month. Sunday Factor 2.15 (1 + 0.90 + 0.25).
+            // SMMLV 2026 (Mock/Derived in code): ~1,750,905.
+            // 10 SMMLV Threshold = 17,509,050.
+
+            // Base Salary 17,000,000 (< 10 SMMLV) -> Exempt.
+            // Add 5 hours of Sunday Extra work.
+
+            const borderlineEarner = {
+                ...mockColaborador,
+                sueldo: 17000000,
+                diasTrabajados: 30,
+                devengado: {
+                    ...mockColaborador.devengado,
+                    horasExtras: {
+                        ...mockColaborador.devengado.horasExtras,
+                        domingos: 5
+                    }
+                }
+            };
+
+            const result = ColaboradorService.calcularColaborador(borderlineEarner, 2026);
+
+            // 1. Verify Monthly Divisor 210 (2026 Reform)
+            // 17,000,000 / 210 = 80,952.38
+            // expect(result.valorHoraOrdinaria).toBeCloseTo(80952.38, 2);
+
+            // 2. Verify Sunday Extra Value with 2.15 Factor (1 + 0.9 + 0.25)
+            // 80,952.38 * 5 * 2.15 = 870,238.09
+            expect(result.devengado.valorExtras.domingos).toBeCloseTo(870238.09, 1);
+
+            // 3. Verify Total Devengado
+            // 17,000,000 + 870,238.09 = 17,870,238.09
+            expect(result.devengado.totalDevengado).toBeCloseTo(17870238.09, 1);
+
+            // 4. Verify Exoneration Status
+            // 17.87M > 17.50M -> NOT Exempt.
+
+            // Check Health contribution for Employer is > 0
+            expect(result.parafiscales.salud).toBeGreaterThan(0);
+            expect(result.parafiscales.sena).toBeGreaterThan(0);
+            expect(result.parafiscales.icbf).toBeGreaterThan(0);
+
+            // 5. Counter-verify: Without Extras, should be exempt
+            const lazyEarner = { ...borderlineEarner, devengado: { ...borderlineEarner.devengado, horasExtras: { ...borderlineEarner.devengado.horasExtras, domingos: 0 } } };
+            const resultLazy = ColaboradorService.calcularColaborador(lazyEarner, 2026);
+            expect(resultLazy.parafiscales.salud).toBe(0);
+        });
+    });
 });

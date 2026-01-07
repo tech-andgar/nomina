@@ -122,6 +122,23 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
   else if (year === 2024) defaultHorasMensuales = 230;
   else if (year === 2023) defaultHorasMensuales = 235;
 
+  let defaultFestiva = GLOBAL_CONSTANTS.horasExtras.domingos;
+  let defaultFestivaDiurna = GLOBAL_CONSTANTS.horasExtras.domingos + 0.25;
+  let defaultFestivaNocturna = GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos;
+
+  // Logic for 2025/2026 Reform (Recargo Dominical)
+  if (year >= 2026) {
+    // 2026: 90% Surcharge
+    defaultFestiva = 1.9;
+    defaultFestivaDiurna = 2.15;
+    defaultFestivaNocturna = 2.65;
+  } else if (year === 2025) {
+    // 2025: 80% Surcharge
+    defaultFestiva = 1.8;
+    defaultFestivaDiurna = 2.05;
+    defaultFestivaNocturna = 2.55;
+  }
+
   return {
     slmv: Number(data.slmv || data.salarioMinimoMensual || 0),
     uvt: Number(data.uvt || 0),
@@ -134,10 +151,10 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
     multipliers: {
       diurna: Number(data.multipliers?.diurna || GLOBAL_CONSTANTS.horasExtras.diurna),
       nocturna: Number(data.multipliers?.nocturna || GLOBAL_CONSTANTS.horasExtras.nocturna),
-      festiva: Number(data.multipliers?.festiva || GLOBAL_CONSTANTS.horasExtras.domingos),
-      festivaDiurna: Number(data.multipliers?.festivaDiurna || (GLOBAL_CONSTANTS.horasExtras.domingos + 0.25)),
-      festivaNocturna: Number(data.multipliers?.festivaNocturna || GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos),
       recargoNocturno: Number(data.multipliers?.recargoNocturno || GLOBAL_CONSTANTS.horasExtras.recargoNocturno),
+      festiva: Number(data.multipliers?.festiva || defaultFestiva),
+      festivaDiurna: Number(data.multipliers?.festivaDiurna || defaultFestivaDiurna),
+      festivaNocturna: Number(data.multipliers?.festivaNocturna || defaultFestivaNocturna),
     },
     year: String(year),
   };
