@@ -247,89 +247,85 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
   return Number.parseFloat(uvt.toFixed(3));
 }
 
-export function calcularValorRetefuente(colaborador: Colaborador, constants: YearlyConstants): number | null {
+// --- Tax Strategies ---
+
+interface TaxBracket {
+  threshold: number; // UVT floor for this bracket
+  rate: number; // Marginal rate (0.19, 0.28, etc.)
+  addedBaseUVT: number; // Fixed UVT added (e.g., 10, 69)
+  subtractUVT: number; // UVT subtracted from base (usually equal to threshold)
+}
+
+type TaxTable = TaxBracket[];
+
+const TAX_TABLES: Record<string, TaxTable> = {
+  actual: [
+    { threshold: 2300, rate: 0.39, addedBaseUVT: 770, subtractUVT: 2300 },
+    { threshold: 945, rate: 0.37, addedBaseUVT: 268, subtractUVT: 945 },
+    { threshold: 640, rate: 0.35, addedBaseUVT: 162, subtractUVT: 640 },
+    { threshold: 360, rate: 0.33, addedBaseUVT: 69, subtractUVT: 360 },
+    { threshold: 150, rate: 0.28, addedBaseUVT: 10, subtractUVT: 150 },
+    { threshold: 95, rate: 0.19, addedBaseUVT: 0, subtractUVT: 95 },
+  ],
+  legacy_user_85uvt: [
+    { threshold: 2300, rate: 0.39, addedBaseUVT: 770, subtractUVT: 2300 },
+    { threshold: 1140, rate: 0.37, addedBaseUVT: 341, subtractUVT: 1140 },
+    { threshold: 640, rate: 0.35, addedBaseUVT: 166, subtractUVT: 640 },
+    { threshold: 350, rate: 0.33, addedBaseUVT: 70, subtractUVT: 350 },
+    { threshold: 140, rate: 0.28, addedBaseUVT: 11, subtractUVT: 140 },
+    { threshold: 85, rate: 0.19, addedBaseUVT: 0, subtractUVT: 85 },
+  ],
+  legacy_2019_2022: [
+    { threshold: 2300, rate: 0.39, addedBaseUVT: 770, subtractUVT: 2300 },
+    { threshold: 945, rate: 0.37, addedBaseUVT: 268, subtractUVT: 945 },
+    { threshold: 640, rate: 0.35, addedBaseUVT: 162, subtractUVT: 640 },
+    { threshold: 360, rate: 0.33, addedBaseUVT: 69, subtractUVT: 360 },
+    { threshold: 150, rate: 0.28, addedBaseUVT: 10, subtractUVT: 150 },
+    { threshold: 87, rate: 0.19, addedBaseUVT: 0, subtractUVT: 87 },
+  ],
+  legacy_2017_2018: [
+    { threshold: 360, rate: 0.33, addedBaseUVT: 69, subtractUVT: 360 },
+    { threshold: 150, rate: 0.28, addedBaseUVT: 10, subtractUVT: 150 },
+    { threshold: 95, rate: 0.19, addedBaseUVT: 0, subtractUVT: 95 },
+  ],
+  legacy_2013_2016: [
+    { threshold: 360, rate: 0.33, addedBaseUVT: 69, subtractUVT: 360 },
+    { threshold: 150, rate: 0.28, addedBaseUVT: 10, subtractUVT: 150 },
+    { threshold: 95, rate: 0.19, addedBaseUVT: 0, subtractUVT: 95 },
+  ],
+  legacy_2010_2012: [
+    { threshold: 360, rate: 0.33, addedBaseUVT: 69, subtractUVT: 360 },
+    { threshold: 150, rate: 0.28, addedBaseUVT: 10, subtractUVT: 150 },
+    { threshold: 95, rate: 0.19, addedBaseUVT: 0, subtractUVT: 95 },
+  ],
+};
+
+function calculateTaxFromTable(uvt: number, table: TaxTable): number {
+  for (const bracket of table) {
+    if (uvt >= bracket.threshold) {
+      return (
+        (uvt - bracket.subtractUVT) * bracket.rate + bracket.addedBaseUVT
+      );
+    }
+  }
+  return 0;
+}
+
+export function calcularValorRetefuente(
+  colaborador: Colaborador,
+  constants: YearlyConstants,
+): number | null {
   const uvt = calcularValorUVT(colaborador, constants);
   if (uvt === null) return null;
 
   const uvtValor = constants.uvt;
-  let retefuente = 0;
-
-  // Determine table type (Default to 'actual' if undefined or 'actual')
   const tipoTabla = colaborador.deduccionesOpcionales?.tipoTabla ?? "actual";
 
-  if (tipoTabla === "legacy_user_85uvt") {
-    // User Provided Legacy Table (Ref: Ley 1111 de 2006 / Pre-2013 Custom)
-    // Structure: Marginal Progressive (Base UVT must be subtracted)
-    if (uvt >= 2300) {
-      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
-    } else if (uvt >= 1140) {
-      retefuente = ((uvt - 1140) * 0.37 + 341) * uvtValor;
-    } else if (uvt >= 640) {
-      retefuente = ((uvt - 640) * 0.35 + 166) * uvtValor;
-    } else if (uvt >= 350) {
-      retefuente = ((uvt - 350) * 0.33 + 70) * uvtValor;
-    } else if (uvt >= 140) {
-      retefuente = ((uvt - 140) * 0.28 + 11) * uvtValor;
-    } else if (uvt >= 85) {
-      retefuente = (uvt - 85) * 0.19 * uvtValor;
-    }
-  } else if (tipoTabla === "legacy_2019_2022") {
-    // Ley 1943 (2018) / Ley 2010 (2019) -> Starts 87 UVT, Top 39%
-    if (uvt >= 2300) {
-      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
-    } else if (uvt >= 945) {
-      retefuente = ((uvt - 945) * 0.37 + 268) * uvtValor;
-    } else if (uvt >= 640) {
-      retefuente = ((uvt - 640) * 0.35 + 162) * uvtValor;
-    } else if (uvt >= 360) {
-      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
-    } else if (uvt >= 150) {
-      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
-    } else if (uvt >= 87) { // 87 UVT Start
-      retefuente = (uvt - 87) * 0.19 * uvtValor;
-    }
-  } else if (tipoTabla === "legacy_2017_2018") {
-    // Ley 1819 (2016) -> Starts 95 UVT, Top 35% (>640 UVT) (Check top bracket validity)
-    // Actually, Ley 1819 added 35% for >640. Did it have 37/39? 
-    // Research suggests 37/39 were added later (Ley 1943). 
-    // Let's assume Ley 1819 topped at 35% or 33% extended. 
-    // Correction: Ley 1819 introduced 35% (>640) and 37% (>945)? NO, 2019 added higher.
-    // Simplifying: 2017 table topped at 33% or 35%?
-    // Common table 2017: >95 19%, >150 28%, >360 33%. 
-    if (uvt >= 360) {
-      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
-    } else if (uvt >= 150) {
-      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
-    } else if (uvt >= 95) {
-      retefuente = (uvt - 95) * 0.19 * uvtValor;
-    }
-  } else if (tipoTabla === "legacy_2013_2016" || tipoTabla === "legacy_2010_2012") {
-    // Ley 1607 (2012) / Ley 1111 (2006) -> Starts 95 UVT, Top 33%
-    if (uvt >= 360) {
-      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
-    } else if (uvt >= 150) {
-      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
-    } else if (uvt >= 95) {
-      retefuente = (uvt - 95) * 0.19 * uvtValor;
-    }
-  } else {
-    // Actual: Ley 2277 (2022) / Art 383 ET 2023+ (Starts 95 UVT, Top 39%)
-    if (uvt >= 2300) {
-      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
-    } else if (uvt >= 945) {
-      retefuente = ((uvt - 945) * 0.37 + 268) * uvtValor;
-    } else if (uvt >= 640) {
-      retefuente = ((uvt - 640) * 0.35 + 162) * uvtValor;
-    } else if (uvt >= 360) {
-      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
-    } else if (uvt >= 150) {
-      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
-    } else if (uvt >= 95) {
-      retefuente = (uvt - 95) * 0.19 * uvtValor;
-    }
-  }
+  // Default to actual if the type is somehow not found in our map
+  const table = TAX_TABLES[tipoTabla] ?? TAX_TABLES.actual;
 
-  return retefuente;
+  const taxInUVT = calculateTaxFromTable(uvt, table);
+  return taxInUVT * uvtValor;
 }
 
 export function calcularValorTotalDeducido(colaborador: Colaborador, constants: YearlyConstants): number | null {
