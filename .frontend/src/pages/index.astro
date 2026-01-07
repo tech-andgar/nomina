@@ -10,9 +10,23 @@ import "../styles/global.css";
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Nómina Pro - Calculadora Salarial</title>
+		<meta
+			name="description"
+			content="Herramienta de gestión y cálculo de nómina en Colombia. Incluye normatividad vigente, horas extras, prestaciones y proyecciones 2023-2026."
+		/>
+
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZP56GLR91Y"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-ZP56GLR91Y');
+		</script>
 		
 		<!-- Theme Logic (inline to prevent FOUC) -->
 		<script is:inline>
