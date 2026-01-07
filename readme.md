@@ -60,6 +60,40 @@ $ npm start
 ```
 -->
 
+## 💼 Esquema de Presunción de Costos (Independientes)
+
+Implementación del esquema de presunción de costos según la **Resolución 532 de 2024** de la UGPP permitiendo a los trabajadores independientes deducir un porcentaje fijo de sus ingresos brutos antes de calcular su IBC.
+
+**Fórmula:**
+`IBC = (Ingreso Bruto - Costos Presuntos) * 40%`
+
+### Tabla de Actividades Económicas
+
+| Actividad Económica | % Costos Deducibles |
+| :--- | :--- |
+| **COMERCIO** (Mayor y Menor) | 75.9% |
+| **MINERÍA** (Explotación de minas) | 74.0% |
+| **AGROPECUARIO** (Sector agropecuario) | 73.9% |
+| **ALOJAMIENTO Y COMIDA** | 71.0% |
+| **MANUFACTURA** (Industrias manufactureras) | 70.0% |
+| **EDUCACIÓN** | 68.3% |
+| **CONSTRUCCIÓN** | 67.9% |
+| **TRANSPORTE Y ALMACENAMIENTO** | 66.5% |
+| **INMOBILIARIAS** | 65.7% |
+| **ARTÍSTICAS** | 65.5% |
+| **DEMÁS ACTIVIDADES** | 64.7% |
+| **SERVICIOS ADMINISTRATIVOS** | 64.2% |
+| **OTRAS ACTIVIDADES DE SERVICIOS** | 63.8% |
+| **INFORMACIÓN Y COMUNICACIÓN** | 63.2% |
+| **PROFESIONALES** | 61.9% |
+| **ATENCIÓN SALUD** | 59.7% |
+| **FINANCIERAS** | 57.2% |
+| **RENTISTAS DE CAPITAL** | 27.5% |
+
+### Uso
+
+El sistema selecciona automáticamente el porcentaje basado en la `actividadEconomica` del colaborador. También soporta un override manual mediante `porcentajeCostos`.
+
 ## 👻 LICENCE
 
 [GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)

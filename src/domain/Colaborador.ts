@@ -61,11 +61,37 @@ export interface OpcionesDeducciones {
 
 export type TipoContrato = 'LABORAL' | 'INDEPENDIENTE';
 
+export type ActividadEconomica =
+  | 'COMERCIO_MAYOR_MENOR'
+  | 'EXPLOTACION_MINAS'
+  | 'SECTOR_AGROPECUARIO'
+  | 'ALOJAMIENTO_COMIDA'
+  | 'INDUSTRIAS_MANUFACTURERAS'
+  | 'EDUCACION'
+  | 'CONSTRUCCION'
+  | 'TRANSPORTE_ALMACENAMIENTO'
+  | 'INMOBILIARIAS'
+  | 'ARTISTICAS'
+  | 'DEMAS_ACTIVIDADES'
+  | 'SERVICIOS_ADMINISTRATIVOS'
+  | 'OTRAS_ACTIVIDADES_SERVICIOS'
+  | 'INFORMACION_COMUNICACION'
+  | 'PROFESIONALES'
+  | 'ATENCION_SALUD'
+  | 'FINANCIERAS'
+  | 'RENTISTAS_CAPITAL'
+  | 'OTRA';
+
 export interface Colaborador {
   cedula: string | null;
   nombre: string | null;
   tipoContrato: TipoContrato;
   riesgoARL?: 1 | 2 | 3 | 4 | 5;
+
+  // Prusuncion de Costos (Independientes)
+  actividadEconomica?: ActividadEconomica;
+  porcentajeCostos?: number; // Manual override
+
   sueldo: number | null;
   valorHoraOrdinaria: number | null;
   auxTransporte: number | null;

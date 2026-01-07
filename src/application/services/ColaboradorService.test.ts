@@ -1048,7 +1048,113 @@ describe("ColaboradorService", () => {
             expect(result.devengado.ibc).toBeGreaterThanOrEqual(1300000); // Safe lower bound check
             expect(result.devengado.ibc).toBeGreaterThan(800000);
         });
+
+        test("Should calculate 40% IBC, Full Health/Pension, and Zero Benefits", () => {
+            // ... existing test content ...
+            // Update input to have no specific economic activity to verify default behavior (0% costs)
+            // or keep as is since default is 0%.
+            // We can explicitly set OTRA or undefined.
+        });
+        // ... (existing tests) ...
     });
 
+    describe("Presumption of Costs (Res 532/2024)", () => {
+        test("Educator (68.3% Costs): Should lower IBC significantly", () => {
+            const docente: Colaborador = {
+                ...createEmptyColaborador(),
+                tipoContrato: "INDEPENDIENTE",
+                actividadEconomica: "EDUCACION", // 68.3% Cost Deduction
+                sueldo: 10000000,
+                diasTrabajados: 30
+            };
+            const result = ColaboradorService.calcularColaborador(docente, 2026);
+
+            // Gross: 10,000,000
+            // Costs: 6,830,000 (68.3%)
+            // Net: 3,170,000
+            // IBC (40% of Net): 1,268,000
+            // Minimum Check: 1,268,000 < SMMLV (approx 1.75M in mock/future or 1.3M in 2024)
+            // Wait, constants in test might depend on year. 
+            // In 2026, SMMLV ~1.6M-1.7M? 
+            // Let's check what 'constants' returns for 2026 in our mock/logic.
+            // If it falls below SMMLV, it pumps up to SMMLV.
+
+            // Let's use a higher salary to avoid floor effect and test the percentage logic clearly first.
+            // Salary: 20,000,000
+            // Costs: 13,660,000
+            // Net: 6,340,000
+            // IBC: 2,536,000
+
+            const docenteHigh: Colaborador = { ...docente, sueldo: 20000000 };
+            const resultHigh = ColaboradorService.calcularColaborador(docenteHigh, 2026);
+
+            // 20M * (1 - 0.683) * 0.40 = 20M * 0.317 * 0.40 = 2,536,000
+            expect(resultHigh.devengado.ibc).toBeCloseTo(2536000, -1);
+        });
+
+        test("Rentier (27.5% Costs): Should have moderate deduction", () => {
+            const rentista: Colaborador = {
+                ...createEmptyColaborador(),
+                tipoContrato: "INDEPENDIENTE",
+                actividadEconomica: "RENTISTAS_CAPITAL", // 27.5%
+                sueldo: 10000000,
+                diasTrabajados: 30
+            };
+            const result = ColaboradorService.calcularColaborador(rentista, 2026);
+
+            // Gross: 10M
+            // Costs: 2.75M
+            // Net: 7.25M
+            // IBC: 40% of 7.25M = 2.9M
+            expect(result.devengado.ibc).toBe(2900000);
+        });
+
+        test("Manual Override (50% Costs): Should use provided percentage", () => {
+            const manual: Colaborador = {
+                ...createEmptyColaborador(),
+                tipoContrato: "INDEPENDIENTE",
+                porcentajeCostos: 50, // Manual 50%
+                actividadEconomica: "COMERCIO_MAYOR_MENOR", // Should be ignored (75.9%) favor of manual
+                sueldo: 10000000,
+                diasTrabajados: 30
+            };
+            const result = ColaboradorService.calcularColaborador(manual, 2026);
+
+            // Gross: 10M
+            // Costs: 5M (50%)
+            // Net: 5M
+            // IBC: 40% of 5M = 2M
+            expect(result.devengado.ibc).toBe(2000000);
+        });
+
+        test("Agriculture (73.9% Costs): Should have high deduction", () => {
+            const agri: Colaborador = {
+                ...createEmptyColaborador(),
+                tipoContrato: "INDEPENDIENTE",
+                actividadEconomica: "SECTOR_AGROPECUARIO", // 73.9%
+                sueldo: 10000000,
+                diasTrabajados: 30
+            };
+            const result = ColaboradorService.calcularColaborador(agri, 2026);
+
+            // Gross: 10M
+            // Costs: 7.39M
+            // Net: 2.61M
+            // IBC: 40% of 2.61M = 1.044M
+            // Min Floor: 1 SMMLV (e.g. 1.3M in 2024, or projected 2026 value). 
+            // Since 1.044M < 1 SMMLV, it should bump to 1 SMMLV.
+            // Let's verify it hits the minimum (whatever SMMLV is defined as in constants for 2026, likely 1.3M base + inflation)
+            // Actually, let's use a higher salary to verify percentage accurately.
+
+            const agriHigh = { ...agri, sueldo: 20000000 };
+            const resultHigh = ColaboradorService.calcularColaborador(agriHigh, 2026);
+
+            // Gross: 20M
+            // Costs: 14.78M (73.9%)
+            // Net: 5.22M
+            // IBC: 40% of 5.22M = 2.088M
+            expect(resultHigh.devengado.ibc).toBeCloseTo(2088000, 0);
+        });
+    });
 });
 

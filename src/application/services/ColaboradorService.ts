@@ -1,6 +1,6 @@
 import type { Colaborador } from "@src/domain/Colaborador.ts";
 import type { InfoEmpleador } from "@src/domain/Empleador.ts";
-import { GLOBAL_CONSTANTS, getYearlyConstants } from "@src/infrastructure/config/constants.ts";
+import { GLOBAL_CONSTANTS, getYearlyConstants, COSTOS_PRESUNTOS } from "@src/infrastructure/config/constants.ts";
 import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
 import { TAX_TABLES, type TaxTable } from "@src/infrastructure/config/tax_tables.ts";
 
@@ -169,8 +169,20 @@ export function calcularValorIBC(colaborador: Colaborador, constants: YearlyCons
   if (colaborador.tipoContrato === 'INDEPENDIENTE') {
     // Regla Independientes: 40% del Ingreso Mensualizado
     // Mínimo 1 SMMLV
-    const ingresoBase = totalDevengado; // Honorarios totales
-    const base40 = ingresoBase * 0.40;
+    // Resolución 532 de 2024: Esquema de Presunción de Costos
+    let porcentajeDeduccion = 0;
+
+    if (colaborador.porcentajeCostos !== undefined && colaborador.porcentajeCostos !== null) {
+      porcentajeDeduccion = colaborador.porcentajeCostos;
+    } else if (colaborador.actividadEconomica && COSTOS_PRESUNTOS[colaborador.actividadEconomica]) {
+      porcentajeDeduccion = COSTOS_PRESUNTOS[colaborador.actividadEconomica];
+    }
+
+    // Ingreso Neto = Ingreso Bruto * (1 - %Costos)
+    const factorIngreso = 1 - (porcentajeDeduccion / 100);
+    const ingresoNeto = totalDevengado * factorIngreso;
+
+    const base40 = ingresoNeto * 0.40;
 
     // Si la base 40% es inferior al mínimo, se debe cotizar sobre el mínimo.
     // OJO: Si el ingreso total es inferior al mínimo, técnicamente no están obligados a cotizar al sistema (pueden ser beneficiarios),
