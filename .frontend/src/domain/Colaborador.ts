@@ -111,14 +111,14 @@ export function createEmptyColaborador(): Colaborador {
     nombre: null,
     tipoContrato: 'LABORAL', // Default
     riesgoARL: 1,
-    sueldo: null,
+    sueldo: 0,
     valorHoraOrdinaria: 0,
     auxTransporte: 0,
-    diasTrabajados: null,
+    diasTrabajados: 0,
     devengado: {
-      horasExtras: { diurna: null, nocturna: null, domingos: null, nocturnaDomingos: null, recargoNocturno: null },
+      horasExtras: { diurna: 0, nocturna: 0, domingos: 0, nocturnaDomingos: 0, recargoNocturno: 0 },
       sueldoBasico: 0,
-      valorExtras: { diurna: null, nocturna: null, domingos: null, nocturnaDomingos: null, recargoNocturno: null },
+      valorExtras: { diurna: 0, nocturna: 0, domingos: 0, nocturnaDomingos: 0, recargoNocturno: 0 },
       totalValorExtras: 0,
       ibc: 0,
       totalDevengado: 0,
@@ -133,8 +133,8 @@ export function createEmptyColaborador(): Colaborador {
     },
     deduccionesOpcionales: {
       dependientes: false,
-      medicinaPrepagadaMensual: null,
-      viviendaMensual: null,
+      medicinaPrepagadaMensual: 0,
+      viviendaMensual: 0,
       tipoTabla: "actual",
     },
     parafiscales: {
