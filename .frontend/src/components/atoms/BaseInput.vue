@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { nextTick } from 'vue';
+
 interface Props {
   label?: string;
   modelValue: string | number | null;
@@ -13,7 +15,19 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: '',
 });
 
-defineEmits(['update:modelValue', 'enter']);
+const emit = defineEmits(['update:modelValue', 'enter']);
+
+const handleInput = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  emit('update:modelValue', input.value);
+
+  nextTick(() => {
+    const propValueStr = props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue);
+    if (input.value !== propValueStr) {
+      input.value = propValueStr;
+    }
+  });
+};
 </script>
 
 <template>
@@ -25,7 +39,7 @@ defineEmits(['update:modelValue', 'enter']);
       :value="modelValue"
       :placeholder="placeholder"
       class="base-input"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @input="handleInput"
       @keyup.enter="$emit('enter')"
     />
     <span v-if="hint" class="base-input-hint">{{ hint }}</span>

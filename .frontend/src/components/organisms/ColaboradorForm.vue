@@ -10,8 +10,10 @@ import {
   updateColaborador,
   cancelEdit,
   setSelectedYear,
-  setEmpleador 
+  setEmpleador,
+  setColaboradorField
 } from '@src/application/state/colaboradorState';
+import { safeIntParse } from '@src/application/utils/inputUtils';
 import { createEmptyColaborador } from '@src/domain/Colaborador';
 import FormField from '../molecules/FormField.vue';
 import BaseButton from '../atoms/BaseButton.vue';
@@ -59,21 +61,9 @@ const taxTables = [
   { value: 'legacy_user_85uvt', label: 'Personalizada (Base 85 UVT)' },
 ];
 
-const updateField = (path: string, value: any) => {
-  const current = { ...colaborador.value };
-  const keys = path.split('.');
-  let obj: any = current;
-  for (let i = 0; i < keys.length - 1; i++) {
-    obj[keys[i]] = { ...obj[keys[i]] };
-    obj = obj[keys[i]];
-  }
-  obj[keys[keys.length - 1]] = value;
-  $colaborador.set(current);
-};
-
 const toggleTipoContrato = () => {
   const current = colaborador.value.tipoContrato;
-  updateField('tipoContrato', current === 'LABORAL' ? 'INDEPENDIENTE' : 'LABORAL');
+  setColaboradorField('tipoContrato', current === 'LABORAL' ? 'INDEPENDIENTE' : 'LABORAL');
 };
 </script>
 
@@ -126,13 +116,13 @@ const toggleTipoContrato = () => {
         <FormField 
           label="Nombre" 
           :model-value="colaborador.nombre" 
-          @update:model-value="updateField('nombre', $event)"
+          @update:model-value="setColaboradorField('nombre', $event)"
           placeholder="Juan Pérez" 
         />
         <FormField 
           label="Identificación" 
           :model-value="colaborador.cedula" 
-          @update:model-value="updateField('cedula', $event)"
+          @update:model-value="setColaboradorField('cedula', $event)"
           placeholder="123456" 
         />
       </div>
@@ -141,7 +131,7 @@ const toggleTipoContrato = () => {
         <FormField
           label="Sueldo/Honorarios base"
           :model-value="colaborador.sueldo"
-          @update:model-value="updateField('sueldo', $event)"
+          @update:model-value="setColaboradorField('sueldo', $event)"
           type="money"
           :hint="`SMLV ${selectedYear}: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(currentConstants.slmv)}`"
         />
@@ -150,7 +140,7 @@ const toggleTipoContrato = () => {
           <select 
             id="riesgo-arl"
             :value="colaborador.riesgoARL" 
-            @change="updateField('riesgoARL', Number(($event.target as HTMLSelectElement).value))"
+            @change="setColaboradorField('riesgoARL', Number(($event.target as HTMLSelectElement).value))"
             class="year-select full-width"
           >
             <option v-for="n in 5" :key="n" :value="n">Clase {{ n }}</option>
@@ -162,7 +152,7 @@ const toggleTipoContrato = () => {
         <FormField
           label="Días trabajados"
           :model-value="colaborador.diasTrabajados"
-          @update:model-value="updateField('diasTrabajados', $event)"
+          @update:model-value="setColaboradorField('diasTrabajados', safeIntParse($event))"
           type="tel"
           placeholder="30"
         />
@@ -178,7 +168,7 @@ const toggleTipoContrato = () => {
           <select 
             id="actividad"
             :value="colaborador.actividadEconomica" 
-            @change="updateField('actividadEconomica', ($event.target as HTMLSelectElement).value)"
+            @change="setColaboradorField('actividadEconomica', ($event.target as HTMLSelectElement).value)"
             class="year-select full-width"
           >
             <option value="" disabled>Seleccione actividad...</option>
@@ -190,7 +180,7 @@ const toggleTipoContrato = () => {
         <FormField
           label="% Costos (Opcional)"
           :model-value="colaborador.porcentajeCostos ?? null"
-          @update:model-value="updateField('porcentajeCostos', $event)"
+          @update:model-value="setColaboradorField('porcentajeCostos', $event)"
           type="tel"
           placeholder="Según actividad"
           hint="Sobreescribe el valor legal si se define"
@@ -206,11 +196,11 @@ const toggleTipoContrato = () => {
         </div>
       </summary>
       <div class="grid-2 pt-4">
-        <FormField label="E. Diurna" :model-value="colaborador.devengado.horasExtras.diurna" @update:model-value="updateField('devengado.horasExtras.diurna', $event)" type="tel" />
-        <FormField label="E. Nocturna" :model-value="colaborador.devengado.horasExtras.nocturna" @update:model-value="updateField('devengado.horasExtras.nocturna', $event)" type="tel" />
-        <FormField label="Dom. Diurna" :model-value="colaborador.devengado.horasExtras.domingos" @update:model-value="updateField('devengado.horasExtras.domingos', $event)" type="tel" />
-        <FormField label="Dom. Noct." :model-value="colaborador.devengado.horasExtras.nocturnaDomingos" @update:model-value="updateField('devengado.horasExtras.nocturnaDomingos', $event)" type="tel" />
-        <FormField label="Recargo Noct." :model-value="colaborador.devengado.horasExtras.recargoNocturno" @update:model-value="updateField('devengado.horasExtras.recargoNocturno', $event)" type="tel" />
+        <FormField label="E. Diurna" :model-value="colaborador.devengado.horasExtras.diurna" @update:model-value="setColaboradorField('devengado.horasExtras.diurna', safeIntParse($event))" type="tel" />
+        <FormField label="E. Nocturna" :model-value="colaborador.devengado.horasExtras.nocturna" @update:model-value="setColaboradorField('devengado.horasExtras.nocturna', safeIntParse($event))" type="tel" />
+        <FormField label="Dom. Diurna" :model-value="colaborador.devengado.horasExtras.domingos" @update:model-value="setColaboradorField('devengado.horasExtras.domingos', safeIntParse($event))" type="tel" />
+        <FormField label="Dom. Noct." :model-value="colaborador.devengado.horasExtras.nocturnaDomingos" @update:model-value="setColaboradorField('devengado.horasExtras.nocturnaDomingos', safeIntParse($event))" type="tel" />
+        <FormField label="Recargo Noct." :model-value="colaborador.devengado.horasExtras.recargoNocturno" @update:model-value="setColaboradorField('devengado.horasExtras.recargoNocturno', safeIntParse($event))" type="tel" />
       </div>
     </details>
 
@@ -221,19 +211,19 @@ const toggleTipoContrato = () => {
           <input 
             type="checkbox" 
             :checked="colaborador.deduccionesOpcionales.dependientes" 
-            @change="updateField('deduccionesOpcionales.dependientes', ($event.target as HTMLInputElement).checked)"
+            @change="setColaboradorField('deduccionesOpcionales.dependientes', ($event.target as HTMLInputElement).checked)"
             id="dep" 
           />
           <label for="dep">Dependientes (10%)</label>
         </div>
-        <FormField label="Med. Prepagada" :model-value="colaborador.deduccionesOpcionales.medicinaPrepagadaMensual" @update:model-value="updateField('deduccionesOpcionales.medicinaPrepagadaMensual', $event)" type="money" id="med-pre" />
-        <FormField label="Interés Vivienda" :model-value="colaborador.deduccionesOpcionales.viviendaMensual" @update:model-value="updateField('deduccionesOpcionales.viviendaMensual', $event)" type="money" id="iv-vivienda" />
+        <FormField label="Med. Prepagada" :model-value="colaborador.deduccionesOpcionales.medicinaPrepagadaMensual" @update:model-value="setColaboradorField('deduccionesOpcionales.medicinaPrepagadaMensual', $event)" type="money" id="med-pre" />
+        <FormField label="Interés Vivienda" :model-value="colaborador.deduccionesOpcionales.viviendaMensual" @update:model-value="setColaboradorField('deduccionesOpcionales.viviendaMensual', $event)" type="money" id="iv-vivienda" />
         <div class="field-container">
           <label for="tipo-tabla">Tabla de Retención:</label>
           <select 
             id="tipo-tabla"
             :value="colaborador.deduccionesOpcionales.tipoTabla" 
-            @change="updateField('deduccionesOpcionales.tipoTabla', ($event.target as HTMLSelectElement).value)"
+            @change="setColaboradorField('deduccionesOpcionales.tipoTabla', ($event.target as HTMLSelectElement).value)"
             class="year-select full-width"
           >
             <option v-for="table in taxTables" :key="table.value" :value="table.value">

@@ -146,6 +146,19 @@ export const resetColaborador = () => {
     $colaborador.set(createEmptyColaborador());
 };
 
+export const setColaboradorField = (path: string, value: any) => {
+    const current = { ...$colaborador.get() };
+    const keys = path.split('.');
+    let obj: any = current;
+    for (let i = 0; i < keys.length - 1; i++) {
+        // Create a shallow copy of the nested object to ensure reactivity
+        obj[keys[i]] = { ...obj[keys[i]] };
+        obj = obj[keys[i]];
+    }
+    obj[keys[keys.length - 1]] = value;
+    $colaborador.set(current);
+};
+
 export const setSelectedYear = (year: number) => {
     $selectedYear.set(year);
     // Recalculate all colaboradores

@@ -20,8 +20,8 @@ const moneyConfig = {
   precision: 0,
   disableNegative: true,
   disabled: false,
-  min: null,
-  max: null,
+  min: undefined,
+  max: undefined,
   allowBlank: true,
   minimumFractionDigits: 0,
 };
