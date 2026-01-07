@@ -16,6 +16,10 @@
     "resolveJsonModule": true,
     "rootDir": ".",
     "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@assets/*": ["assets/*"]
+    },
     "types": ["bun-types", "node"]
   },
   "include": [

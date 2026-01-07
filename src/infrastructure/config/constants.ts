@@ -1,4 +1,4 @@
-import yearlyData from "../../../assets/data/yearly_data.json";
+import yearlyData from "@assets/data/yearly_data.json";
 
 // Estas son las constantes globales para el cálculo de nómina en Colombia
 export const GLOBAL_CONSTANTS = {
