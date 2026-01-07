@@ -18,8 +18,8 @@ test("Salary Data Scraper", async () => {
 
   // Test 'salarioMinimoEnDolares'
   expect(data.salarioMinimoEnDolares).toEqual({
-    "TRM 1 dólar - pesos colombianos": "3770.03",
-    "Salario Mínimo en Dólares": "464.43 USD",
+    "TRM 1 dólar - pesos colombianos": "3730.26",
+    "Salario Mínimo en Dólares": "469.38 USD",
   });
 
   // Test 'aportesSeguridadSocial'

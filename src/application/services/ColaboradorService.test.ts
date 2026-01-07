@@ -203,8 +203,9 @@ describe("ColaboradorService", () => {
         test("Parafiscales calculations", () => {
             // IBC = 2,000,000
             expect(ColaboradorService.calcularValorARLEmpleador(mockColaborador, mockConstants)).toBeCloseTo(2000000 * 0.00522, 2);
-            expect(ColaboradorService.calcularValorSENAEmpleador(mockColaborador, mockConstants)).toBeCloseTo(2000000 * 0.02, 2);
-            expect(ColaboradorService.calcularValorICBFEmpleador(mockColaborador, mockConstants)).toBeCloseTo(2000000 * 0.03, 2);
+            // Exempt (< 10 SMMLV)
+            expect(ColaboradorService.calcularValorSENAEmpleador(mockColaborador, mockConstants)).toBe(0);
+            expect(ColaboradorService.calcularValorICBFEmpleador(mockColaborador, mockConstants)).toBe(0);
             expect(ColaboradorService.calcularValorCajaEmpleador(mockColaborador, mockConstants)).toBeCloseTo(2000000 * 0.04, 2);
         });
 
@@ -694,6 +695,71 @@ describe("ColaboradorService", () => {
             // Calculate difference to be sure
             const diff = (resultActual.deducido.retefuente ?? 0) - (resultOld.deducido.retefuente ?? 0);
             expect(diff).toBeGreaterThan(50000); // Validated Diff is around ~67k
+        });
+    });
+
+
+    describe("Parafiscales Exemption (Art 114-1 ET)", () => {
+        test("should exempt Health, SENA, and ICBF for employees earning < 10 SLMV", () => {
+            const exemptedColaborador = { ...mockColaborador, sueldo: 2000000 };
+
+            expect(ColaboradorService.isExoneradoParafiscales(exemptedColaborador, mockConstants)).toBe(true);
+
+            expect(ColaboradorService.calcularValorSaludEmpleador(exemptedColaborador, mockConstants)).toBe(0);
+            expect(ColaboradorService.calcularValorSENAEmpleador(exemptedColaborador, mockConstants)).toBe(0);
+            expect(ColaboradorService.calcularValorICBFEmpleador(exemptedColaborador, mockConstants)).toBe(0);
+
+            // Allow Cajas and Pension (Not exempted)
+            expect(ColaboradorService.calcularValorCajaEmpleador(exemptedColaborador, mockConstants)).toBeGreaterThan(0);
+            expect(ColaboradorService.calcularValorPensionEmpleador(exemptedColaborador, mockConstants)).toBeGreaterThan(0);
+        });
+
+        test("should NOT exempt for employees earning > 10 SLMV", () => {
+            const highEarner = { ...mockColaborador, sueldo: 20000000 };
+
+            expect(ColaboradorService.isExoneradoParafiscales(highEarner, mockConstants)).toBe(false);
+
+            expect(ColaboradorService.calcularValorSaludEmpleador(highEarner, mockConstants)).toBeGreaterThan(0);
+            expect(ColaboradorService.calcularValorSENAEmpleador(highEarner, mockConstants)).toBeGreaterThan(0);
+            expect(ColaboradorService.calcularValorICBFEmpleador(highEarner, mockConstants)).toBeGreaterThan(0);
+        });
+    });
+
+
+    describe("Exemption Logic - Employer Type (Art 114-1 ET)", () => {
+        test("Persona Juridica: Should be exempt if income < 10 SMLV", () => {
+            const exemptedColaborador = { ...mockColaborador, sueldo: 2000000 };
+            const empleador = { tipo: 'PERSONA_JURIDICA', numeroTrabajadores: 1 } as const;
+
+            expect(ColaboradorService.isExoneradoParafiscales(exemptedColaborador, mockConstants, empleador)).toBe(true);
+            expect(ColaboradorService.calcularValorSaludEmpleador(exemptedColaborador, mockConstants, empleador)).toBe(0);
+        });
+
+        test("Persona Natural: Should NOT be exempt if only 1 worker (regardless of income)", () => {
+            const lowEarner = { ...mockColaborador, sueldo: 2000000 }; // < 10 SMLV
+            const empleador = { tipo: 'PERSONA_NATURAL', numeroTrabajadores: 1 } as const;
+
+            // Fails exemption due to having < 2 workers
+            expect(ColaboradorService.isExoneradoParafiscales(lowEarner, mockConstants, empleador)).toBe(false);
+
+            // Should pay health
+            expect(ColaboradorService.calcularValorSaludEmpleador(lowEarner, mockConstants, empleador)).toBeGreaterThan(0);
+        });
+
+        test("Persona Natural: Should be exempt if 2+ workers and income < 10 SMLV", () => {
+            const lowEarner = { ...mockColaborador, sueldo: 2000000 };
+            const empleador = { tipo: 'PERSONA_NATURAL', numeroTrabajadores: 2 } as const;
+
+            expect(ColaboradorService.isExoneradoParafiscales(lowEarner, mockConstants, empleador)).toBe(true);
+            expect(ColaboradorService.calcularValorSaludEmpleador(lowEarner, mockConstants, empleador)).toBe(0);
+        });
+
+        test("Persona Natural: Should NOT be exempt if income > 10 SMLV (even with 2+ workers)", () => {
+            const highEarner = { ...mockColaborador, sueldo: 20000000 };
+            const empleador = { tipo: 'PERSONA_NATURAL', numeroTrabajadores: 5 } as const;
+
+            expect(ColaboradorService.isExoneradoParafiscales(highEarner, mockConstants, empleador)).toBe(false);
+            expect(ColaboradorService.calcularValorSaludEmpleador(highEarner, mockConstants, empleador)).toBeGreaterThan(0);
         });
     });
 });

@@ -1,4 +1,5 @@
 import type { Colaborador } from "@src/domain/Colaborador.ts";
+import type { InfoEmpleador } from "@src/domain/Empleador.ts";
 import { GLOBAL_CONSTANTS, getYearlyConstants } from "@src/infrastructure/config/constants.ts";
 import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
 import { TAX_TABLES, type TaxTable } from "@src/infrastructure/config/tax_tables.ts";
@@ -303,10 +304,40 @@ export function calcularValorTotalNeto(colaborador: Colaborador, constants: Year
   return totalNeto;
 }
 
+/**
+ * Determina si el empleador está exonerado de aportes parafiscales (SENA, ICBF) y Salud
+ * según el Artículo 114-1 del Estatuto Tributario.
+ * 
+ * Requisitos para Exoneración:
+ * 1. Persona Jurídica: Ingreso trabajador < 10 SMMLV.
+ * 2. Persona Natural: Ingreso trabajador < 10 SMMLV Y tener 2 o más trabajadores vinculados.
+ * 
+ * @param empleador InfoEmpleador opcional. Si no se provee, se asume el caso general (Exonerado si < 10 SMMLV).
+ */
+export function isExoneradoParafiscales(colaborador: Colaborador, constants: YearlyConstants, empleador?: InfoEmpleador): boolean {
+  // Regla 1: Persona Natural con menos de 2 trabajadores NUNCA está exonerada (Art 1.2.1.5.4.9 DUR 1625/2016)
+  if (empleador?.tipo === 'PERSONA_NATURAL' && empleador.numeroTrabajadores < 2) {
+    return false;
+  }
+
+  let totalDevengado = colaborador.devengado.totalDevengado;
+
+  if (totalDevengado === null || totalDevengado === 0) {
+    totalDevengado = calcularValorTotalDevengado(colaborador, constants);
+  }
+
+  if (totalDevengado === null) return false;
+
+  return totalDevengado < (10 * constants.slmv);
+}
+
 export function calcularValorSaludEmpleador(
   colaborador: Colaborador,
   constants: YearlyConstants,
+  empleador?: InfoEmpleador
 ): number | null {
+  if (isExoneradoParafiscales(colaborador, constants, empleador)) return 0;
+
   const ibc = calcularValorIBC(colaborador, constants);
   if (ibc === null) return null;
 
@@ -336,7 +367,9 @@ export function calcularValorARLEmpleador(colaborador: Colaborador, constants: Y
   return parafiscalesArl;
 }
 
-export function calcularValorSENAEmpleador(colaborador: Colaborador, constants: YearlyConstants): number | null {
+export function calcularValorSENAEmpleador(colaborador: Colaborador, constants: YearlyConstants, empleador?: InfoEmpleador): number | null {
+  if (isExoneradoParafiscales(colaborador, constants, empleador)) return 0;
+
   const ibc = calcularValorIBC(colaborador, constants);
   if (ibc === null) return null;
 
@@ -345,7 +378,9 @@ export function calcularValorSENAEmpleador(colaborador: Colaborador, constants: 
   return parafiscalesSena;
 }
 
-export function calcularValorICBFEmpleador(colaborador: Colaborador, constants: YearlyConstants): number | null {
+export function calcularValorICBFEmpleador(colaborador: Colaborador, constants: YearlyConstants, empleador?: InfoEmpleador): number | null {
+  if (isExoneradoParafiscales(colaborador, constants, empleador)) return 0;
+
   const ibc = calcularValorIBC(colaborador, constants);
   if (ibc === null) return null;
 
@@ -366,12 +401,13 @@ export function calcularValorCajaEmpleador(colaborador: Colaborador, constants: 
 export function calcularValorTotalParafiscales(
   colaborador: Colaborador,
   constants: YearlyConstants,
+  empleador?: InfoEmpleador
 ): number | null {
-  const salud = calcularValorSaludEmpleador(colaborador, constants);
+  const salud = calcularValorSaludEmpleador(colaborador, constants, empleador);
   const pension = calcularValorPensionEmpleador(colaborador, constants);
   const arl = calcularValorARLEmpleador(colaborador, constants);
-  const sena = calcularValorSENAEmpleador(colaborador, constants);
-  const icbf = calcularValorICBFEmpleador(colaborador, constants);
+  const sena = calcularValorSENAEmpleador(colaborador, constants, empleador);
+  const icbf = calcularValorICBFEmpleador(colaborador, constants, empleador);
   const cajas = calcularValorCajaEmpleador(colaborador, constants);
 
   if (salud === null || pension === null || arl === null || sena === null || icbf === null || cajas === null) return null;
@@ -438,9 +474,9 @@ export function calcularValorTotalPrestacion(colaborador: Colaborador, constants
   return totalPrestacion;
 }
 
-export function calcularValorTotalNomina(colaborador: Colaborador, constants: YearlyConstants): number | null {
+export function calcularValorTotalNomina(colaborador: Colaborador, constants: YearlyConstants, empleador?: InfoEmpleador): number | null {
   const totalDevengado = calcularValorTotalDevengado(colaborador, constants);
-  const totalParafiscales = calcularValorTotalParafiscales(colaborador, constants);
+  const totalParafiscales = calcularValorTotalParafiscales(colaborador, constants, empleador);
   const totalPrestacion = calcularValorTotalPrestacion(colaborador, constants);
 
   if (totalDevengado === null || totalParafiscales === null || totalPrestacion === null) return null;
@@ -452,8 +488,9 @@ export function calcularValorTotalNomina(colaborador: Colaborador, constants: Ye
 
 /**
  * Recalculates all fields of a Colaborador and returns a new, updated object.
+ * @param empleador Opcional: InfoEmpleador para cálculo preciso de exoneraciones.
  */
-export function calcularColaborador(colaborador: Colaborador, optionalYear?: number): Colaborador {
+export function calcularColaborador(colaborador: Colaborador, optionalYear?: number, empleador?: InfoEmpleador): Colaborador {
   const constants = getYearlyConstants(optionalYear || 2026);
 
   const valorHoraOrdinaria = calcularValorHoraOrdinaria(colaborador, constants);
@@ -486,13 +523,13 @@ export function calcularColaborador(colaborador: Colaborador, optionalYear?: num
   const retefuente = calcularValorRetefuente(colaborador, constants);
   const totalDeducido = calcularValorTotalDeducido(colaborador, constants);
 
-  const saludEmpleador = calcularValorSaludEmpleador(colaborador, constants);
+  const saludEmpleador = calcularValorSaludEmpleador(colaborador, constants, empleador);
   const pensionEmpleador = calcularValorPensionEmpleador(colaborador, constants);
   const ARLEmpleador = calcularValorARLEmpleador(colaborador, constants);
-  const SENAEmpleador = calcularValorSENAEmpleador(colaborador, constants);
-  const ICBFEmpleador = calcularValorICBFEmpleador(colaborador, constants);
+  const SENAEmpleador = calcularValorSENAEmpleador(colaborador, constants, empleador);
+  const ICBFEmpleador = calcularValorICBFEmpleador(colaborador, constants, empleador);
   const cajaEmpleador = calcularValorCajaEmpleador(colaborador, constants);
-  const totalParafiscales = calcularValorTotalParafiscales(colaborador, constants);
+  const totalParafiscales = calcularValorTotalParafiscales(colaborador, constants, empleador);
 
   const prima = calcularValorPrima(colaborador, constants);
   const vacaciones = calcularValorVacaciones(colaborador, constants);
@@ -501,7 +538,7 @@ export function calcularColaborador(colaborador: Colaborador, optionalYear?: num
   const totalPrestacion = calcularValorTotalPrestacion(colaborador, constants);
 
   const totalNeto = calcularValorTotalNeto(colaborador, constants);
-  const totalNomina = calcularValorTotalNomina(colaborador, constants);
+  const totalNomina = calcularValorTotalNomina(colaborador, constants, empleador);
 
   return {
     ...colaborador,
