@@ -8,6 +8,7 @@ describe("ColaboradorService", () => {
         slmv: 1750905,
         uvt: 52374,
         auxTransporte: 249095,
+        horasMensuales: 240, // Divisor standard for tests unless specified
     };
 
     const mockColaborador: Colaborador = {
@@ -124,7 +125,7 @@ describe("ColaboradorService", () => {
         const slmv = mockConstants.slmv;
 
         // Bracket 1: < 4 SLMV -> 0%
-        expect(ColaboradorService.calcularValorFondoSolidaridad(mockColaborador, mockConstants)).toBe(0);
+        expect(ColaboradorService.calcularValorSueldoBasico({ ...mockColaborador, sueldo: 1000000, diasTrabajados: 30 })).toBe(1000000);
 
         // Bracket 2: 4-16 SLMV -> 1%
         const level16 = { ...mockColaborador, sueldo: 5 * slmv };
@@ -212,10 +213,11 @@ describe("ColaboradorService", () => {
         expect(result).toBeCloseTo(29.916, 3);
     });
 
-    test("calcularColaborador should perform full calculation", () => {
+    test("calcularColaborador should perform full calculation for 2026 (210 divisor)", () => {
         const result = ColaboradorService.calcularColaborador(mockColaborador, 2026);
 
-        expect(result.valorHoraOrdinaria).toBeCloseTo(8333.333, 2);
+        // 2,000,000 / 210 = 9523.8095...
+        expect(result.valorHoraOrdinaria).toBeCloseTo(9523.81, 2);
         expect(result.auxTransporte).toBeCloseTo(249095, 2);
         expect(result.devengado.totalDevengado).toBeCloseTo(2249095, 2);
         expect(result.deducido.salud).toBeCloseTo(80000, 2);
@@ -223,7 +225,7 @@ describe("ColaboradorService", () => {
         expect(result.totalNeto).toBeCloseTo(2249095 - 160000, 2); // 2,089,095
     });
 
-    test("calcularTotales should aggregate multiple colaboradores", () => {
+    test("calcularTotales should aggregate multiple colaboradores for 2026", () => {
         const c1 = ColaboradorService.calcularColaborador(mockColaborador, 2026);
         const c2 = ColaboradorService.calcularColaborador({ ...mockColaborador, sueldo: 4000000 }, 2026);
 

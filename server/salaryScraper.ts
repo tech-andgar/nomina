@@ -341,6 +341,13 @@ export const scrapeSalaryData = async () => {
     ),
     year: salaryData.year,
     uvt: uvtValue,
+    horasMensuales: (() => {
+      const yearNum = Number(salaryData.year);
+      if (yearNum <= 2023) return 240;
+      if (yearNum === 2024) return 230;
+      if (yearNum === 2025) return 220;
+      return 210; // 2026 onwards
+    })(),
   };
 
   return transformedData;

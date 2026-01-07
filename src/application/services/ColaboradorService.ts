@@ -11,9 +11,10 @@ export function checkNotEmptyDataColaborador(colaborador: Colaborador): boolean 
   );
 }
 
-export function calcularValorHoraOrdinaria(colaborador: Colaborador): number | null {
+export function calcularValorHoraOrdinaria(colaborador: Colaborador, constants?: YearlyConstants): number | null {
   if (!colaborador.sueldo) return null;
-  return colaborador.sueldo / (GLOBAL_CONSTANTS.horasHabiles * GLOBAL_CONSTANTS.diasMes);
+  const divisor = constants?.horasMensuales ?? (GLOBAL_CONSTANTS.horasHabiles * GLOBAL_CONSTANTS.diasMes);
+  return colaborador.sueldo / divisor;
 }
 
 export function calcularValorAuxTransporte(colaborador: Colaborador, constants: YearlyConstants): number | null {
@@ -31,8 +32,9 @@ export function calcularValorAuxTransporte(colaborador: Colaborador, constants: 
 export function calcularValorExtrasDiurna(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
   const horasExtrasDiurna = colaborador.devengado.horasExtras.diurna;
 
   if (!valorHoraOrdinaria || !horasExtrasDiurna) return null;
@@ -44,8 +46,9 @@ export function calcularValorExtrasDiurna(
 export function calcularValorExtrasNocturna(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
   const horasExtrasNocturna = colaborador.devengado.horasExtras.nocturna;
 
   if (!valorHoraOrdinaria || !horasExtrasNocturna) return null;
@@ -57,8 +60,9 @@ export function calcularValorExtrasNocturna(
 export function calcularValorExtrasDomingos(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
   const horasExtrasDomingos = colaborador.devengado.horasExtras.domingos;
 
   if (!valorHoraOrdinaria || !horasExtrasDomingos) return null;
@@ -71,8 +75,9 @@ export function calcularValorExtrasDomingos(
 export function calcularValorExtrasNocturnaDomingos(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
   const horasExtrasNocturnaDomingos =
     colaborador.devengado.horasExtras.nocturnaDomingos;
 
@@ -88,8 +93,9 @@ export function calcularValorExtrasNocturnaDomingos(
 export function calcularValorRecargoNocturno(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
   const horasExtrasRecargoNocturno =
     colaborador.devengado.horasExtras.recargoNocturno;
 
@@ -104,17 +110,19 @@ export function calcularValorRecargoNocturno(
 
 export function calcularValorTotalExtrasValor(
   colaborador: Colaborador,
+  constants?: YearlyConstants,
 ): number | null {
-  const valorHora = calcularValorHoraOrdinaria(colaborador);
+  const valorHora = calcularValorHoraOrdinaria(colaborador, constants);
 
-  const diurna = calcularValorExtrasDiurna(colaborador, valorHora) ?? 0;
-  const nocturna = calcularValorExtrasNocturna(colaborador, valorHora) ?? 0;
-  const domingos = calcularValorExtrasDomingos(colaborador, valorHora) ?? 0;
+  const diurna = calcularValorExtrasDiurna(colaborador, valorHora, constants) ?? 0;
+  const nocturna = calcularValorExtrasNocturna(colaborador, valorHora, constants) ?? 0;
+  const domingos = calcularValorExtrasDomingos(colaborador, valorHora, constants) ?? 0;
   const nocturnaDomingos = calcularValorExtrasNocturnaDomingos(
     colaborador,
     valorHora,
+    constants,
   ) ?? 0;
-  const recargoNocturno = calcularValorRecargoNocturno(colaborador, valorHora) ?? 0;
+  const recargoNocturno = calcularValorRecargoNocturno(colaborador, valorHora, constants) ?? 0;
 
   return (diurna + nocturna + domingos + nocturnaDomingos + recargoNocturno);
 }
@@ -129,7 +137,7 @@ export function calcularValorSueldoBasico(colaborador: Colaborador): number | nu
 
 export function calcularValorTotalDevengado(colaborador: Colaborador, constants: YearlyConstants): number | null {
   const sueldoBasico = calcularValorSueldoBasico(colaborador);
-  const totalValorExtras = calcularValorTotalExtrasValor(colaborador);
+  const totalValorExtras = calcularValorTotalExtrasValor(colaborador, constants);
   const auxTransporte = calcularValorAuxTransporte(colaborador, constants);
 
   if (sueldoBasico === null || totalValorExtras === null || auxTransporte === null) return null;
@@ -419,17 +427,18 @@ export function calcularValorTotalNomina(colaborador: Colaborador, constants: Ye
 export function calcularColaborador(colaborador: Colaborador, optionalYear?: number): Colaborador {
   const constants = getYearlyConstants(optionalYear || 2026);
 
-  const valorHoraOrdinaria = calcularValorHoraOrdinaria(colaborador);
+  const valorHoraOrdinaria = calcularValorHoraOrdinaria(colaborador, constants);
   const auxTransporte = calcularValorAuxTransporte(colaborador, constants);
   const sueldoBasico = calcularValorSueldoBasico(colaborador);
-  const extrasDiurna = calcularValorExtrasDiurna(colaborador, valorHoraOrdinaria);
-  const extrasNocturna = calcularValorExtrasNocturna(colaborador, valorHoraOrdinaria);
-  const extrasDomingos = calcularValorExtrasDomingos(colaborador, valorHoraOrdinaria);
+  const extrasDiurna = calcularValorExtrasDiurna(colaborador, valorHoraOrdinaria, constants);
+  const extrasNocturna = calcularValorExtrasNocturna(colaborador, valorHoraOrdinaria, constants);
+  const extrasDomingos = calcularValorExtrasDomingos(colaborador, valorHoraOrdinaria, constants);
   const extrasNocturnaDomingos = calcularValorExtrasNocturnaDomingos(
     colaborador,
     valorHoraOrdinaria,
+    constants,
   );
-  const recargoNocturno = calcularValorRecargoNocturno(colaborador, valorHoraOrdinaria);
+  const recargoNocturno = calcularValorRecargoNocturno(colaborador, valorHoraOrdinaria, constants);
   const totalValorExtras = (extrasDiurna ?? 0) +
     (extrasNocturna ?? 0) +
     (extrasDomingos ?? 0) +

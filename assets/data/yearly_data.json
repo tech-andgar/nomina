@@ -2,17 +2,20 @@
   "2023": {
     "slmv": 1160000,
     "uvt": 42412,
-    "auxTransporte": 140606
+    "auxTransporte": 140606,
+    "horasMensuales": 240
   },
   "2024": {
     "slmv": 1300000,
     "uvt": 47065,
-    "auxTransporte": 162000
+    "auxTransporte": 162000,
+    "horasMensuales": 230
   },
   "2025": {
     "slmv": 1423500,
     "uvt": 49799,
-    "auxTransporte": 177170
+    "auxTransporte": 177170,
+    "horasMensuales": 220
   },
   "2026": {
     "salarioMinimoMensual": "1750905",
@@ -168,6 +171,7 @@
       "Total Pagado": "2991713"
     },
     "year": "2026",
-    "uvt": "52374"
+    "uvt": "52374",
+    "horasMensuales": 210
   }
 }

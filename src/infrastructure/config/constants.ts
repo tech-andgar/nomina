@@ -74,6 +74,7 @@ export interface YearlyConstants {
   slmv: number;
   uvt: number;
   auxTransporte: number;
+  horasMensuales: number;
 }
 
 interface RawYearlyDataEntry {
@@ -81,6 +82,7 @@ interface RawYearlyDataEntry {
   salarioMinimoMensual?: number | string;
   uvt?: number | string;
   auxTransporte?: number | string;
+  horasMensuales?: number;
   salarioPagadoEmpleadorEjemplo?: {
     "Subsidio de transporte"?: number | string;
   };
@@ -105,5 +107,6 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
       data.salarioPagadoEmpleadorEjemplo?.["Subsidio de transporte"] ||
       0
     ),
+    horasMensuales: Number(data.horasMensuales || 240),
   };
 };
