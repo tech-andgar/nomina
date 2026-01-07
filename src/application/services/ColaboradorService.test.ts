@@ -13,10 +13,11 @@ describe("ColaboradorService", () => {
             diurna: 1.25,
             nocturna: 1.75,
             festiva: 1.75, // Default/Historical
-            festivaDiurna: 2.0,
+            festivaDiurna: 2,
             festivaNocturna: 2.5,
             recargoNocturno: 1.35
-        }
+        },
+        year: "2026"
     };
 
     const mockColaborador: Colaborador = {
@@ -73,6 +74,7 @@ describe("ColaboradorService", () => {
         deduccionesOpcionales: {
             dependientes: false,
             medicinaPrepagadaMensual: null,
+            viviendaMensual: null,
             tipoTabla: "actual"
         },
         totalNeto: 0,
@@ -115,7 +117,7 @@ describe("ColaboradorService", () => {
 
         // Domingos/Festivos: 2.0
         const cFestiva = { ...mockColaborador, devengado: { ...mockColaborador.devengado, horasExtras: { ...mockColaborador.devengado.horasExtras, domingos: 10 } } };
-        expect(ColaboradorService.calcularValorExtrasDomingos(cFestiva, valorHora)).toBeCloseTo(valorHora * 10 * 2.0, 2);
+        expect(ColaboradorService.calcularValorExtrasDomingos(cFestiva, valorHora)).toBeCloseTo(valorHora * 10 * 2, 2);
 
         // Nocturna Domingos/Festivos: 2.5
         const cFestivaNocturna = { ...mockColaborador, devengado: { ...mockColaborador.devengado, horasExtras: { ...mockColaborador.devengado.horasExtras, nocturnaDomingos: 10 } } };
@@ -196,7 +198,12 @@ describe("ColaboradorService", () => {
         // 163.541295 * 52374 = 8,565,317
         const c3 = { ...mockColaborador, sueldo: 50000000 };
         const reteAlto = ColaboradorService.calcularValorRetefuente(c3, mockConstants);
-        expect(reteAlto).toBeCloseTo(8565317, 0);
+
+        // Updated for Ley 2277 (2026 Rules):
+        // Strict limits on 25% exemption (790 UVT/year) and global 40% cap (1340 UVT/year).
+        // This significantly increases the tax base for high earners compared to old rules.
+        // Expected ~11.3M (Client reported 11,296,034)
+        expect(reteAlto).toBeCloseTo(11296035, -3);
     });
 
     describe("Employer Obligations", () => {
@@ -447,7 +454,8 @@ describe("ColaboradorService", () => {
             diasTrabajados: 23,
             deduccionesOpcionales: {
                 dependientes: true,
-                medicinaPrepagadaMensual: 500000 // 500k prepagada
+                medicinaPrepagadaMensual: 500000, // 500k prepagada
+                viviendaMensual: 0
             }
         };
 
@@ -475,7 +483,8 @@ describe("ColaboradorService", () => {
             diasTrabajados: 30, // Full month
             deduccionesOpcionales: {
                 dependientes: true,
-                medicinaPrepagadaMensual: 500000
+                medicinaPrepagadaMensual: 500000,
+                viviendaMensual: 0
             }
         };
 
@@ -597,6 +606,7 @@ describe("ColaboradorService", () => {
                 deduccionesOpcionales: {
                     dependientes: false,
                     medicinaPrepagadaMensual: null,
+                    viviendaMensual: null,
                     tipoTabla: "legacy_user_85uvt" as const
                 }
             };
@@ -618,7 +628,7 @@ describe("ColaboradorService", () => {
                 ...mockColaborador,
                 sueldo: 7000000,
                 diasTrabajados: 30,
-                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "legacy_2019_2022" as const }
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, viviendaMensual: 0, tipoTabla: "legacy_2019_2022" as const }
             };
             const result2019 = ColaboradorService.calcularColaborador(earner, 2025);
             // Base UVT approx: (7M - sol - pens - sal) - 25%
@@ -656,7 +666,7 @@ describe("ColaboradorService", () => {
                 ...mockColaborador,
                 sueldo: 6500000,
                 diasTrabajados: 30,
-                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "legacy_2013_2016" }
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, viviendaMensual: 0, tipoTabla: "legacy_2013_2016" }
             };
             const result2013 = ColaboradorService.calcularColaborador(earner, 2025);
             expect(result2013.deducido.retefuente).toBe(0);
@@ -679,7 +689,7 @@ describe("ColaboradorService", () => {
                 ...mockColaborador,
                 sueldo: 50000000,
                 diasTrabajados: 30,
-                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "actual" }
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, viviendaMensual: 0, tipoTabla: "actual" }
             };
 
             const resultActual = ColaboradorService.calcularColaborador(richEarner, 2025);
@@ -760,6 +770,59 @@ describe("ColaboradorService", () => {
 
             expect(ColaboradorService.isExoneradoParafiscales(highEarner, mockConstants, empleador)).toBe(false);
             expect(ColaboradorService.calcularValorSaludEmpleador(highEarner, mockConstants, empleador)).toBeGreaterThan(0);
+        });
+    });
+
+    describe("Ley 2277 Improvements (2026/Recent Laws)", () => {
+        test("should apply valid Housing Interest deduction (Intereses de Vivienda)", () => {
+            const earner: Colaborador = {
+                ...mockColaborador,
+                sueldo: 10000000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: {
+                    dependientes: false,
+                    medicinaPrepagadaMensual: 0,
+                    viviendaMensual: 2000000,
+                    tipoTabla: "actual"
+                }
+            };
+
+            const result = ColaboradorService.calcularColaborador(earner, 2026);
+
+            // Expected Calculation:
+            // Devengado: 10M, Net Income ~ 9.2M
+            // Deductions: 2M
+            // 25% Exempt: ~ 1.8M
+            // Taxable: ~ 5.4M
+            // UVT: ~ 103
+
+            expect(result.deducido.uvt).toBeLessThan(110);
+            expect(result.deducido.retefuente).toBeLessThan(100000);
+            expect(result.deducido.retefuente).toBeGreaterThan(50000);
+        });
+
+        test("should enforce the 40% Global Limit on Deductions + Exempt Income", () => {
+            const richEarner: Colaborador = {
+                ...mockColaborador,
+                sueldo: 50000000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: {
+                    dependientes: false,
+                    medicinaPrepagadaMensual: 1000000,
+                    viviendaMensual: 15000000,
+                    tipoTabla: "actual"
+                }
+            };
+
+            const result = ColaboradorService.calcularColaborador(richEarner, 2026);
+
+            // Critical: The Absolute Cap (Annual 1340 UVT -> Monthly ~111 UVT -> ~5.8M) 
+            // is MUCH lower than the 40% percent limit (~18M).
+            // So Taxable Base is Income - 5.8M (not Income - 18M).
+
+            // Verify UVT is high (indicating strict cap applied)
+            expect(result.deducido.uvt).toBeGreaterThan(700);
+            expect(result.deducido.uvt).not.toBeLessThan(600);
         });
     });
 });

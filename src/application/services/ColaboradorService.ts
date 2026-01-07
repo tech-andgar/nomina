@@ -222,28 +222,75 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
   if (totalDevengado === null || salud === null || pension === null || fondoSolidaridad === null) return null;
 
   const uvtValue = constants.uvt;
+  const year = Number.parseInt(constants.year || "2026", 10);
+  const isLey2277 = year >= 2023;
 
-  // Optional Deductions
+  // 1. Ingreso Neto de INCR (Ingresos No Constitutivos de Renta)
+  const incomeNetOfINCR = totalDevengado - salud - pension - fondoSolidaridad;
+
+  // 2. Deducciones (Art 387 ET)
+
+  // A. Dependientes (10% del ingreso bruto, tope 32 UVT mensual)
   let deduccionDependientes = 0;
   if (colaborador.deduccionesOpcionales?.dependientes) {
     const topeDependientes = 32 * uvtValue;
-    deduccionDependientes = Math.min(totalDevengado * 0.10, topeDependientes);
+    deduccionDependientes = Math.min(totalDevengado * 0.1, topeDependientes);
   }
 
+  // B. Medicina Prepagada (Tope 16 UVT mensual)
   let deduccionMedicina = 0;
   if (colaborador.deduccionesOpcionales?.medicinaPrepagadaMensual) {
     const topeMedicina = 16 * uvtValue;
     deduccionMedicina = Math.min(colaborador.deduccionesOpcionales.medicinaPrepagadaMensual, topeMedicina);
   }
 
-  // Base for 25% Exemption = (Income - INCR - Deductions)
-  // INCR = Salud + Pension + Fondo
-  const baseDepurada = totalDevengado - salud - pension - fondoSolidaridad - deduccionDependientes - deduccionMedicina;
+  // C. Intereses de Vivienda (Tope 100 UVT mensual)
+  let deduccionVivienda = 0;
+  if (colaborador.deduccionesOpcionales?.viviendaMensual) {
+    const topeVivienda = 100 * uvtValue;
+    deduccionVivienda = Math.min(colaborador.deduccionesOpcionales.viviendaMensual, topeVivienda);
+  }
 
-  // Apply 25% Exempt Income (Renta Exenta)
-  // Note: There is also an annual cap for 25% (790 UVT), but we stick to monthly simplification for now
-  const ingresoGravable = baseDepurada * 0.75;
+  const totalDeducciones = deduccionDependientes + deduccionMedicina + deduccionVivienda;
 
+  // 3. Renta Exenta del 25% (Numeral 10, Art 206 ET)
+  // Base: (Ingreso - INCR - Deducciones)
+  const baseFor25 = Math.max(0, incomeNetOfINCR - totalDeducciones);
+
+  let rentaExenta25 = baseFor25 * 0.25;
+
+  // Tope Renta Exenta 25%:
+  // Ley 2277 (2023+): 790 UVT Anuales (~65.83 UVT Mensuales)
+  // Pre-2023: 2880 UVT Anuales (~240 UVT Mensuales)
+  const cap25AnnualUVT = isLey2277 ? 790 : 2880;
+  const cap25MonthlyUVT = cap25AnnualUVT / 12;
+  const maxRentaExenta25 = cap25MonthlyUVT * uvtValue;
+
+  rentaExenta25 = Math.min(rentaExenta25, maxRentaExenta25);
+
+  // 4. Limitación Global del 40% (Art 336 ET)
+  // (Deducciones + Renta Exenta) no puede exceder el 40% de (Ingreso - INCR)
+  // Y tampoco puede exceder el Tope Absoluto Global
+
+  const totalBeneficiosSolicitados = totalDeducciones + rentaExenta25;
+
+  const limit40Percent = incomeNetOfINCR * 0.4;
+
+  // Tope Absoluto Global:
+  // Ley 2277 (2023+): 1340 UVT Anuales (~111.66 UVT Mensuales)
+  // Pre-2023: 5040 UVT Anuales (~420 UVT Mensuales)
+  const capGlobalAnnualUVT = isLey2277 ? 1340 : 5040;
+  const capGlobalMonthlyUVT = capGlobalAnnualUVT / 12;
+  const limitGlobalAbsolute = capGlobalMonthlyUVT * uvtValue;
+
+  const maxAllowedBenefits = Math.min(limit40Percent, limitGlobalAbsolute);
+
+  const beneficiosFinales = Math.min(totalBeneficiosSolicitados, maxAllowedBenefits);
+
+  // 5. Base Gravable Final
+  const ingresoGravable = Math.max(0, incomeNetOfINCR - beneficiosFinales);
+
+  // Convert to UVT for Table Lookup
   const uvt = ingresoGravable / uvtValue;
 
   return Number.parseFloat(uvt.toFixed(3));

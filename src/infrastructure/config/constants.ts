@@ -84,6 +84,7 @@ export interface YearlyConstants {
   uvt: number;
   auxTransporte: number;
   horasMensuales: number;
+  year: string;
   multipliers: YearlyMultipliers;
 }
 
@@ -127,5 +128,6 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
       festivaNocturna: Number(data.multipliers?.festivaNocturna || GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos),
       recargoNocturno: Number(data.multipliers?.recargoNocturno || GLOBAL_CONSTANTS.horasExtras.recargoNocturno),
     },
+    year: String(year),
   };
 };

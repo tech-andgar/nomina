@@ -46,6 +46,7 @@ export interface Prestaciones {
 export interface OpcionesDeducciones {
   dependientes: boolean; // Deducts 10% of total income (capped at 32 UVT)
   medicinaPrepagadaMensual: number | null; // Deducts actual value (capped at 16 UVT)
+  viviendaMensual: number | null; // Deducts actual value (capped at 100 UVT)
   /**
    * Tabla de Retención en la Fuente a aplicar:
    * - "actual": Ley 2277 (2023-Presente) -> Inicia 95 UVT, Max 39%
@@ -101,6 +102,7 @@ export function createEmptyColaborador(): Colaborador {
     deduccionesOpcionales: {
       dependientes: false,
       medicinaPrepagadaMensual: null,
+      viviendaMensual: null,
       tipoTabla: "actual",
     },
     parafiscales: {
