@@ -14,7 +14,13 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
+    "rootDir": ".",
+    "baseUrl": ".",
     "types": ["bun-types", "node"]
   },
-  "include": ["src", "server", "assets"]
+  "include": [
+    "src/**/*",
+    "server/**/*",
+    "assets/data/yearly_data.json"
+  ]
 }

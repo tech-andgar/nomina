@@ -1,4 +1,4 @@
-import { Colaborador } from "../../domain/Colaborador.ts";
+import type { Colaborador } from "../../domain/Colaborador.ts";
 import { GLOBAL_CONSTANTS, YearlyConstants, getYearlyConstants } from "../../infrastructure/config/constants.ts";
 
 export function checkNotEmptyDataColaborador(colaborador: Colaborador): boolean {
