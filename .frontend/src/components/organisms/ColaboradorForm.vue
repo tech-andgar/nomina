@@ -163,7 +163,7 @@ const toggleTipoContrato = () => {
           label="Días trabajados"
           :model-value="colaborador.diasTrabajados"
           @update:model-value="updateField('diasTrabajados', $event)"
-          type="number"
+          type="tel"
           placeholder="30"
         />
       </div>
@@ -189,9 +189,9 @@ const toggleTipoContrato = () => {
         </div>
         <FormField
           label="% Costos (Opcional)"
-          :model-value="colaborador.porcentajeCostos"
+          :model-value="colaborador.porcentajeCostos ?? null"
           @update:model-value="updateField('porcentajeCostos', $event)"
-          type="number"
+          type="tel"
           placeholder="Según actividad"
           hint="Sobreescribe el valor legal si se define"
         />
@@ -206,11 +206,11 @@ const toggleTipoContrato = () => {
         </div>
       </summary>
       <div class="grid-2 pt-4">
-        <FormField label="E. Diurna" :model-value="colaborador.devengado.horasExtras.diurna" @update:model-value="updateField('devengado.horasExtras.diurna', $event)" type="number" />
-        <FormField label="E. Nocturna" :model-value="colaborador.devengado.horasExtras.nocturna" @update:model-value="updateField('devengado.horasExtras.nocturna', $event)" type="number" />
-        <FormField label="Dom. Diurna" :model-value="colaborador.devengado.horasExtras.domingos" @update:model-value="updateField('devengado.horasExtras.domingos', $event)" type="number" />
-        <FormField label="Dom. Noct." :model-value="colaborador.devengado.horasExtras.nocturnaDomingos" @update:model-value="updateField('devengado.horasExtras.nocturnaDomingos', $event)" type="number" />
-        <FormField label="Recargo Noct." :model-value="colaborador.devengado.horasExtras.recargoNocturno" @update:model-value="updateField('devengado.horasExtras.recargoNocturno', $event)" type="number" />
+        <FormField label="E. Diurna" :model-value="colaborador.devengado.horasExtras.diurna" @update:model-value="updateField('devengado.horasExtras.diurna', $event)" type="tel" />
+        <FormField label="E. Nocturna" :model-value="colaborador.devengado.horasExtras.nocturna" @update:model-value="updateField('devengado.horasExtras.nocturna', $event)" type="tel" />
+        <FormField label="Dom. Diurna" :model-value="colaborador.devengado.horasExtras.domingos" @update:model-value="updateField('devengado.horasExtras.domingos', $event)" type="tel" />
+        <FormField label="Dom. Noct." :model-value="colaborador.devengado.horasExtras.nocturnaDomingos" @update:model-value="updateField('devengado.horasExtras.nocturnaDomingos', $event)" type="tel" />
+        <FormField label="Recargo Noct." :model-value="colaborador.devengado.horasExtras.recargoNocturno" @update:model-value="updateField('devengado.horasExtras.recargoNocturno', $event)" type="tel" />
       </div>
     </details>
 

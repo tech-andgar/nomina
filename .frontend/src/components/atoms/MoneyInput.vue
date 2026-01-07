@@ -34,6 +34,7 @@ const moneyConfig = {
       <Money3Component
         :id="id"
         class="money-input"
+        type="tel"
         :model-value="modelValue ?? 0"
         v-bind="moneyConfig"
         @update:model-value="$emit('update:modelValue', $event)"
