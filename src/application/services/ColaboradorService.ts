@@ -67,7 +67,7 @@ export function calcularValorExtrasDomingos(
 
   if (!valorHoraOrdinaria || !horasExtrasDomingos) return null;
 
-  const factor = constants?.multipliers.festiva ?? GLOBAL_CONSTANTS.horasExtras.domingos;
+  const factor = constants?.multipliers.festivaDiurna ?? GLOBAL_CONSTANTS.horasExtras.domingos;
   return valorHoraOrdinaria * horasExtrasDomingos * factor;
 }
 
