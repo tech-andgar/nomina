@@ -23,6 +23,9 @@ export function calcularValorAuxTransporte(colaborador: Colaborador, constants: 
   if (colaborador.sueldo === null || colaborador.diasTrabajados === null) return null;
   if (colaborador.sueldo === 0 || colaborador.diasTrabajados === 0) return 0;
 
+  // Independientes no tienen auxilio de transporte
+  if (colaborador.tipoContrato === 'INDEPENDIENTE') return 0;
+
   let auxTransporte = 0;
   if (colaborador.sueldo < constants.slmv * 2) {
     auxTransporte = (constants.auxTransporte / GLOBAL_CONSTANTS.diasMes) *
@@ -141,6 +144,15 @@ export function calcularValorTotalDevengado(colaborador: Colaborador, constants:
 
   if (sueldoBasico === null || totalValorExtras === null || auxTransporte === null) return null;
 
+  if (sueldoBasico === null || totalValorExtras === null || auxTransporte === null) return null;
+
+  // Para independientes, el "Total Devengado" es simplemente sus honorarios (sueldo)
+  // No hay horas extras ni auxilio de transporte en el sentido laboral puro, 
+  // aunque podrían facturar adicionales, aquí simplificamos al "Sueldo" ingresado.
+  if (colaborador.tipoContrato === 'INDEPENDIENTE') {
+    return colaborador.sueldo;
+  }
+
   return totalValorExtras + auxTransporte + sueldoBasico;
 }
 
@@ -150,8 +162,30 @@ export function calcularValorIBC(colaborador: Colaborador, constants: YearlyCons
 
   if (totalDevengado === null || auxTransporte === null) return null;
 
-  // Calculo IBC preliminar
-  const ibcPreliminar = totalDevengado - auxTransporte;
+  if (totalDevengado === null || auxTransporte === null) return null;
+
+  let ibcPreliminar = 0;
+
+  if (colaborador.tipoContrato === 'INDEPENDIENTE') {
+    // Regla Independientes: 40% del Ingreso Mensualizado
+    // Mínimo 1 SMMLV
+    const ingresoBase = totalDevengado; // Honorarios totales
+    const base40 = ingresoBase * 0.40;
+
+    // Si la base 40% es inferior al mínimo, se debe cotizar sobre el mínimo.
+    // OJO: Si el ingreso total es inferior al mínimo, técnicamente no están obligados a cotizar al sistema (pueden ser beneficiarios),
+    // pero si cotizan, no puede ser por menos de 1 SMMLV.
+    // Asumimos que si estamos calculando, es porque va a cotizar.
+
+    ibcPreliminar = Math.max(base40, constants.slmv);
+
+    // Sin embargo, el IBC no puede exceder el ingreso real (caso borde de ingresos muy bajos pero obligados a cotizar??)
+    // La norma dice: IBC mínimo 1 SMMLV.
+
+  } else {
+    // Calculo IBC preliminar Laboral
+    ibcPreliminar = totalDevengado - auxTransporte;
+  }
 
   // Tope máximo 25 SMMLV (Límite legal de seguridad social)
   const topeIBC = 25 * constants.slmv;
@@ -165,7 +199,12 @@ export function calcularValorSaludColaborador(
 ): number | null {
   const ibc = calcularValorIBC(colaborador, constants);
   if (ibc === null) return null;
-  return (ibc * GLOBAL_CONSTANTS.salud.colaborador) / 100;
+
+  const porcentaje = colaborador.tipoContrato === 'INDEPENDIENTE'
+    ? GLOBAL_CONSTANTS.salud.independiente
+    : GLOBAL_CONSTANTS.salud.colaborador;
+
+  return (ibc * porcentaje) / 100;
 }
 
 export function calcularValorPensionColaborador(
@@ -174,7 +213,12 @@ export function calcularValorPensionColaborador(
 ): number | null {
   const ibc = calcularValorIBC(colaborador, constants);
   if (ibc === null) return null;
-  return (ibc * GLOBAL_CONSTANTS.pension.colaborador) / 100;
+
+  const porcentaje = colaborador.tipoContrato === 'INDEPENDIENTE'
+    ? GLOBAL_CONSTANTS.pension.independiente
+    : GLOBAL_CONSTANTS.pension.colaborador;
+
+  return (ibc * porcentaje) / 100;
 }
 
 export function calcularValorFondoSolidaridad(
@@ -477,6 +521,10 @@ export function calcularValorTotalParafiscales(
 
   const totalParafiscales = salud + pension + arl + sena + icbf + cajas;
 
+  // Independientes no pagan parafiscales (SENA, ICBF, Cajas) ni salud/pension "Empleador" 
+  // (ellos pagan su propia seguridad social completa vista en 'calcularValorSaludColaborador')
+  if (colaborador.tipoContrato === 'INDEPENDIENTE') return 0;
+
   return totalParafiscales;
 }
 
@@ -533,6 +581,8 @@ export function calcularValorTotalPrestacion(colaborador: Colaborador, constants
 
   const totalPrestacion = prima + vacaciones + cesantias +
     interesCesantias;
+
+  if (colaborador.tipoContrato === 'INDEPENDIENTE') return 0;
 
   return totalPrestacion;
 }

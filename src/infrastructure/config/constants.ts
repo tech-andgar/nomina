@@ -27,6 +27,8 @@ export const GLOBAL_CONSTANTS = {
     colaborador: 4,
     // Porcentaje de salud que paga el empleador.
     empleador: 8.5,
+    // Porcentaje total para independiente
+    independiente: 12.5,
   },
   // Porcentajes de pensión.
   pension: {
@@ -34,6 +36,8 @@ export const GLOBAL_CONSTANTS = {
     colaborador: 4,
     // Porcentaje de pensión que paga el empleador.
     empleador: 12,
+    // Porcentaje total para independiente
+    independiente: 16,
   },
 
   // Aportes parafiscales

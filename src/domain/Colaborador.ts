@@ -59,16 +59,20 @@ export interface OpcionesDeducciones {
   tipoTabla?: "actual" | "legacy_2019_2022" | "legacy_2017_2018" | "legacy_2013_2016" | "legacy_2010_2012" | "legacy_user_85uvt";
 }
 
+export type TipoContrato = 'LABORAL' | 'INDEPENDIENTE';
+
 export interface Colaborador {
   cedula: string | null;
   nombre: string | null;
+  tipoContrato: TipoContrato;
+  riesgoARL?: 1 | 2 | 3 | 4 | 5;
   sueldo: number | null;
   valorHoraOrdinaria: number | null;
   auxTransporte: number | null;
   diasTrabajados: number | null;
   devengado: Devengado;
   deducido: Deducido;
-  deduccionesOpcionales: OpcionesDeducciones; // Renamed to avoid confusion with 'deducido'
+  deduccionesOpcionales: OpcionesDeducciones;
   parafiscales: Parafiscales;
   prestaciones: Prestaciones;
   totalNeto: number | null;
@@ -79,6 +83,8 @@ export function createEmptyColaborador(): Colaborador {
   return {
     cedula: null,
     nombre: null,
+    tipoContrato: 'LABORAL', // Default
+    riesgoARL: 1,
     sueldo: null,
     valorHoraOrdinaria: 0,
     auxTransporte: 0,

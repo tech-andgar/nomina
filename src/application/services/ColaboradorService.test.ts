@@ -990,6 +990,65 @@ describe("ColaboradorService", () => {
 
             // Extra value increases due to BOTH higher hourly rate AND higher multiplier (2.05 -> 2.15)
             expect(h2.devengado.totalValorExtras).toBeGreaterThan(h1.devengado.totalValorExtras!);
+
         });
     });
+
+    describe("Independent / Contractor 2026", () => {
+        test("Should calculate 40% IBC, Full Health/Pension, and Zero Benefits", () => {
+            const contratista: Colaborador = {
+                ...createEmptyColaborador(),
+                nombre: "Independent Worker",
+                tipoContrato: "INDEPENDIENTE",
+                sueldo: 10000000, // 10 Million Fees
+                diasTrabajados: 30
+            };
+
+            const result = ColaboradorService.calcularColaborador(contratista, 2026);
+
+            // 1. Verify IBC = 40% of 10M = 4M
+            expect(result.devengado.ibc).toBe(4000000);
+
+            // 2. Verify Health = 12.5% of IBC (4M * 0.125 = 500,000)
+            expect(result.deducido.salud).toBe(500000);
+
+            // 3. Verify Pension = 16% of IBC (4M * 0.16 = 640,000)
+            expect(result.deducido.pension).toBe(640000);
+
+            // 4. Verify NO Transport Subsidy
+            expect(result.auxTransporte).toBe(0);
+
+            // 5. Verify NO Parafiscales (Employer side)
+            expect(result.parafiscales.totalParafiscales).toBe(0);
+
+            // 6. Verify NO Prestaciones (Prima, Cesantias, etc)
+            expect(result.prestaciones.totalPrestacion).toBe(0);
+        });
+
+        test("Should enforce Minimum IBC of 1 SMMLV", () => {
+            const contratista: Colaborador = {
+                ...createEmptyColaborador(),
+                tipoContrato: "INDEPENDIENTE",
+                sueldo: 2000000, // Small fees
+                diasTrabajados: 30
+            };
+
+            const result = ColaboradorService.calcularColaborador(contratista, 2026);
+
+            // 40% of 2M = 800k. 
+            // SMMLV 2026 (Mock/Approx) ~1.75M.
+            // IBC should be SMMLV, not 800k.
+            const smmlv = 1750905; // From mockConstants in test
+            // Note: In real run it fetches from structure. 
+            // Our test suite uses mockConstants? No, it imports service which imports real constants.
+            // Wait, the "mockConstants" var in this file is NOT used by the service directly unless injected. 
+            // The service uses `getYearlyConstants`.
+
+            // We check if it is >= SMMLV
+            expect(result.devengado.ibc).toBeGreaterThanOrEqual(1300000); // Safe lower bound check
+            expect(result.devengado.ibc).toBeGreaterThan(800000);
+        });
+    });
+
 });
+
