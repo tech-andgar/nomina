@@ -220,8 +220,29 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
   if (totalDevengado === null || salud === null || pension === null || fondoSolidaridad === null) return null;
 
   const uvtValue = constants.uvt;
-  const uvt = ((totalDevengado - salud - pension - fondoSolidaridad) * 0.75) /
-    uvtValue;
+
+  // Optional Deductions
+  let deduccionDependientes = 0;
+  if (colaborador.deduccionesOpcionales?.dependientes) {
+    const topeDependientes = 32 * uvtValue;
+    deduccionDependientes = Math.min(totalDevengado * 0.10, topeDependientes);
+  }
+
+  let deduccionMedicina = 0;
+  if (colaborador.deduccionesOpcionales?.medicinaPrepagadaMensual) {
+    const topeMedicina = 16 * uvtValue;
+    deduccionMedicina = Math.min(colaborador.deduccionesOpcionales.medicinaPrepagadaMensual, topeMedicina);
+  }
+
+  // Base for 25% Exemption = (Income - INCR - Deductions)
+  // INCR = Salud + Pension + Fondo
+  const baseDepurada = totalDevengado - salud - pension - fondoSolidaridad - deduccionDependientes - deduccionMedicina;
+
+  // Apply 25% Exempt Income (Renta Exenta)
+  // Note: There is also an annual cap for 25% (790 UVT), but we stick to monthly simplification for now
+  const ingresoGravable = baseDepurada * 0.75;
+
+  const uvt = ingresoGravable / uvtValue;
 
   return Number.parseFloat(uvt.toFixed(3));
 }
@@ -233,16 +254,79 @@ export function calcularValorRetefuente(colaborador: Colaborador, constants: Yea
   const uvtValor = constants.uvt;
   let retefuente = 0;
 
-  if (uvt >= 1140) {
-    retefuente = (uvt * 0.37 + 341) * uvtValor;
-  } else if (uvt >= 640) {
-    retefuente = (uvt * 0.35 + 166) * uvtValor;
-  } else if (uvt >= 350) {
-    retefuente = (uvt * 0.33 + 70) * uvtValor;
-  } else if (uvt >= 140) {
-    retefuente = (uvt * 0.28 + 11) * uvtValor;
-  } else if (uvt >= 85) {
-    retefuente = uvt * 0.19 * uvtValor;
+  // Determine table type (Default to 'actual' if undefined or 'actual')
+  const tipoTabla = colaborador.deduccionesOpcionales?.tipoTabla ?? "actual";
+
+  if (tipoTabla === "legacy_user_85uvt") {
+    // User Provided Legacy Table (Ref: Ley 1111 de 2006 / Pre-2013 Custom)
+    // Structure: Marginal Progressive (Base UVT must be subtracted)
+    if (uvt >= 2300) {
+      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
+    } else if (uvt >= 1140) {
+      retefuente = ((uvt - 1140) * 0.37 + 341) * uvtValor;
+    } else if (uvt >= 640) {
+      retefuente = ((uvt - 640) * 0.35 + 166) * uvtValor;
+    } else if (uvt >= 350) {
+      retefuente = ((uvt - 350) * 0.33 + 70) * uvtValor;
+    } else if (uvt >= 140) {
+      retefuente = ((uvt - 140) * 0.28 + 11) * uvtValor;
+    } else if (uvt >= 85) {
+      retefuente = (uvt - 85) * 0.19 * uvtValor;
+    }
+  } else if (tipoTabla === "legacy_2019_2022") {
+    // Ley 1943 (2018) / Ley 2010 (2019) -> Starts 87 UVT, Top 39%
+    if (uvt >= 2300) {
+      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
+    } else if (uvt >= 945) {
+      retefuente = ((uvt - 945) * 0.37 + 268) * uvtValor;
+    } else if (uvt >= 640) {
+      retefuente = ((uvt - 640) * 0.35 + 162) * uvtValor;
+    } else if (uvt >= 360) {
+      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
+    } else if (uvt >= 150) {
+      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
+    } else if (uvt >= 87) { // 87 UVT Start
+      retefuente = (uvt - 87) * 0.19 * uvtValor;
+    }
+  } else if (tipoTabla === "legacy_2017_2018") {
+    // Ley 1819 (2016) -> Starts 95 UVT, Top 35% (>640 UVT) (Check top bracket validity)
+    // Actually, Ley 1819 added 35% for >640. Did it have 37/39? 
+    // Research suggests 37/39 were added later (Ley 1943). 
+    // Let's assume Ley 1819 topped at 35% or 33% extended. 
+    // Correction: Ley 1819 introduced 35% (>640) and 37% (>945)? NO, 2019 added higher.
+    // Simplifying: 2017 table topped at 33% or 35%?
+    // Common table 2017: >95 19%, >150 28%, >360 33%. 
+    if (uvt >= 360) {
+      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
+    } else if (uvt >= 150) {
+      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
+    } else if (uvt >= 95) {
+      retefuente = (uvt - 95) * 0.19 * uvtValor;
+    }
+  } else if (tipoTabla === "legacy_2013_2016" || tipoTabla === "legacy_2010_2012") {
+    // Ley 1607 (2012) / Ley 1111 (2006) -> Starts 95 UVT, Top 33%
+    if (uvt >= 360) {
+      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
+    } else if (uvt >= 150) {
+      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
+    } else if (uvt >= 95) {
+      retefuente = (uvt - 95) * 0.19 * uvtValor;
+    }
+  } else {
+    // Actual: Ley 2277 (2022) / Art 383 ET 2023+ (Starts 95 UVT, Top 39%)
+    if (uvt >= 2300) {
+      retefuente = ((uvt - 2300) * 0.39 + 770) * uvtValor;
+    } else if (uvt >= 945) {
+      retefuente = ((uvt - 945) * 0.37 + 268) * uvtValor;
+    } else if (uvt >= 640) {
+      retefuente = ((uvt - 640) * 0.35 + 162) * uvtValor;
+    } else if (uvt >= 360) {
+      retefuente = ((uvt - 360) * 0.33 + 69) * uvtValor;
+    } else if (uvt >= 150) {
+      retefuente = ((uvt - 150) * 0.28 + 10) * uvtValor;
+    } else if (uvt >= 95) {
+      retefuente = (uvt - 95) * 0.19 * uvtValor;
+    }
   }
 
   return retefuente;

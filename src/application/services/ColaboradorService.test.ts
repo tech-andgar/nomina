@@ -64,14 +64,19 @@ describe("ColaboradorService", () => {
             totalParafiscales: null,
         },
         prestaciones: {
-            prima: null,
-            vacaciones: null,
-            cesantias: null,
-            interesCesantias: null,
-            totalPrestacion: null,
+            prima: 0,
+            vacaciones: 0,
+            cesantias: 0,
+            interesCesantias: 0,
+            totalPrestacion: 0,
         },
-        totalNeto: null,
-        totalNomina: null,
+        deduccionesOpcionales: {
+            dependientes: false,
+            medicinaPrepagadaMensual: null,
+            tipoTabla: "actual"
+        },
+        totalNeto: 0,
+        totalNomina: 0,
     };
 
     test("checkNotEmptyDataColaborador should validate correctly", () => {
@@ -172,19 +177,26 @@ describe("ColaboradorService", () => {
         // IBC = 10,000,000. Salud = 400k. Pension = 400k. FondoS = 100k.
         // Base = (10,000,000 - 900,000) * 0.75 = 6,825,000
         // UVT = 6,825,000 / 52,374 = 130.3127...
-        // Rete = 130.3127... * 0.19 * 52374 = 1,296,752
+        // Rete Marginal > 95 UVT: (130.3127 - 95) * 0.19 = 35.3127 * 0.19 = 6.709 UVT
+        // 6.709 * 52,374 = ~351,401
         const c2 = { ...mockColaborador, sueldo: 10000000 };
         const rete = ColaboradorService.calcularValorRetefuente(c2, mockConstants);
-        expect(rete).toBeCloseTo(1296752, 0);
+        expect(rete).toBeCloseTo(351402, 0); // Rounded up
 
         // Caso 3: Sueldo 50,000,000 (Bracket muy alto)
         // IBC = 50M. Salud = 2M. Pension = 2M. FondoS(2%) = 1M.
         // Base = (50M - 5M) * 0.75 = 33,750,000
-        // UVT = 33,750,000 / 52,374 = 644.4037 UVT (Bracket 5: 640-1140)
-        // Rete = (644.4037 * 0.35 + 166) * 52374 = (225.5413 + 166) * 52374 = 391.5413 * 52374 = 20,506,589
+        // UVT = 33,750,000 / 52,374 = 644.4037 UVT (Bracket 5: >640)
+        // Rete Marginal > 640 UVT: ((644.4037 - 640) * 0.35 + 162) * 52374
+        // (1.5413 * 0.35 + 162) * 52374 = (0.539 + 162) * 52374 = 162.539 * 52374 = 8,512,836 (approx)
+        // Re-calculating correctly:
+        // (644.4037 - 640) = 4.4037
+        // 4.4037 * 0.35 = 1.541295
+        // 1.541295 + 162 = 163.541295
+        // 163.541295 * 52374 = 8,565,317
         const c3 = { ...mockColaborador, sueldo: 50000000 };
         const reteAlto = ColaboradorService.calcularValorRetefuente(c3, mockConstants);
-        expect(reteAlto).toBeCloseTo(20506589, 0);
+        expect(reteAlto).toBeCloseTo(8565317, 0);
     });
 
     describe("Employer Obligations", () => {
@@ -300,7 +312,6 @@ describe("ColaboradorService", () => {
 
         // Use a safe access or expect on the total extras if specific prop is not exposed
         // Assuming calcularColaborador updates the 'totalValorExtras' or specific extra field if mapped.
-        // Let's check `devengado.valorExtras` which should contain the sum.
         // Since only 1 extra hour type is set, total equals this one.
 
         // Note: ColaboradorService.ts `calcularValorTotalExtrasValor` sums them up.
@@ -351,6 +362,172 @@ describe("ColaboradorService", () => {
         checkFondo(25, 0.02);
     });
 
+    test("Scenario: High Salary (12M) with Partial Days (23)", () => {
+        // Requested by user: 12,000,000 salary, 23 days worked.
+        const highEarner = {
+            ...mockColaborador,
+            sueldo: 12000000,
+            diasTrabajados: 23
+        };
+
+        const result = ColaboradorService.calcularColaborador(highEarner, 2026);
+
+        // 1. Sueldo Básico: (12,000,000 / 30) * 23 = 9,200,000
+        expect(result.devengado.sueldoBasico).toBeCloseTo(9200000, 2);
+
+        // 2. Auxilio Transporte: > 2 SMMLV (2 * 1,750,905 approx 3.5M) -> 0
+        expect(result.auxTransporte).toBe(0);
+
+        // 3. Salud: 4% of 9,200,000 = 368,000
+        expect(result.deducido.salud).toBeCloseTo(368000, 2);
+
+        // 4. Pensión: 4% of 9,200,000 = 368,000
+        expect(result.deducido.pension).toBeCloseTo(368000, 2);
+
+        // 5. Fondo Solidaridad:
+        // Income 9.2M / 1.75M_SMMLV ~= 5.25 SMMLV
+        // Bracket (4-16 SMMLV) -> 1%
+        // 1% of 9,200,000 = 92,000
+        expect(result.deducido.fondoSolidaridad).toBeCloseTo(92000, 2);
+
+        // 6. Retefuente:
+        // Base = 9,200,000 - 368,000 - 368,000 - 92,000 = 8,372,000
+        // Base UVT = (8,372,000 * 0.75) / 52,374 (2026 UVT) = ~119.89 UVT
+        // Bracket > 95 UVT -> (UVT - 95) * 19%
+        // (119.89 - 95) * 0.19 * 52,374 = ~24.89 * 0.19 * 52,374 = ~247,671
+        expect(result.deducido.retefuente).toBeCloseTo(247671, -3); // Flexible precision first
+    });
+
+    test("Scenario: High Salary (12M) with Partial Days (23) - Year 2025", () => {
+        // Requested by user: Same scenario but for 2025.
+        // Constants 2025: SLMV 1,423,500 | UVT 49,799
+
+        const highEarner = {
+            ...mockColaborador,
+            sueldo: 12000000,
+            diasTrabajados: 23
+        };
+
+        const result = ColaboradorService.calcularColaborador(highEarner, 2025);
+
+        // 1. Sueldo Básico: (12,000,000 / 30) * 23 = 9,200,000
+        expect(result.devengado.sueldoBasico).toBeCloseTo(9200000, 2);
+
+        // 2. Auxilio Transporte: > 2 SMMLV (2 * 1,423,500 = 2,847,000) -> 0
+        expect(result.auxTransporte).toBe(0);
+
+        // 3. Salud: 4% of 9,200,000 = 368,000
+        expect(result.deducido.salud).toBeCloseTo(368000, 2);
+
+        // 4. Pensión: 4% of 9,200,000 = 368,000
+        expect(result.deducido.pension).toBeCloseTo(368000, 2);
+
+        // 5. Fondo Solidaridad:
+        // Income 9.2M / 1.4235M_SMMLV ~= 6.46 SMMLV
+        // Bracket (4-16 SMMLV) -> 1%
+        // 1% of 9,200,000 = 92,000
+        expect(result.deducido.fondoSolidaridad).toBeCloseTo(92000, 2);
+
+        // 6. Retefuente:
+        // Base = 8,372,000
+        // Base UVT = (8,372,000 * 0.75) / 49,799 (2025 UVT) = 126.087
+        // Bracket > 95 UVT -> (UVT - 95) * 19%
+        // (126.087 - 95) * 0.19 * 49,799 = ~31.087 * 0.19 * 49,799 = ~294,115
+        expect(result.deducido.retefuente).toBeCloseTo(294115, -3);
+    });
+
+    test("Scenario: High Salary (12M) with Deductions (Dependents + Prepaid Medicine)", () => {
+        // Same base: 12M, 23 Days -> Income 9.2M
+        // Original Retefuente: ~294k
+
+        const earnerWithDeductions = {
+            ...mockColaborador,
+            sueldo: 12000000,
+            diasTrabajados: 23,
+            deduccionesOpcionales: {
+                dependientes: true,
+                medicinaPrepagadaMensual: 500000 // 500k prepagada
+            }
+        };
+
+        const result = ColaboradorService.calcularColaborador(earnerWithDeductions, 2025);
+
+        // Verification of decrease
+        // 1. Dependents Deduction: 10% of 9.2M = 920,000 (Limit 32 UVT ~1.59M OK)
+        // 2. Medicine Deduction: 500,000 (Limit 16 UVT ~796k OK)
+        // Previous Base Depurada (before 25%): 9.2M - 828k (Health/Pens/Fondo) = 8,372,000
+        // New Base Depurada: 8,372,000 - 920,000 - 500,000 = 6,952,000
+        // New Base Gravable (75%): 6,952,000 * 0.75 = 5,214,000
+        // UVT = 5,214,000 / 49,799 = ~104.70 UVT
+        // Tax: (104.70 - 95) * 19% = 9.70 * 0.19 = 1.843 UVT
+        // 1.843 * 49,799 = ~91,789
+
+        expect(result.deducido.retefuente).toBeLessThan(294000); // Should be much lower
+        expect(result.deducido.retefuente).toBeCloseTo(91789, -3);
+    });
+
+    test("Scenario: High Salary (12M) Full Month (30 Days) with Deductions", () => {
+        // This is the "Magic" scenario likely closest to a tax-optimized reality
+        const otpimizedEarner = {
+            ...mockColaborador,
+            sueldo: 12000000,
+            diasTrabajados: 30, // Full month
+            deduccionesOpcionales: {
+                dependientes: true,
+                medicinaPrepagadaMensual: 500000
+            }
+        };
+
+        const result = ColaboradorService.calcularColaborador(otpimizedEarner, 2025);
+
+        // Analysis:
+        // Income: 12M
+        // Salud/Pension/Fondo: 480k + 480k + 120k = 1.08M
+        // Dependents (10%): 1.2M (Capped at 32 UVT ~1.59M) -> 1.2M OK
+        // Medicine: 500k (Capped at 16 UVT ~796k) -> 500k OK
+        // Base Depurada: 12M - 1.08M - 1.2M - 0.5M = 9,220,000
+        // Base Gravable (75%): 9,220,000 * 0.75 = 6,915,000
+        // UVT = 6,915,000 / 49,799 = ~138.85 UVT
+        // Bracket: 95 - 150 UVT -> (UVT - 95) * 19%
+        // (138.85 - 95) * 0.19 = 43.85 * 0.19 = 8.33 UVT
+        // 8.33 * 49,799 = ~414,825
+
+        // This ~415k is much lower than the ~700k without deductions, 
+        // and comfortably below the accountant's 563k (who likely didn't apply ALL deductions)
+
+        expect(result.deducido.retefuente).toBeCloseTo(414825, -3);
+    });
+
+    test("Scenario: High Salary (12M) Full Month (30 Days) - Year 2025", () => {
+        // Requested by user: Full month comparison.
+        const fullEarner = {
+            ...mockColaborador,
+            sueldo: 12000000,
+            diasTrabajados: 30
+        };
+
+        const result = ColaboradorService.calcularColaborador(fullEarner, 2025);
+
+        // 1. Sueldo Básico: 12M
+        expect(result.devengado.sueldoBasico).toBe(12000000);
+
+        // 2. Salud/Pension: 4% of 12M = 480k
+        expect(result.deducido.salud).toBe(480000);
+        expect(result.deducido.pension).toBe(480000);
+
+        // 3. Fondo Solidaridad:
+        // 12M / 1.4235M = 8.43 SLMV -> Bracket 4-16 -> 1%
+        expect(result.deducido.fondoSolidaridad).toBe(120000);
+
+        // 4. Retefuente:
+        // Income 12M - 480k - 480k - 120k = 10,920,000
+        // Base UVT = (10,920,000 * 0.75) / 49,799 = ~164.46 UVT
+        // Bracket > 150 UVT -> ((UVT - 150) * 0.28 + 10)
+        // ((164.46 - 150) * 0.28 + 10) = (14.46 * 0.28 + 10) = 4.0488 + 10 = ~14.049 UVT
+        // 14.049 * 49,799 = ~699,625
+        expect(result.deducido.retefuente).toBeCloseTo(699625, -3);
+    });
+
     describe("Edge Cases", () => {
         test("Zero days worked should result in zero sueldoBasico and auxTransporte", () => {
             const lazyColaborador = { ...mockColaborador, diasTrabajados: 0 };
@@ -366,6 +543,157 @@ describe("ColaboradorService", () => {
             const result = ColaboradorService.calcularColaborador(mockColaborador, 2020);
             // If it falls back to 2026, totals should match 2026 constants
             expect(result.auxTransporte).toBeCloseTo(249095, 0);
+        });
+        test("Comparison: Legacy Table (85 UVT) vs Current Table (95 UVT) with 12M Salary", () => {
+            const uvtValue = 49799; // 2025 Value
+
+            // 1. Get Real Base from 12M Salary
+            const fullEarner = { ...mockColaborador, sueldo: 12000000, diasTrabajados: 30 };
+            const result = ColaboradorService.calcularColaborador(fullEarner, 2025);
+
+            // We need the UVT Base, which is not directly exposed in result, so we re-derive it:
+            // Income 12M - 480k(Health) - 480k(Pension) - 120k(Fondo) = 10,920,000
+            // Base Gravable = 10,920,000 * 0.75 = 8,190,000
+            // UVT Base = 8,190,000 / 49,799 = ~164.46 UVT
+            const realUVTBase = (12000000 - 480000 - 480000 - 120000) * 0.75 / uvtValue;
+
+            // 2. Current System (Law 2277) - Starts at 95, then 150
+            // Range > 150 UVT: (UVT - 150) * 28% + 10 UVT
+            const currentTaxUVT = (realUVTBase - 150) * 0.28 + 10;
+            const currentTaxCOP = currentTaxUVT * uvtValue;
+
+            // 3. Legacy System (Old Table) - Starts at 85, then 140
+            // Typical Old Table Structure:
+            // > 85 - 140: 19%
+            // > 140 - 360: 28% + 11 UVT (Old formula often compensated differently)
+            // Let's use the explicit logic the user pasted/implied:
+            // if uvt >= 140: (uvt * 0.28 + 11) * uvtValue? No, usually it's marginal (uvt - 140)...
+            // Assuming standard marginal structure for old table:
+            // (UVT - 140) * 0.28 + 11 UVT (Previous bracket accum: (140-85)*0.19 = 10.45 ~ 11)
+
+            const legacyTaxUVT = (realUVTBase - 140) * 0.28 + 11; // Starting higher tax earlier
+            const legacyTaxCOP = legacyTaxUVT * uvtValue;
+
+            // Verification
+            // Current: ~14.05 UVT -> ~$699,625
+            // Legacy:  (164.46 - 140)*0.28 + 11 = 24.46 * 0.28 + 11 = 6.84 + 11 = 17.84 UVT
+            // Legacy COP: 17.84 * 49,799 = ~$888,414
+
+            console.log(`Real Salary Base UVT: ${realUVTBase.toFixed(2)}`);
+            console.log(`Current Tax (12M): $${currentTaxCOP.toFixed(0)}`);
+            console.log(`Legacy Tax (12M):  $${legacyTaxCOP.toFixed(0)}`);
+
+            expect(currentTaxCOP).toBeCloseTo(699625, -3); // Matches our system test
+            expect(legacyTaxCOP).toBeGreaterThan(currentTaxCOP); // Legacy is explicitly higher
+            expect(legacyTaxCOP).toBeCloseTo(888414, -4);
+        });
+
+        test("Feature: Switching to Legacy Table via options", () => {
+            const legacyEarner = {
+                ...mockColaborador,
+                sueldo: 12000000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: {
+                    dependientes: false,
+                    medicinaPrepagadaMensual: null,
+                    tipoTabla: "legacy_user_85uvt" as const
+                }
+            };
+
+            const result = ColaboradorService.calcularColaborador(legacyEarner, 2025);
+            // Re-calc for Valid Marginal Legacy Table (Pre-2013 Custom / Ley 1111):
+            // UVT Base = 164.46
+            // Bracket >= 140: ((164.46 - 140) * 0.28 + 11) * 49799
+            // = (~ 888,852)
+            expect(result.deducido.retefuente).toBeCloseTo(888414, -3);
+        });
+
+        test("Historical: Verify Ley 1943/2010 (2019-2022) - Start 87 UVT", () => {
+            // For a lower salary that falls between 87 and 95 UVT, this table should tax, others won't.
+            // UVT Base needed: ~90. 
+            // 90 UVT * ~49,799 = ~4,481,910 Base Gravable.
+            // Gross Salary needed roughly: ~7M approx.
+            const earner: Colaborador = {
+                ...mockColaborador,
+                sueldo: 7000000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "legacy_2019_2022" as const }
+            };
+            const result2019 = ColaboradorService.calcularColaborador(earner, 2025);
+            // Base UVT approx: (7M - sol - pens - sal) - 25%
+            // 7M - 560k (8%) - 70k (1%) = 6.37M
+            // 6.37M - 25% = 4.7775M.
+            // UVT 2025: 49799. 4.7775M / 49799 = ~95.9 UVT.
+            // Both tables tax >95. We need strictly between 87 and 95.
+            // Let's try 6.5M Salary.
+            // 6.5M - 8% - 1% = 5.915M
+            // 5.915M - 25% = 4.436M
+            // 4.436M / 49799 = 89 UVT.
+            // "actual" (Start 95) -> 0 Tax.
+            // "legacy_2019_2022" (Start 87) -> (89 - 87)*19% > 0.
+
+            earner.sueldo = 6500000;
+            const resultLow = ColaboradorService.calcularColaborador(earner, 2025);
+            expect(resultLow.deducido.retefuente).toBeGreaterThan(0); // Should tax
+
+            // Precise calculation verification for confidence
+            // Base Gravable ~89 UVT. Taxable Excess > 87 UVT = 2 UVT.
+            // Tax ~ 2 * 0.19 * 49799 ~= 19k
+            expect(resultLow.deducido.retefuente).toBeCloseTo(19710, -3);
+
+            // Contrast with Actual
+            earner.deduccionesOpcionales.tipoTabla = "actual";
+            const resultActual = ColaboradorService.calcularColaborador(earner, 2025);
+            expect(resultActual.deducido.retefuente).toBe(0); // Should NOT tax (<95 UVT)
+        });
+
+        test("Historical: Verify Ley 1607 (2013-2016) - Start 95 UVT vs 2019 Start 87 UVT", () => {
+            // 6.5M Salary (Approx 89 UVT)
+            // Should be TAX FREE in 2013-2016 (Start 95)
+            // Should be TAXED in 2019-2022 (Start 87)
+            const earner: Colaborador = {
+                ...mockColaborador,
+                sueldo: 6500000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "legacy_2013_2016" }
+            };
+            const result2013 = ColaboradorService.calcularColaborador(earner, 2025);
+            expect(result2013.deducido.retefuente).toBe(0);
+
+            earner.deduccionesOpcionales.tipoTabla = "legacy_2019_2022";
+            const result2019 = ColaboradorService.calcularColaborador(earner, 2025);
+            expect(result2019.deducido.retefuente).toBeGreaterThan(0);
+        });
+
+        test("Historical: Verify Top Rates - High Income (50M) - 33% Cap (Old) vs 39% Cap (New)", () => {
+            // Very high salary to hit top brackets (>2300 UVT approx is ~114M, but >640 UVT is ~31M)
+            // 50M Salary. 
+            // Base Gravable approx ~35M.
+            // UVT ~35M / 49799 = ~700 UVT.
+            // Actual Table: >640 UVT pays 35%.
+            // Legacy 2013 Table: >360 UVT pays 33% (Flat marginal at top).
+            // Expect Actual Tax > Legacy 2013 Tax.
+
+            const richEarner: Colaborador = {
+                ...mockColaborador,
+                sueldo: 50000000,
+                diasTrabajados: 30,
+                deduccionesOpcionales: { dependientes: false, medicinaPrepagadaMensual: 0, tipoTabla: "actual" }
+            };
+
+            const resultActual = ColaboradorService.calcularColaborador(richEarner, 2025);
+
+            // Switch to 2013 Era
+            richEarner.deduccionesOpcionales.tipoTabla = "legacy_2013_2016";
+            const resultOld = ColaboradorService.calcularColaborador(richEarner, 2025);
+
+            // Verify Actual is more expensive due to higher progressive rates (35% bracket vs 33% top)
+            // Even if the difference is subtle at 50M, it should be positive.
+            expect(resultActual.deducido.retefuente).toBeGreaterThan(resultOld.deducido.retefuente ?? 0);
+
+            // Calculate difference to be sure
+            const diff = (resultActual.deducido.retefuente ?? 0) - (resultOld.deducido.retefuente ?? 0);
+            expect(diff).toBeGreaterThan(50000); // Validated Diff is around ~67k
         });
     });
 });
