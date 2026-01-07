@@ -7,7 +7,7 @@ const totals = useStore($colaboradoresTotal);
 </script>
 
 <template>
-  <div class="totals-dashboard card">
+  <div v-if="totals" class="totals-dashboard card">
     <h2 class="text-h6 text-primary dashboard-title">Resumen de Nómina Total</h2>
     <div class="dashboard-grid">
       <SummaryBadge label="Total Devengado" :value="totals.totalDevengado" />

@@ -17,13 +17,13 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
+      "@src/*": [".frontend/src/*"],
       "@assets/*": ["assets/*"]
     },
     "types": ["bun-types", "node"]
   },
   "include": [
-    "src/**/*",
+    ".frontend/src/**/*",
     "server/**/*",
     "assets/data/yearly_data.json"
   ]

@@ -5,11 +5,26 @@ import { createEmptyColaborador } from "@src/domain/Colaborador";
 import type { InfoEmpleador } from "@src/domain/Empleador";
 import * as ColaboradorService from "@src/application/services/ColaboradorService";
 
-const isBrowser =  globalThis.window !== undefined;
+const isBrowser = globalThis.window !== undefined;
 
-// Use sessionStorage for privacy: "no asusta datos llevar externo"
 if (isBrowser) {
-    setPersistentEngine(globalThis.sessionStorage, windowPersistentEvents);
+    try {
+        setPersistentEngine(globalThis.sessionStorage, windowPersistentEvents);
+    } catch (e) {
+        console.error('Failed to set persistent engine:', e);
+    }
+} else {
+    // Dummy engine for SSR to prevent proxy errors
+    const dummyStorage = {
+        getItem: () => null,
+        setItem: () => { },
+        removeItem: () => { },
+    };
+    const dummyEvents = {
+        addEventListener: () => { },
+        removeEventListener: () => { },
+    };
+    setPersistentEngine(dummyStorage as any, dummyEvents as any);
 }
 
 // State Atoms with Session Persistence
@@ -41,7 +56,7 @@ export const $theme = persistentAtom<Theme>('theme', 'light');
 // Theme Actions
 export const setTheme = (theme: Theme) => {
     $theme.set(theme);
-    if (typeof document !== 'undefined') {
+    if (document !== undefined) {
         document.documentElement.dataset.theme = theme;
     }
 };
