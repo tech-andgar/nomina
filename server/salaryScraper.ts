@@ -234,6 +234,22 @@ export const scrapeSalaryData = async () => {
     };
   });
 
+  // Now fetch UVT from uvt.com.co
+  let uvtValue = "0";
+  try {
+    await page.goto("https://uvt.com.co/", { waitUntil: "load" });
+    uvtValue = await page.evaluate((year) => {
+      const bodyText = document.body.innerText;
+      // Look for the specific year's UVT value
+      // Matches like "$ 52.374" or "$52.374" or "52.374" near to "2026"
+      const regex = new RegExp(`2026.*?\\$?\\s?(\\d{2}\\.\\d{3})`, 's');
+      const match = bodyText.match(regex);
+      return match ? match[1].replace(".", "") : "0";
+    }, salaryData.year);
+  } catch (error) {
+    console.error("Failed to fetch UVT data:", error);
+  }
+
   await browser.close();
 
   const extractNumeric = (str: string) => {
@@ -324,6 +340,7 @@ export const scrapeSalaryData = async () => {
       ) => [key, extractNumeric(value)]),
     ),
     year: salaryData.year,
+    uvt: uvtValue,
   };
 
   return transformedData;

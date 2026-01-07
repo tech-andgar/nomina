@@ -1,118 +1,90 @@
-/**
- * Objeto que contiene constantes utilizadas para cálculos laborales.
- */
-export const CONSTANTS = {
-  /**
-   * Horas hábiles diarias.
-   */
+import yearlyData from "../../../assets/data/yearly_data.json";
+
+// Estas son las constantes globales para el cálculo de nómina en Colombia
+export const GLOBAL_CONSTANTS = {
+  // Horas de trabajo al día
   horasHabiles: 8,
-  /**
-   * Días en un mes (para cálculos generales).
-   */
+  // Días base para el cálculo mensual
   diasMes: 30,
-  /**
-   * Factores para el cálculo de horas extras.
-   */
+
+  // Factores para horas extras y recargos
   horasExtras: {
-    /**
-     * Factor para horas extras diurnas.
-     */
+    // Factor para horas extras diurnas.
     diurna: 1.25,
-    /**
-     * Factor para horas extras nocturnas.
-     */
+    // Factor para horas extras nocturnas.
     nocturna: 1.75,
-    /**
-     * Factor para horas extras en domingos.
-     */
+    // Factor para horas extras en domingos.
     domingos: 2,
-    /**
-     * Factor para horas extras nocturnas en domingos.
-     */
+    // Factor para horas extras nocturnas en domingos.
     nocturnaDomingos: 2.5,
-    /**
-     * Factor para recargo nocturno adicional.
-     */
+    // Factor para recargo nocturno adicional.
     recargoNocturno: 1.35,
   },
-  /**
-   * Salario mínimo legal vigente para 2023.
-   */
-  slmv2023: 1300000,
-  /**
-   * Valor de la Unidad de Valor Tributario (UVT) para 2023.
-   */
-  uvt2023: 42412,
-  /**
-   * Auxilio de transporte.
-   */
-  auxTransporte: 162000,
-  /**
-   * Porcentajes de salud.
-   */
+
+  // Aportes de salud
   salud: {
-    /**
-     * Porcentaje de salud que paga el colaborador.
-     */
+    // Porcentaje de salud que paga el colaborador.
     colaborador: 4,
-    /**
-     * Porcentaje de salud que paga el empleador.
-     */
+    // Porcentaje de salud que paga el empleador.
     empleador: 8.5,
   },
-  /**
-   * Porcentajes de pensión.
-   */
+  // Porcentajes de pensión.
   pension: {
-    /**
-     * Porcentaje de pensión que paga el colaborador.
-     */
+    // Porcentaje de pensión que paga el colaborador.
     colaborador: 4,
-    /**
-     * Porcentaje de pensión que paga el empleador.
-     */
+    // Porcentaje de pensión que paga el empleador.
     empleador: 12,
   },
-  /**
-   * Porcentajes de parafiscales.
-   */
+
+  // Aportes parafiscales
   parafiscal: {
-    /**
-     * Porcentaje de ARL.
-     */
+    // Porcentaje de ARL.
     arl: 0.522,
-    /**
-     * Porcentaje de SENA.
-     */
+    // Porcentaje de SENA.
     sena: 2,
-    /**
-     * Porcentaje de ICBF.
-     */
+    // Porcentaje de ICBF.
     icbf: 3,
-    /**
-     * Porcentaje de Cajas de Compensación Familiar.
-     */
+    // Porcentaje de Cajas de Compensación Familiar.
     cajas: 4,
   },
-  /**
-   * Porcentajes para el cálculo de prestaciones sociales.
-   */
+
+  // Beneficios y prestaciones sociales
   prestacion: {
-    /**
-     * Porcentaje para el cálculo de prima.
-     */
+    // Porcentaje para el cálculo de prima.
     prima: 8.333333,
-    /**
-     * Porcentaje para el cálculo de vacaciones.
-     */
+    // Porcentaje para el cálculo de vacaciones.
     vacaciones: 4.17,
-    /**
-     * Porcentaje para el cálculo de cesantías.
-     */
+    // Porcentaje para el cálculo de cesantías.
     cesantias: 8.333333,
-    /**
-     * Porcentaje para el cálculo de intereses de cesantías.
-     */
+    // Porcentaje para el cálculo de intereses de cesantías.
     interesCesantias: 1,
   },
+};
+
+// Interfaz para el tipado de constantes anuales
+export interface YearlyConstants {
+  slmv: number;
+  uvt: number;
+  auxTransporte: number;
+}
+
+// Datos históricos y dinámicos por año
+export const YEARLY_DATA: any = yearlyData;
+
+/**
+ * Función que extrae las constantes de un año específico, 
+ * manteniendo la compatibilidad con el sistema de scraper.
+ */
+export const getYearlyConstants = (year: number): YearlyConstants => {
+  const data: any = YEARLY_DATA[year] || YEARLY_DATA[2026];
+
+  return {
+    slmv: Number(data.slmv || data.salarioMinimoMensual || 0),
+    uvt: Number(data.uvt || 0),
+    auxTransporte: Number(
+      data.auxTransporte ||
+      data.salarioPagadoEmpleadorEjemplo?.["Subsidio de transporte"] ||
+      0
+    ),
+  };
 };

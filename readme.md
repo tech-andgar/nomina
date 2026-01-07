@@ -20,8 +20,8 @@ The server is a web scraper built with **Bun** and **Puppeteer** to extract Colo
 
 ### Features
 - **Multi-Year Support**: Scrapes data and organizes it by year in `server/data/{year}.json`.
+- **Single Source of Truth**: Consolidates all yearly data into `assets/data/yearly_data.json` for frontend usage.
 - **Automated Verification**: Includes a comprehensive test suite using `bun test`.
-- **Latest Data**: Always maintains a `latest.json` for easy access.
 
 ### Usage
 ```bash

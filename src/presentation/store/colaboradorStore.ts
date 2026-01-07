@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Colaborador } from "../../domain/Colaborador.ts";
 import { ColaboradorService } from "../../application/services/ColaboradorService.ts";
 
 export const useColaboradorStore = defineStore("colaborador", () => {
   const colaboradores = ref<Colaborador[]>([]);
+  const selectedYear = ref<number>(2026);
+
   const colaborador = ref<Colaborador>({
     cedula: null,
     nombre: null,
@@ -65,16 +67,13 @@ export const useColaboradorStore = defineStore("colaborador", () => {
   );
 
   const addColaborador = () => {
-    if (!colaborador.value.cedula || !colaborador.value.nombre) return;
-    // Business logic applied before saving
+    if (!ColaboradorService.checkNotEmptyDataColaborador(colaborador.value)) return;
 
     const recalculatedColaborador = ColaboradorService.calcularColaborador(
       colaborador.value,
+      selectedYear.value
     );
 
-    // colaborador.value.valorHoraOrdinaria = ColaboradorService.calcularValorHoraOrdinaria(colaborador.value);
-    // colaborador.value.auxTransporte = ColaboradorService.calcularValorAuxTransporte(colaborador.value);
-    // colaboradores.value.push({ ...colaborador.value });
     colaboradores.value.push(recalculatedColaborador);
     resetColaborador();
   };
@@ -136,9 +135,17 @@ export const useColaboradorStore = defineStore("colaborador", () => {
     };
   };
 
+  // Recalculate all colaboradores when the year changes
+  watch(selectedYear, (newYear) => {
+    colaboradores.value = colaboradores.value.map(c =>
+      ColaboradorService.calcularColaborador(c, newYear)
+    );
+  });
+
   return {
     colaboradores,
     colaborador,
+    selectedYear,
     totalNomina,
     addColaborador,
     resetColaborador,

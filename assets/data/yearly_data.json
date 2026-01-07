@@ -1,0 +1,173 @@
+{
+  "2023": {
+    "slmv": 1160000,
+    "uvt": 42412,
+    "auxTransporte": 140606
+  },
+  "2024": {
+    "slmv": 1300000,
+    "uvt": 47065,
+    "auxTransporte": 162000
+  },
+  "2025": {
+    "slmv": 1423500,
+    "uvt": 49799,
+    "auxTransporte": 177170
+  },
+  "2026": {
+    "salarioMinimoMensual": "1750905",
+    "salarioMinimoMensualTexto": "Un Millón Setecientos Cincuenta Mil Novecientos Cinco Pesos",
+    "variacionAnual": {
+      "porcentaje": "23",
+      "valor": "327405"
+    },
+    "salarioMasSubsidio": "2000000",
+    "valoresSalarioMinimo2024": [
+      {
+        "concepto": "Salario Mínimo Integral Año 2026\n10 SMLV + 30% factor prestacional",
+        "duración": "10 SMLV + 30% factor prestacional",
+        "valor": "22761765"
+      },
+      {
+        "concepto": "Salario Anual - Año\n(Sin primas ni cesantías)",
+        "duración": "(Sin primas ni cesantías)",
+        "valor": "21010860"
+      },
+      {
+        "concepto": "Salario Mensual - Mes (SMMLV)\n30 días",
+        "duración": "30 días",
+        "valor": "1750905"
+      },
+      {
+        "concepto": "Salario Diario - Día (SMDLV)\n8 horas",
+        "duración": "8 horas",
+        "valor": "58363.50"
+      },
+      {
+        "concepto": "Hora Ordinaria - 44 horas/semana\n(6 A.M. a 9 P.M.)",
+        "duración": "(6 A.M. a 9 P.M.)",
+        "valor": "7959"
+      },
+      {
+        "concepto": "Hora Ordinaria - 42 horas/semana\n(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
+        "duración": "(6 A.M. a 9 P.M.) - Desde el 15 de Julio",
+        "valor": "8338"
+      },
+      {
+        "concepto": "Hora Nocturna - 44 horas/semana\n(9 P.M. a 6 A.M.) +35% noct.",
+        "duración": "(9 P.M. a 6 A.M.) +35% noct.",
+        "valor": "10744"
+      },
+      {
+        "concepto": "Hora Nocturna - 42 horas/semana\n(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
+        "duración": "(9 P.M. a 6 A.M.) +35% noct. - Desde el 15 de Julio",
+        "valor": "11256"
+      },
+      {
+        "concepto": "Hora Extra Diurna - 44 horas/semana\n(6 A.M. a 9 P.M.) +25% extra",
+        "duración": "(6 A.M. a 9 P.M.) +25% extra",
+        "valor": "9948"
+      },
+      {
+        "concepto": "Hora Extra Diurna - 42 horas/semana\n(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
+        "duración": "(6 A.M. a 9 P.M.) +25% extra - Desde el 15 de Julio",
+        "valor": "10422"
+      },
+      {
+        "concepto": "Hora Extra Nocturna - 44 horas/semana\n(9 P.M. a 6 A.M.) +75% extra",
+        "duración": "(9 P.M. a 6 A.M.) +75% extra",
+        "valor": "13928"
+      },
+      {
+        "concepto": "Hora Extra Nocturna - 42 horas/semana\n(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
+        "duración": "(9 P.M. a 6 A.M.) +75% extra - Desde el 15 de Julio",
+        "valor": "14591"
+      },
+      {
+        "concepto": "Hora Extra Dominical/Festivo Diurna - 44 horas/semana\n(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
+        "duración": "(6 A.M. a 9 P.M.) +75% Fest. +25% extra",
+        "valor": "15917"
+      },
+      {
+        "concepto": "Hora Extra Dominical/Festivo Diurna - 42 horas/semana\n(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
+        "duración": "(6 A.M. a 9 P.M.) +75% Fest. +25% extra - Desde el 15 de Julio",
+        "valor": "16675"
+      },
+      {
+        "concepto": "Hora Extra Dominical/Festivo Nocturna - 44 horas/semana\n(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
+        "duración": "(9 P.M. a 6 A.M.) +75% Fest. +75% extra",
+        "valor": "19897"
+      },
+      {
+        "concepto": "Hora Extra Dominical/Festivo Nocturna - 42 horas/semana\n(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
+        "duración": "(9 P.M. a 6 A.M.) +75% Fest. +75% extra - Desde el 15 de Julio",
+        "valor": "20844"
+      },
+      {
+        "concepto": "Subsidio de transporte Anual\n12 meses",
+        "duración": "12 meses",
+        "valor": "2989140"
+      },
+      {
+        "concepto": "Subsidio de transporte Mensual\n30 días",
+        "duración": "30 días",
+        "valor": "249095"
+      },
+      {
+        "concepto": "Subsidio de transporte Diario\n1 día",
+        "duración": "1 día",
+        "valor": "8303.17"
+      }
+    ],
+    "salarioMinimoEnDolares": {
+      "TRM 1 dólar - pesos colombianos": "3770.03",
+      "Salario Mínimo en Dólares": "464.43 USD"
+    },
+    "aportesSeguridadSocial": [
+      {
+        "concepto": "Salud",
+        "empleado": "4%",
+        "empleado-concepto-slmv": "70036.20",
+        "empleador": "8.5%",
+        "empleador-concepto-slmv": "148826.93",
+        "independiente": "12.5%",
+        "independiente-concepto-slmv": "218863.13"
+      },
+      {
+        "concepto": "Pensión",
+        "empleado": "4%",
+        "empleado-concepto-slmv": "70036.20",
+        "empleador": "12%",
+        "empleador-concepto-slmv": "210108.60",
+        "independiente": "16%",
+        "independiente-concepto-slmv": "280144.80"
+      }
+    ],
+    "salarioRecibidoEmpleadoEjemplo": {
+      "Salario Mensual": "1750905",
+      "Subsidio de transporte": "249095",
+      "Aporte Seguridad Social - Salud": "-70036",
+      "Aporte Seguridad Social - Pensión": "-70036",
+      "Total Salario Recibido": "1859928",
+      "Cesantías": "166667",
+      "Intereses sobre cesantías": "20000",
+      "Total Aportes Cesantías": "186667"
+    },
+    "salarioPagadoEmpleadorEjemplo": {
+      "Salario Mensual": "1750905",
+      "Subsidio de transporte": "249095",
+      "Prima (1 salario anual + transporte)": "166667",
+      "Cesantías (1 salario anual)": "166667",
+      "Intereses sobre cesantías (12% cesantías año anterior)": "20000",
+      "Aporte Seguridad Social - Salud (8.5%)": "148827",
+      "Aporte Seguridad Social - Pensión (12%)": "210109",
+      "Aporte Seguridad Social - ARL (Riesgo V - 6.96%)": "121863",
+      "Parafiscales - Caja de compensación (4%)": "70036",
+      "Parafiscales - ICBF (3%)": "52527",
+      "Parafiscales - Sena (2%)": "35018",
+      "Total Pagado": "2991713"
+    },
+    "year": "2026",
+    "uvt": "52374"
+  }
+}
