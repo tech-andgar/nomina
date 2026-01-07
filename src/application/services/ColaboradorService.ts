@@ -17,7 +17,8 @@ export function calcularValorHoraOrdinaria(colaborador: Colaborador): number | n
 }
 
 export function calcularValorAuxTransporte(colaborador: Colaborador, constants: YearlyConstants): number | null {
-  if (!colaborador.sueldo || !colaborador.diasTrabajados) return null;
+  if (colaborador.sueldo === null || colaborador.diasTrabajados === null) return null;
+  if (colaborador.sueldo === 0 || colaborador.diasTrabajados === 0) return 0;
 
   let auxTransporte = 0;
   if (colaborador.sueldo < constants.slmv * 2) {
@@ -119,7 +120,8 @@ export function calcularValorTotalExtrasValor(
 }
 
 export function calcularValorSueldoBasico(colaborador: Colaborador): number | null {
-  if (!colaborador.sueldo || !colaborador.diasTrabajados) return null;
+  if (colaborador.sueldo === null || colaborador.diasTrabajados === null) return null;
+  if (colaborador.sueldo === 0 || colaborador.diasTrabajados === 0) return 0;
 
   return (colaborador.sueldo / GLOBAL_CONSTANTS.diasMes) *
     colaborador.diasTrabajados;
