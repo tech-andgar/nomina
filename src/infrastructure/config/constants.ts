@@ -61,6 +61,14 @@ export const GLOBAL_CONSTANTS = {
   },
 };
 
+export const MONEY_FORMAT = {
+  decimal: ",",
+  thousands: ".",
+  prefix: "$ ",
+  precision: 0,
+  masked: true,
+};
+
 // Interfaz para el tipado de constantes anuales
 export interface YearlyConstants {
   slmv: number;
@@ -68,15 +76,26 @@ export interface YearlyConstants {
   auxTransporte: number;
 }
 
+interface RawYearlyDataEntry {
+  slmv?: number;
+  salarioMinimoMensual?: number | string;
+  uvt?: number | string;
+  auxTransporte?: number | string;
+  salarioPagadoEmpleadorEjemplo?: {
+    "Subsidio de transporte"?: number | string;
+  };
+  [key: string]: unknown;
+}
+
 // Datos históricos y dinámicos por año
-export const YEARLY_DATA: any = yearlyData;
+export const YEARLY_DATA: Record<string, RawYearlyDataEntry> = yearlyData as unknown as Record<string, RawYearlyDataEntry>;
 
 /**
  * Función que extrae las constantes de un año específico, 
  * manteniendo la compatibilidad con el sistema de scraper.
  */
 export const getYearlyConstants = (year: number): YearlyConstants => {
-  const data: any = YEARLY_DATA[year] || YEARLY_DATA[2026];
+  const data = YEARLY_DATA[String(year)] || YEARLY_DATA["2026"];
 
   return {
     slmv: Number(data.slmv || data.salarioMinimoMensual || 0),

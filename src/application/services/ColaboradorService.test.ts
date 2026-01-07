@@ -207,4 +207,18 @@ describe("ColaboradorService", () => {
         expect(result.deducido.pension).toBeCloseTo(80000, 2);
         expect(result.totalNeto).toBeCloseTo(2249095 - 160000, 2); // 2,089,095
     });
+
+    test("calcularTotales should aggregate multiple colaboradores", () => {
+        const c1 = ColaboradorService.calcularColaborador(mockColaborador, 2026);
+        const c2 = ColaboradorService.calcularColaborador({ ...mockColaborador, sueldo: 4000000 }, 2026);
+
+        const totales = ColaboradorService.calcularTotales([c1, c2]);
+
+        // c1: Dev=2,249,095, Ded=160,000, Net=2,089,095
+        // c2: Sueldo=4M, Aux=0, Dev=4M, Ded=160,000*2 (actually 160k salud + 160k pension = 320k), Net=3,680,000
+        // Totales: Dev=6,249,095, Ded=480,000, Net=5,769,095
+        expect(totales.totalDevengado).toBeCloseTo(2249095 + 4000000, 0);
+        expect(totales.totalDeducido).toBeCloseTo(160000 + 320000, 0);
+        expect(totales.totalNeto).toBeCloseTo(2089095 + 3680000, 0);
+    });
 });

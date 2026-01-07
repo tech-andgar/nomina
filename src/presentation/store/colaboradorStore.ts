@@ -4,14 +4,16 @@ import type { Colaborador } from "@src/domain/Colaborador.ts";
 import { createEmptyColaborador } from "@src/domain/Colaborador.ts";
 import * as ColaboradorService from "@src/application/services/ColaboradorService.ts";
 
+export { MONEY_FORMAT as moneyFormatForComponent } from "@src/infrastructure/config/constants.ts";
+
 export const useColaboradorStore = defineStore("colaborador", () => {
   const colaboradores = ref<Colaborador[]>([]);
   const selectedYear = ref<number>(2026);
 
   const colaborador = ref<Colaborador>(createEmptyColaborador());
 
-  const totalNomina = computed(() =>
-    colaboradores.value.reduce((acc, c) => acc + (c.totalNomina || 0), 0)
+  const colaboradoresTotal = computed(() =>
+    ColaboradorService.calcularTotales(colaboradores.value)
   );
 
   const addColaborador = () => {
@@ -41,7 +43,7 @@ export const useColaboradorStore = defineStore("colaborador", () => {
     colaboradores,
     colaborador,
     selectedYear,
-    totalNomina,
+    colaboradoresTotal,
     addColaborador,
     resetColaborador,
   };

@@ -509,3 +509,27 @@ export function calcularColaborador(colaborador: Colaborador, optionalYear?: num
     totalNomina: totalNomina,
   };
 }
+
+/**
+ * Calcula los totales agregados para una lista de colaboradores.
+ */
+export function calcularTotales(colaboradores: Colaborador[]) {
+  return colaboradores.reduce(
+    (acc, c) => ({
+      totalDevengado: acc.totalDevengado + (c.devengado.totalDevengado || 0),
+      totalDeducido: acc.totalDeducido + (c.deducido.totalDeducido || 0),
+      totalParafiscales: acc.totalParafiscales + (c.parafiscales.totalParafiscales || 0),
+      totalPrestaciones: acc.totalPrestaciones + (c.prestaciones.totalPrestacion || 0),
+      totalNeto: acc.totalNeto + (c.totalNeto || 0),
+      totalNomina: acc.totalNomina + (c.totalNomina || 0),
+    }),
+    {
+      totalDevengado: 0,
+      totalDeducido: 0,
+      totalParafiscales: 0,
+      totalPrestaciones: 0,
+      totalNeto: 0,
+      totalNomina: 0,
+    }
+  );
+}
