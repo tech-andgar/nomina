@@ -172,6 +172,14 @@
     },
     "year": "2026",
     "uvt": "52374",
-    "horasMensuales": 210
+    "horasMensuales": 210,
+    "multipliers": {
+      "diurna": 1.25,
+      "nocturna": 1.75,
+      "festiva": 1.9,
+      "festivaDiurna": 2.15,
+      "festivaNocturna": 2.65,
+      "recargoNocturno": 1.35
+    }
   }
 }

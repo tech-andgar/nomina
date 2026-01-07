@@ -9,6 +9,14 @@ describe("ColaboradorService", () => {
         uvt: 52374,
         auxTransporte: 249095,
         horasMensuales: 240, // Divisor standard for tests unless specified
+        multipliers: {
+            diurna: 1.25,
+            nocturna: 1.75,
+            festiva: 1.75, // Default/Historical
+            festivaDiurna: 2.0,
+            festivaNocturna: 2.5,
+            recargoNocturno: 1.35
+        }
     };
 
     const mockColaborador: Colaborador = {
@@ -125,7 +133,7 @@ describe("ColaboradorService", () => {
         const slmv = mockConstants.slmv;
 
         // Bracket 1: < 4 SLMV -> 0%
-        expect(ColaboradorService.calcularValorSueldoBasico({ ...mockColaborador, sueldo: 1000000, diasTrabajados: 30 })).toBe(1000000);
+        expect(ColaboradorService.calcularValorFondoSolidaridad(mockColaborador, mockConstants)).toBe(0);
 
         // Bracket 2: 4-16 SLMV -> 1%
         const level16 = { ...mockColaborador, sueldo: 5 * slmv };
@@ -223,6 +231,36 @@ describe("ColaboradorService", () => {
         expect(result.deducido.salud).toBeCloseTo(80000, 2);
         expect(result.deducido.pension).toBeCloseTo(80000, 2);
         expect(result.totalNeto).toBeCloseTo(2249095 - 160000, 2); // 2,089,095
+    });
+
+    test("should use 2026 Labor Reform multipliers (90% surcharge for Sunday)", () => {
+        // Mocking 2026 constants specifically for this test
+        const constants2026: YearlyConstants = {
+            ...mockConstants,
+            horasMensuales: 210,
+            multipliers: {
+                ...mockConstants.multipliers,
+                festiva: 1.9 // 90% surcharge
+            }
+        };
+
+        const colabWithSundayHours = {
+            ...mockColaborador,
+            devengado: {
+                ...mockColaborador.devengado,
+                horasExtras: {
+                    ...mockColaborador.devengado.horasExtras,
+                    domingos: 1
+                }
+            }
+        };
+
+        const result = ColaboradorService.calcularValorExtrasDomingos(colabWithSundayHours, 9523.81, constants2026);
+        // Ordinary Hour: 9523.81
+        // Factor: 1.9 (1 + 0.90)
+        // Hours: 1
+        // Expected: 9523.81 * 1 * 1.9 = 18095.239
+        expect(result).toBeCloseTo(18095.24, 2);
     });
 
     test("calcularTotales should aggregate multiple colaboradores for 2026", () => {

@@ -348,6 +348,20 @@ export const scrapeSalaryData = async () => {
       if (yearNum === 2025) return 220;
       return 210; // 2026 onwards
     })(),
+    multipliers: (() => {
+      const yearNum = Number(salaryData.year);
+      // Ley 2466: Sunday surcharge increases to 80% (H1 2026) -> 90% (H2 2026)
+      // Using 90% (1.9 total) for 2026 target.
+      const surcharge = yearNum >= 2026 ? 1.9 : 1.75;
+      return {
+        diurna: 1.25,
+        nocturna: 1.75,
+        festiva: surcharge,
+        festivaDiurna: surcharge + 0.25,
+        festivaNocturna: surcharge + 0.75,
+        recargoNocturno: 1.35,
+      };
+    })(),
   };
 
   return transformedData;

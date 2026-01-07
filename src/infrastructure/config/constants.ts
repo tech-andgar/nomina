@@ -69,12 +69,22 @@ export const MONEY_FORMAT = {
   masked: true,
 };
 
+export interface YearlyMultipliers {
+  diurna: number;
+  nocturna: number;
+  festiva: number;
+  festivaDiurna: number;
+  festivaNocturna: number;
+  recargoNocturno: number;
+}
+
 // Interfaz para el tipado de constantes anuales
 export interface YearlyConstants {
   slmv: number;
   uvt: number;
   auxTransporte: number;
   horasMensuales: number;
+  multipliers: YearlyMultipliers;
 }
 
 interface RawYearlyDataEntry {
@@ -83,6 +93,7 @@ interface RawYearlyDataEntry {
   uvt?: number | string;
   auxTransporte?: number | string;
   horasMensuales?: number;
+  multipliers?: Partial<YearlyMultipliers>;
   salarioPagadoEmpleadorEjemplo?: {
     "Subsidio de transporte"?: number | string;
   };
@@ -108,5 +119,13 @@ export const getYearlyConstants = (year: number): YearlyConstants => {
       0
     ),
     horasMensuales: Number(data.horasMensuales || 240),
+    multipliers: {
+      diurna: Number(data.multipliers?.diurna || GLOBAL_CONSTANTS.horasExtras.diurna),
+      nocturna: Number(data.multipliers?.nocturna || GLOBAL_CONSTANTS.horasExtras.nocturna),
+      festiva: Number(data.multipliers?.festiva || GLOBAL_CONSTANTS.horasExtras.domingos),
+      festivaDiurna: Number(data.multipliers?.festivaDiurna || (GLOBAL_CONSTANTS.horasExtras.domingos + 0.25)),
+      festivaNocturna: Number(data.multipliers?.festivaNocturna || GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos),
+      recargoNocturno: Number(data.multipliers?.recargoNocturno || GLOBAL_CONSTANTS.horasExtras.recargoNocturno),
+    },
   };
 };

@@ -39,8 +39,8 @@ export function calcularValorExtrasDiurna(
 
   if (!valorHoraOrdinaria || !horasExtrasDiurna) return null;
 
-  return valorHoraOrdinaria *
-    horasExtrasDiurna * GLOBAL_CONSTANTS.horasExtras.diurna;
+  const factor = constants?.multipliers.diurna ?? GLOBAL_CONSTANTS.horasExtras.diurna;
+  return valorHoraOrdinaria * horasExtrasDiurna * factor;
 }
 
 export function calcularValorExtrasNocturna(
@@ -53,8 +53,8 @@ export function calcularValorExtrasNocturna(
 
   if (!valorHoraOrdinaria || !horasExtrasNocturna) return null;
 
-  return valorHoraOrdinaria * horasExtrasNocturna *
-    GLOBAL_CONSTANTS.horasExtras.nocturna;
+  const factor = constants?.multipliers.nocturna ?? GLOBAL_CONSTANTS.horasExtras.nocturna;
+  return valorHoraOrdinaria * horasExtrasNocturna * factor;
 }
 
 export function calcularValorExtrasDomingos(
@@ -67,9 +67,8 @@ export function calcularValorExtrasDomingos(
 
   if (!valorHoraOrdinaria || !horasExtrasDomingos) return null;
 
-  return valorHoraOrdinaria *
-    horasExtrasDomingos *
-    GLOBAL_CONSTANTS.horasExtras.domingos;
+  const factor = constants?.multipliers.festiva ?? GLOBAL_CONSTANTS.horasExtras.domingos;
+  return valorHoraOrdinaria * horasExtrasDomingos * factor;
 }
 
 export function calcularValorExtrasNocturnaDomingos(
@@ -85,9 +84,8 @@ export function calcularValorExtrasNocturnaDomingos(
     !valorHoraOrdinaria || !horasExtrasNocturnaDomingos
   ) return null;
 
-  return valorHoraOrdinaria *
-    horasExtrasNocturnaDomingos *
-    GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos;
+  const factor = constants?.multipliers.festivaNocturna ?? GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos;
+  return valorHoraOrdinaria * horasExtrasNocturnaDomingos * factor;
 }
 
 export function calcularValorRecargoNocturno(
@@ -103,9 +101,8 @@ export function calcularValorRecargoNocturno(
     !valorHoraOrdinaria || !horasExtrasRecargoNocturno
   ) return null;
 
-  return valorHoraOrdinaria *
-    horasExtrasRecargoNocturno *
-    GLOBAL_CONSTANTS.horasExtras.recargoNocturno;
+  const factor = constants?.multipliers.recargoNocturno ?? GLOBAL_CONSTANTS.horasExtras.recargoNocturno;
+  return valorHoraOrdinaria * horasExtrasRecargoNocturno * factor;
 }
 
 export function calcularValorTotalExtrasValor(
