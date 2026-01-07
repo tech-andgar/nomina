@@ -198,16 +198,21 @@ const toggleTipoContrato = () => {
       </div>
     </div>
 
-    <div class="form-section">
-      <h3 class="section-title">Horas Extras (Mensual)</h3>
-      <div class="grid-2">
+    <details class="form-section">
+      <summary class="section-title cursor-pointer select-none list-none">
+        <div class="flex items-center gap-2">
+           <span>Ajustes Avanzados (Horas Extras)</span>
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </summary>
+      <div class="grid-2 pt-4">
         <FormField label="E. Diurna" :model-value="colaborador.devengado.horasExtras.diurna" @update:model-value="updateField('devengado.horasExtras.diurna', $event)" type="number" />
         <FormField label="E. Nocturna" :model-value="colaborador.devengado.horasExtras.nocturna" @update:model-value="updateField('devengado.horasExtras.nocturna', $event)" type="number" />
         <FormField label="Dom. Diurna" :model-value="colaborador.devengado.horasExtras.domingos" @update:model-value="updateField('devengado.horasExtras.domingos', $event)" type="number" />
         <FormField label="Dom. Noct." :model-value="colaborador.devengado.horasExtras.nocturnaDomingos" @update:model-value="updateField('devengado.horasExtras.nocturnaDomingos', $event)" type="number" />
         <FormField label="Recargo Noct." :model-value="colaborador.devengado.horasExtras.recargoNocturno" @update:model-value="updateField('devengado.horasExtras.recargoNocturno', $event)" type="number" />
       </div>
-    </div>
+    </details>
 
     <div class="form-section border-top">
       <h3 class="section-title">Deducciones (Ley 2277)</h3>
@@ -436,6 +441,38 @@ const toggleTipoContrato = () => {
   gap: 1rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border-color);
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  transition: transform 0.2s;
+}
+
+details[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 @media (max-width: 640px) {
