@@ -21,64 +21,11 @@ describe("ColaboradorService", () => {
     };
 
     const mockColaborador: Colaborador = {
+        ...createEmptyColaborador(),
         cedula: "12345678",
         nombre: "Juan Perez",
         sueldo: 2000000,
         diasTrabajados: 30,
-        valorHoraOrdinaria: null,
-        auxTransporte: null,
-        devengado: {
-            horasExtras: {
-                diurna: 0,
-                nocturna: 0,
-                domingos: 0,
-                nocturnaDomingos: 0,
-                recargoNocturno: 0,
-            },
-            sueldoBasico: null,
-            valorExtras: {
-                diurna: null,
-                nocturna: null,
-                domingos: null,
-                nocturnaDomingos: null,
-                recargoNocturno: null,
-            },
-            totalValorExtras: null,
-            ibc: null,
-            totalDevengado: null,
-        },
-        deducido: {
-            salud: null,
-            pension: null,
-            fondoSolidaridad: null,
-            uvt: null,
-            retefuente: null,
-            totalDeducido: null,
-        },
-        parafiscales: {
-            salud: null,
-            pension: null,
-            arl: null,
-            sena: null,
-            icbf: null,
-            cajas: null,
-            totalParafiscales: null,
-        },
-        prestaciones: {
-            prima: 0,
-            vacaciones: 0,
-            cesantias: 0,
-            interesCesantias: 0,
-            totalPrestacion: 0,
-        },
-        deduccionesOpcionales: {
-            dependientes: false,
-            medicinaPrepagadaMensual: null,
-            viviendaMensual: null,
-            tipoTabla: "actual"
-        },
-        totalNeto: 0,
-        totalNomina: 0,
     };
 
     test("checkNotEmptyDataColaborador should validate correctly", () => {
