@@ -1,6 +1,6 @@
 import type { Colaborador } from "@src/domain/Colaborador.ts";
 import type { InfoEmpleador } from "@src/domain/Empleador.ts";
-import { GLOBAL_CONSTANTS, getYearlyConstants, COSTOS_PRESUNTOS } from "@src/infrastructure/config/constants.ts";
+import { GLOBAL_CONSTANTS, getYearlyConstants, COSTOS_PRESUNTOS, TAX_LIMITS } from "@src/infrastructure/config/constants.ts";
 import type { YearlyConstants } from "@src/infrastructure/config/constants.ts";
 import { TAX_TABLES, type TaxTable } from "@src/infrastructure/config/tax_tables.ts";
 
@@ -34,18 +34,35 @@ export function calcularValorAuxTransporte(colaborador: Colaborador, constants: 
   return auxTransporte;
 }
 
+/**
+ * Generic helper to calculate overtime/surcharge values.
+ * Reduces duplication across diurna, nocturna, domingos, etc.
+ */
+function calculateOvertimeValue(
+  colaborador: Colaborador,
+  hours: number | null,
+  factor: number,
+  optionalValorHora?: number | null,
+  constants?: YearlyConstants,
+): number | null {
+  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
+  if (!valorHoraOrdinaria || !hours) return null;
+  return valorHoraOrdinaria * hours * factor;
+}
+
 export function calcularValorExtrasDiurna(
   colaborador: Colaborador,
   optionalValorHora?: number | null,
   constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
-  const horasExtrasDiurna = colaborador.devengado.horasExtras.diurna;
-
-  if (!valorHoraOrdinaria || !horasExtrasDiurna) return null;
-
   const factor = constants?.multipliers.diurna ?? GLOBAL_CONSTANTS.horasExtras.diurna;
-  return valorHoraOrdinaria * horasExtrasDiurna * factor;
+  return calculateOvertimeValue(
+    colaborador,
+    colaborador.devengado.horasExtras.diurna,
+    factor,
+    optionalValorHora,
+    constants
+  );
 }
 
 export function calcularValorExtrasNocturna(
@@ -53,13 +70,14 @@ export function calcularValorExtrasNocturna(
   optionalValorHora?: number | null,
   constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
-  const horasExtrasNocturna = colaborador.devengado.horasExtras.nocturna;
-
-  if (!valorHoraOrdinaria || !horasExtrasNocturna) return null;
-
   const factor = constants?.multipliers.nocturna ?? GLOBAL_CONSTANTS.horasExtras.nocturna;
-  return valorHoraOrdinaria * horasExtrasNocturna * factor;
+  return calculateOvertimeValue(
+    colaborador,
+    colaborador.devengado.horasExtras.nocturna,
+    factor,
+    optionalValorHora,
+    constants
+  );
 }
 
 export function calcularValorExtrasDomingos(
@@ -67,13 +85,14 @@ export function calcularValorExtrasDomingos(
   optionalValorHora?: number | null,
   constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
-  const horasExtrasDomingos = colaborador.devengado.horasExtras.domingos;
-
-  if (!valorHoraOrdinaria || !horasExtrasDomingos) return null;
-
   const factor = constants?.multipliers.festivaDiurna ?? GLOBAL_CONSTANTS.horasExtras.domingos;
-  return valorHoraOrdinaria * horasExtrasDomingos * factor;
+  return calculateOvertimeValue(
+    colaborador,
+    colaborador.devengado.horasExtras.domingos,
+    factor,
+    optionalValorHora,
+    constants
+  );
 }
 
 export function calcularValorExtrasNocturnaDomingos(
@@ -81,16 +100,14 @@ export function calcularValorExtrasNocturnaDomingos(
   optionalValorHora?: number | null,
   constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
-  const horasExtrasNocturnaDomingos =
-    colaborador.devengado.horasExtras.nocturnaDomingos;
-
-  if (
-    !valorHoraOrdinaria || !horasExtrasNocturnaDomingos
-  ) return null;
-
   const factor = constants?.multipliers.festivaNocturna ?? GLOBAL_CONSTANTS.horasExtras.nocturnaDomingos;
-  return valorHoraOrdinaria * horasExtrasNocturnaDomingos * factor;
+  return calculateOvertimeValue(
+    colaborador,
+    colaborador.devengado.horasExtras.nocturnaDomingos,
+    factor,
+    optionalValorHora,
+    constants
+  );
 }
 
 export function calcularValorRecargoNocturno(
@@ -98,16 +115,14 @@ export function calcularValorRecargoNocturno(
   optionalValorHora?: number | null,
   constants?: YearlyConstants,
 ): number | null {
-  const valorHoraOrdinaria = optionalValorHora ?? calcularValorHoraOrdinaria(colaborador, constants);
-  const horasExtrasRecargoNocturno =
-    colaborador.devengado.horasExtras.recargoNocturno;
-
-  if (
-    !valorHoraOrdinaria || !horasExtrasRecargoNocturno
-  ) return null;
-
   const factor = constants?.multipliers.recargoNocturno ?? GLOBAL_CONSTANTS.horasExtras.recargoNocturno;
-  return valorHoraOrdinaria * horasExtrasRecargoNocturno * factor;
+  return calculateOvertimeValue(
+    colaborador,
+    colaborador.devengado.horasExtras.recargoNocturno,
+    factor,
+    optionalValorHora,
+    constants
+  );
 }
 
 export function calcularValorTotalExtrasValor(
@@ -144,7 +159,7 @@ export function calcularValorTotalDevengado(colaborador: Colaborador, constants:
 
   if (sueldoBasico === null || totalValorExtras === null || auxTransporte === null) return null;
 
-  if (sueldoBasico === null || totalValorExtras === null || auxTransporte === null) return null;
+
 
   // Para independientes, el "Total Devengado" es simplemente sus honorarios (sueldo)
   // No hay horas extras ni auxilio de transporte en el sentido laboral puro, 
@@ -305,21 +320,21 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
   // A. Dependientes (10% del ingreso bruto, tope 32 UVT mensual)
   let deduccionDependientes = 0;
   if (colaborador.deduccionesOpcionales?.dependientes) {
-    const topeDependientes = 32 * uvtValue;
-    deduccionDependientes = Math.min(totalDevengado * 0.1, topeDependientes);
+    const topeDependientes = TAX_LIMITS.dependientes * uvtValue;
+    deduccionDependientes = Math.min(totalDevengado * TAX_LIMITS.dependientesRate, topeDependientes);
   }
 
   // B. Medicina Prepagada (Tope 16 UVT mensual)
   let deduccionMedicina = 0;
   if (colaborador.deduccionesOpcionales?.medicinaPrepagadaMensual) {
-    const topeMedicina = 16 * uvtValue;
+    const topeMedicina = TAX_LIMITS.medicinaPrepagada * uvtValue;
     deduccionMedicina = Math.min(colaborador.deduccionesOpcionales.medicinaPrepagadaMensual, topeMedicina);
   }
 
   // C. Intereses de Vivienda (Tope 100 UVT mensual)
   let deduccionVivienda = 0;
   if (colaborador.deduccionesOpcionales?.viviendaMensual) {
-    const topeVivienda = 100 * uvtValue;
+    const topeVivienda = TAX_LIMITS.vivienda * uvtValue;
     deduccionVivienda = Math.min(colaborador.deduccionesOpcionales.viviendaMensual, topeVivienda);
   }
 
@@ -329,12 +344,12 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
   // Base: (Ingreso - INCR - Deducciones)
   const baseFor25 = Math.max(0, incomeNetOfINCR - totalDeducciones);
 
-  let rentaExenta25 = baseFor25 * 0.25;
+  let rentaExenta25 = baseFor25 * TAX_LIMITS.rentaExentaRate;
 
   // Tope Renta Exenta 25%:
   // Ley 2277 (2023+): 790 UVT Anuales (~65.83 UVT Mensuales)
   // Pre-2023: 2880 UVT Anuales (~240 UVT Mensuales)
-  const cap25AnnualUVT = isLey2277 ? 790 : 2880;
+  const cap25AnnualUVT = isLey2277 ? TAX_LIMITS.rentaExentaCapAnnual.ley2277 : TAX_LIMITS.rentaExentaCapAnnual.pre2023;
   const cap25MonthlyUVT = cap25AnnualUVT / 12;
   const maxRentaExenta25 = cap25MonthlyUVT * uvtValue;
 
@@ -346,12 +361,12 @@ export function calcularValorUVT(colaborador: Colaborador, constants: YearlyCons
 
   const totalBeneficiosSolicitados = totalDeducciones + rentaExenta25;
 
-  const limit40Percent = incomeNetOfINCR * 0.4;
+  const limit40Percent = incomeNetOfINCR * TAX_LIMITS.globalLimitRate;
 
   // Tope Absoluto Global:
   // Ley 2277 (2023+): 1340 UVT Anuales (~111.66 UVT Mensuales)
   // Pre-2023: 5040 UVT Anuales (~420 UVT Mensuales)
-  const capGlobalAnnualUVT = isLey2277 ? 1340 : 5040;
+  const capGlobalAnnualUVT = isLey2277 ? TAX_LIMITS.globalLimitCapAnnual.ley2277 : TAX_LIMITS.globalLimitCapAnnual.pre2023;
   const capGlobalMonthlyUVT = capGlobalAnnualUVT / 12;
   const limitGlobalAbsolute = capGlobalMonthlyUVT * uvtValue;
 

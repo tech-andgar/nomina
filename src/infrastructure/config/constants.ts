@@ -65,6 +65,31 @@ export const GLOBAL_CONSTANTS = {
   },
 };
 
+export const TAX_LIMITS = {
+  // Topes deducciones (Art 387 ET) en UVT mensuales
+  dependientes: 32,
+  medicinaPrepagada: 16,
+  vivienda: 100,
+
+  // Porcentajes
+  dependientesRate: 0.1, // 10% del ingreso bruto
+  rentaExentaRate: 0.25, // 25% de renta exenta
+  globalLimitRate: 0.40, // 40% limitacion global
+
+  // Topes Renta Exenta 25% (Anual en UVT)
+  rentaExentaCapAnnual: {
+    ley2277: 790,
+    pre2023: 2880,
+  },
+
+  // Topes Globales (Anual en UVT)
+  globalLimitCapAnnual: {
+    ley2277: 1340,
+    pre2023: 5040,
+  }
+};
+
+
 export const MONEY_FORMAT = {
   decimal: ",",
   thousands: ".",
