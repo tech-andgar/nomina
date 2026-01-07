@@ -35,6 +35,28 @@ export const $empleador = persistentAtom<InfoEmpleador>("empleador", {
 
 export const $editingIndex = atom<number | null>(null);
 
+export type Theme = 'light' | 'dark';
+export const $theme = persistentAtom<Theme>('theme', 'light');
+
+// Theme Actions
+export const setTheme = (theme: Theme) => {
+    $theme.set(theme);
+    if (typeof document !== 'undefined') {
+        document.documentElement.dataset.theme = theme;
+    }
+};
+
+export const toggleTheme = () => {
+    setTheme($theme.get() === 'light' ? 'dark' : 'light');
+};
+
+// Initialize theme on client side
+if (isBrowser) {
+    const systemTheme = globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // persistentAtom will already have loaded the value from storage if it exists
+    const initialTheme = $theme.get() || systemTheme;
+    setTheme(initialTheme);
+}
 
 // Real-time Preview for the current form entry
 export const $calculatedColaboradorPreview = computed(
