@@ -226,6 +226,11 @@ export const scrapeSalaryData = async () => {
       aportesSeguridadSocial,
       salarioRecibidoEmpleadoEjemplo,
       salarioPagadoEmpleadorEjemplo,
+      year: (() => {
+        const heading = document.querySelector("h1, h2, h3")?.textContent || "";
+        const match = heading.match(/20\d{2}/);
+        return match ? match[0] : new Date().getFullYear().toString();
+      })(),
     };
   });
 
@@ -318,6 +323,7 @@ export const scrapeSalaryData = async () => {
         [key, value],
       ) => [key, extractNumeric(value)]),
     ),
+    year: salaryData.year,
   };
 
   return transformedData;

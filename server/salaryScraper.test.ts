@@ -5,6 +5,7 @@ test("Salary Data Scraper", async () => {
   const data = await scrapeSalaryData();
 
   expect(data.salarioMinimoMensual).toBe("1750905");
+  expect(data.year).toBe("2026");
   expect(data.salarioMinimoMensualTexto).toBe("Un Millón Setecientos Cincuenta Mil Novecientos Cinco Pesos");
   expect(data.variacionAnual).toEqual({
     porcentaje: "23",
