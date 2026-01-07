@@ -1,19 +1,15 @@
+export interface ExtrasBreakdown<T> {
+  diurna: T;
+  nocturna: T;
+  domingos: T;
+  nocturnaDomingos: T;
+  recargoNocturno: T;
+}
+
 export interface Devengado {
-  horasExtras: {
-    diurna: number | null;
-    nocturna: number | null;
-    domingos: number | null;
-    nocturnaDomingos: number | null;
-    recargoNocturno: number | null;
-  };
+  horasExtras: ExtrasBreakdown<number | null>;
   sueldoBasico: number | null;
-  valorExtras: {
-    diurna: number | null;
-    nocturna: number | null;
-    domingos: number | null;
-    nocturnaDomingos: number | null;
-    recargoNocturno: number | null;
-  };
+  valorExtras: ExtrasBreakdown<number | null>;
   totalValorExtras: number | null;
   ibc: number | null;
   totalDevengado: number | null;
@@ -38,7 +34,7 @@ export interface Parafiscales {
   totalParafiscales: number | null;
 }
 
-export interface Prestacion {
+export interface Prestaciones {
   prima: number | null;
   vacaciones: number | null;
   cesantias: number | null;
@@ -56,7 +52,7 @@ export interface Colaborador {
   devengado: Devengado;
   deducido: Deducido;
   parafiscales: Parafiscales;
-  prestacion: Prestacion;
+  prestaciones: Prestaciones;
   totalNeto: number | null;
   totalNomina: number | null;
 }

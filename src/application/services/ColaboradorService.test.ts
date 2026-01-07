@@ -54,7 +54,7 @@ describe("ColaboradorService", () => {
             cajas: null,
             totalParafiscales: null,
         },
-        prestacion: {
+        prestaciones: {
             prima: null,
             vacaciones: null,
             cesantias: null,

@@ -498,7 +498,7 @@ export function calcularColaborador(colaborador: Colaborador, optionalYear?: num
       cajas: cajaEmpleador,
       totalParafiscales: totalParafiscales,
     },
-    prestacion: {
+    prestaciones: {
       prima: prima,
       vacaciones: vacaciones,
       cesantias: cesantias,

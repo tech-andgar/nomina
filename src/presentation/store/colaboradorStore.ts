@@ -51,7 +51,7 @@ export const useColaboradorStore = defineStore("colaborador", () => {
       cajas: null,
       totalParafiscales: null,
     },
-    prestacion: {
+    prestaciones: {
       prima: null,
       vacaciones: null,
       cesantias: null,
@@ -123,7 +123,7 @@ export const useColaboradorStore = defineStore("colaborador", () => {
         cajas: null,
         totalParafiscales: null,
       },
-      prestacion: {
+      prestaciones: {
         prima: null,
         vacaciones: null,
         cesantias: null,
